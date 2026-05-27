@@ -1,0 +1,43 @@
+.task-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1rem;
+
+  padding: 1.5rem;
+
+  background: #1e1e1e;
+
+  border-radius: 16px;
+}
+
+.task-form input,
+.task-form textarea,
+.task-form select {
+  padding: 0.9rem;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #2b2b2b;
+
+  color: white;
+}
+
+.task-form button {
+  padding: 1rem;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #5b7fff;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}

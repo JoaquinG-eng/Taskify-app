@@ -1,11 +1,9 @@
-import "./StatCard.css";
-
-type StatCardProps = {
+interface StatCardProps {
   titulo: string;
   valor: string;
   descripcion: string;
   variante?: "primary" | "warning" | "default";
-};
+}
 
 function StatCard({
   titulo,
@@ -14,21 +12,11 @@ function StatCard({
   variante = "default",
 }: StatCardProps) {
   return (
-    <article className={`stat-card stat-card--${variante}`}>
-      <div className="stat-card__content">
-        <p className="stat-card__title">
-          {titulo}
-        </p>
-
-        <h3 className="stat-card__value">
-          {valor}
-        </h3>
-
-        <span className="stat-card__description">
-          {descripcion}
-        </span>
-      </div>
-    </article>
+    <div className={`stat-card stat-card--${variante}`}>
+      <p className="stat-card__titulo">{titulo}</p>
+      <p className="stat-card__valor">{valor}</p>
+      <p className="stat-card__descripcion">{descripcion}</p>
+    </div>
   );
 }
 

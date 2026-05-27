@@ -4,20 +4,15 @@ export type EstadoTarea =
   | "completada";
 
 export type PrioridadTarea =
-  | "alta"
+  | "baja"
   | "media"
-  | "baja";
+  | "alta";
 
 export interface Tarea {
   id: string;
-
   titulo: string;
-
   descripcion: string;
-
   estado: EstadoTarea;
-
   prioridad: PrioridadTarea;
-
   fechaCreacion: string;
 }
