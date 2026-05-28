@@ -254,6 +254,19 @@
   transform: translateY(-1px);
 }
 
+/* Editar — gris neutro */
+.task-card__actions button:nth-child(4) {
+  background: rgba(255, 255, 255, 0.05);
+  color: #9ca3af;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.task-card__actions button:nth-child(4):hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
 /* =========================================================
    RESPONSIVE — Mobile (≤ 480px)
    En pantallas muy chicas la fila inferior se apila:

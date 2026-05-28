@@ -33,6 +33,7 @@ export default function DashboardPage() {
     tareasEnPapelera,
     actividades,
     crearTarea,
+    editarTarea,
     cambiarEstadoTarea,
     actualizarProgreso,
     moverAPapelera,
@@ -140,6 +141,7 @@ export default function DashboardPage() {
                   alCambiarEstado={cambiarEstadoTarea}
                   alActualizarProgreso={actualizarProgreso}
                   alMoverAPapelera={moverAPapelera}
+                  alEditarTarea={editarTarea}
                 />
               </div>
 
@@ -159,6 +161,7 @@ export default function DashboardPage() {
               alCambiarEstado={cambiarEstadoTarea}
               alActualizarProgreso={actualizarProgreso}
               alMoverAPapelera={moverAPapelera}
+              alEditarTarea={editarTarea}
             />
           </div>
         )}

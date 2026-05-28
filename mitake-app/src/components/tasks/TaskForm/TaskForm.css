@@ -58,21 +58,25 @@
 }
 
 .task-form__boton-cerrar {
-  background: none;
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
   line-height: 1;
-  font-family: inherit;
 }
 
 .task-form__boton-cerrar:hover {
-  color: rgba(255, 255, 255, 0.8);
-  background-color: rgba(255, 255, 255, 0.07);
+  color: white;
+  background-color: rgba(239, 68, 68, 0.8);
+  transform: scale(1.05);
 }
 
 /* ---- FILA DE DOS COLUMNAS ---- */
@@ -251,7 +255,7 @@
   margin-top: 4px;
 }
 
-.task-form button {
+.task-form__actions button {
   flex: 1;
   height: 46px;
   border-radius: var(--radius-sm);
@@ -262,23 +266,23 @@
   font-family: inherit;
 }
 
-.task-form button[type="submit"] {
+.task-form__actions button[type="submit"] {
   background: linear-gradient(135deg, var(--color-purple), #5c3dd8);
   color: white;
   box-shadow: 0 4px 12px var(--color-purple-glow);
   border: none;
 }
-.task-form button[type="submit"]:hover {
+.task-form__actions button[type="submit"]:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
 }
 
-.task-form button[type="button"] {
+.task-form__actions button[type="button"] {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--color-border);
   color: var(--color-text);
 }
-.task-form button[type="button"]:hover {
+.task-form__actions button[type="button"]:hover {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.2);
 }
@@ -288,6 +292,11 @@
    ============================================================ */
 .campo-grupo input[type="date"] {
   color-scheme: dark;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
 }
 .campo-grupo input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.6) brightness(1.2);

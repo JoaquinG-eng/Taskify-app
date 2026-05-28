@@ -11,6 +11,7 @@ type KanbanBoardProps = {
   alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
   alActualizarProgreso: (id: string, nuevoProgreso: number) => void;
   alMoverAPapelera: (id: string) => void;
+  alEditarTarea: (id: string, datosEditados: any) => void;
 };
 
 const configuracionDeColumnas: {
@@ -35,6 +36,7 @@ function KanbanBoard({
   alCambiarEstado,
   alActualizarProgreso,
   alMoverAPapelera,
+  alEditarTarea,
 }: KanbanBoardProps) {
   return (
     <section className="kanban">
@@ -79,6 +81,7 @@ function KanbanBoard({
                       alCambiarEstado={alCambiarEstado}
                       alActualizarProgreso={alActualizarProgreso}
                       alMoverAPapelera={alMoverAPapelera}
+                      alEditarTarea={alEditarTarea}
                     />
                   ))
                 )}

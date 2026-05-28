@@ -5,17 +5,20 @@
 // estado con punto de color animado.
 // ============================================================
 
-import type { EstadoTarea, Tarea } from "../../../types/task";
+import { useState } from "react";
+import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
+import TaskForm from "../TaskForm/TaskForm";
 import "./TaskCard.css";
 
 // ------------------------------------------------------------
-// TIPOS de las props — igual que antes, sin cambios
+// TIPOS de las props 
 // ------------------------------------------------------------
 type TaskCardProps = {
   datosDeLaTarea: Tarea;
   alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
   alActualizarProgreso: (id: string, progresoNuevo: number) => void;
   alMoverAPapelera: (id: string) => void;
+  alEditarTarea: (id: string, datosEditados: TareaNueva) => void;
 };
 
 // ------------------------------------------------------------
@@ -36,7 +39,15 @@ function TaskCard({
   alCambiarEstado,
   alActualizarProgreso,
   alMoverAPapelera,
+  alEditarTarea,
 }: TaskCardProps) {
+  const [estaEditando, setEstaEditando] = useState(false);
+
+  function manejarGuardarEdicion(datosEditados: TareaNueva) {
+    alEditarTarea(datosDeLaTarea.id, datosEditados);
+    setEstaEditando(false);
+  }
+
   // El progreso no puede pasar de 100
   const progresoLimitado = Math.min(datosDeLaTarea.progreso, 100);
 
@@ -44,6 +55,7 @@ function TaskCard({
   const barraEstaCompleta = progresoLimitado === 100;
 
   return (
+    <>
     <article className="task-card">
 
       {/* ---- FILA SUPERIOR: título + prioridad ---- */}
@@ -110,13 +122,31 @@ function TaskCard({
             onClick={() => alMoverAPapelera(datosDeLaTarea.id)}
             title="Mover a la papelera"
           >
-            Mover a la papelera 
+            Mover a la papelera  
           </button>
+          
+          <button
+            onClick={() => setEstaEditando(true)}
+            title="Editar tarea"
+          >
+            Editar
+          </button>
+
         </div>
       </div>
 
     </article>
-  );
+
+    {estaEditando && (
+      <TaskForm
+        datosIniciales={datosDeLaTarea}
+        tareaId={datosDeLaTarea.id}
+        alConfirmar={manejarGuardarEdicion}
+        alCancelar={() => setEstaEditando(false)}
+      />
+    )}
+    </>
+    );
 }
 
 export default TaskCard;

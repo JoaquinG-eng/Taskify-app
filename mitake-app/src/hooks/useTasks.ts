@@ -8,9 +8,8 @@ import type { Actividad, TipoActividad } from "../types/actividad";
 
 const CLAVE_TAREAS      = "mitake-tareas";
 const CLAVE_ACTIVIDADES = "mitake-actividades";
-const MAX_ACTIVIDADES   = 30; // máximo de entradas en el feed
+const MAX_ACTIVIDADES   = 30;
 
-// ---- helpers de storage ----
 function cargarTareasDesdeStorage(): Tarea[] {
   try {
     const datos = localStorage.getItem(CLAVE_TAREAS);
@@ -36,9 +35,6 @@ function horaActual(): string {
   });
 }
 
-// ============================================================
-// HOOK: useTasks
-// ============================================================
 export function useTasks() {
   const [listaDeTareas, setListaDeTareas] = useState<Tarea[]>(
     cargarTareasDesdeStorage
@@ -47,7 +43,6 @@ export function useTasks() {
     cargarActividadesDesdeStorage
   );
 
-  // Persistencia automática
   useEffect(() => {
     localStorage.setItem(CLAVE_TAREAS, JSON.stringify(listaDeTareas));
   }, [listaDeTareas]);
@@ -61,41 +56,29 @@ export function useTasks() {
     const intervalo = setInterval(() => {
       setListaDeTareas((anterior) =>
         anterior.map((tarea) => {
-          if (tarea.estado !== "en-progreso" || tarea.progreso >= 100) return tarea;
+          if (tarea.estado !== "en-progreso" || tarea.progreso >= 100)
+            return tarea;
           const progresoNuevo = Math.min(tarea.progreso + 10, 100);
           const estadoNuevo: EstadoTarea =
             progresoNuevo === 100 ? "completada" : "en-progreso";
           return { ...tarea, progreso: progresoNuevo, estado: estadoNuevo };
         })
       );
-    }, 30000);
+    }, 5000);
     return () => clearInterval(intervalo);
   }, []);
 
-  // --------------------------------------------------------
-  // FUNCIÓN INTERNA: registrarActividad
-  // --------------------------------------------------------
-  function registrarActividad(
-    tipo: TipoActividad,
-    descripcion: string
-  ): void {
-    const nueva: Actividad = {
-      id: generarId(),
-      tipo,
-      descripcion,
-      hora: horaActual(),
-    };
-    setActividades((anterior) =>
-      [nueva, ...anterior].slice(0, MAX_ACTIVIDADES)
-    );
+  // ---- helper interno ----
+  function registrarActividad(tipo: TipoActividad, descripcion: string): void {
+    const nueva: Actividad = { id: generarId(), tipo, descripcion, hora: horaActual() };
+    setActividades((ant) => [nueva, ...ant].slice(0, MAX_ACTIVIDADES));
   }
 
-  // ---- Derivadas ----
   const tareasActivas    = listaDeTareas.filter((t) => !t.estaEnPapelera);
   const tareasEnPapelera = listaDeTareas.filter((t) => t.estaEnPapelera);
 
   // --------------------------------------------------------
-  // CRUD
+  // CREAR
   // --------------------------------------------------------
   function crearTarea(datosNuevos: TareaNueva): void {
     const tarea: Tarea = {
@@ -109,10 +92,36 @@ export function useTasks() {
       progreso: datosNuevos.estado === "completada" ? 100 : 0,
       estaEnPapelera: false,
     };
-    setListaDeTareas((anterior) => [tarea, ...anterior]);
+    setListaDeTareas((ant) => [tarea, ...ant]);
     registrarActividad("tarea_creada", `Creaste "${tarea.titulo}"`);
   }
 
+  // --------------------------------------------------------
+  // EDITAR
+  // Actualiza título, descripción, prioridad y fecha límite.
+  // El estado y progreso no cambian al editar (son independientes).
+  // --------------------------------------------------------
+  function editarTarea(identificador: string, datosEditados: TareaNueva): void {
+    setListaDeTareas((anterior) =>
+      anterior.map((tarea) => {
+        if (tarea.id !== identificador) return tarea;
+        return {
+          ...tarea,
+          titulo:      datosEditados.titulo,
+          descripcion: datosEditados.descripcion,
+          prioridad:   datosEditados.prioridad,
+          fechaLimite: datosEditados.fechaLimite,
+          // No tocamos estado ni progreso: el usuario los gestiona
+          // con los botones de la card, no con el formulario.
+        };
+      })
+    );
+    registrarActividad("tarea_editada", `Editaste "${datosEditados.titulo}"`);
+  }
+
+  // --------------------------------------------------------
+  // CAMBIAR ESTADO
+  // --------------------------------------------------------
   function cambiarEstadoTarea(
     identificador: string,
     nuevoEstado: EstadoTarea
@@ -127,19 +136,17 @@ export function useTasks() {
         return { ...tarea, estado: nuevoEstado, progreso };
       })
     );
-
-    const tarea = listaDeTareas.find((t) => t.id === identificador);
+    const tarea  = listaDeTareas.find((t) => t.id === identificador);
     const nombre = tarea ? `"${tarea.titulo}"` : "una tarea";
-
     if (nuevoEstado === "completada")  registrarActividad("tarea_completada",  `Completaste ${nombre}`);
     if (nuevoEstado === "en-progreso") registrarActividad("tarea_en_progreso", `${nombre} pasó a en progreso`);
     if (nuevoEstado === "pendiente")   registrarActividad("tarea_pendiente",   `${nombre} volvió a pendiente`);
   }
 
-  function actualizarProgreso(
-    identificador: string,
-    porcentajeNuevo: number
-  ): void {
+  // --------------------------------------------------------
+  // PROGRESO
+  // --------------------------------------------------------
+  function actualizarProgreso(identificador: string, porcentajeNuevo: number): void {
     setListaDeTareas((anterior) =>
       anterior.map((tarea) => {
         if (tarea.id !== identificador) return tarea;
@@ -149,54 +156,50 @@ export function useTasks() {
         return { ...tarea, progreso, estado };
       })
     );
-
     if (porcentajeNuevo >= 100) {
-      const tarea = listaDeTareas.find((t) => t.id === identificador);
+      const tarea  = listaDeTareas.find((t) => t.id === identificador);
       const nombre = tarea ? `"${tarea.titulo}"` : "una tarea";
       registrarActividad("tarea_completada", `${nombre} llegó al 100%`);
     }
   }
 
+  // --------------------------------------------------------
+  // PAPELERA
+  // --------------------------------------------------------
   function moverAPapelera(identificador: string): void {
     const tarea = listaDeTareas.find((t) => t.id === identificador);
-    setListaDeTareas((anterior) =>
-      anterior.map((t) =>
+    setListaDeTareas((ant) =>
+      ant.map((t) =>
         t.id === identificador
           ? { ...t, estaEnPapelera: true, fechaEliminacion: new Date().toLocaleDateString("es-AR") }
           : t
       )
     );
-    const nombre = tarea ? `"${tarea.titulo}"` : "una tarea";
-    registrarActividad("tarea_papelera", `${nombre} fue a la papelera`);
+    registrarActividad("tarea_papelera", `"${tarea?.titulo ?? "Tarea"}" fue a la papelera`);
   }
 
   function restaurarDePapelera(identificador: string): void {
     const tarea = listaDeTareas.find((t) => t.id === identificador);
-    setListaDeTareas((anterior) =>
-      anterior.map((t) =>
+    setListaDeTareas((ant) =>
+      ant.map((t) =>
         t.id === identificador
           ? { ...t, estaEnPapelera: false, fechaEliminacion: undefined }
           : t
       )
     );
-    const nombre = tarea ? `"${tarea.titulo}"` : "una tarea";
-    registrarActividad("tarea_restaurada", `Restauraste ${nombre}`);
+    registrarActividad("tarea_restaurada", `Restauraste "${tarea?.titulo ?? "Tarea"}"`);
   }
 
   function eliminarPermanentemente(identificador: string): void {
     const tarea = listaDeTareas.find((t) => t.id === identificador);
-    setListaDeTareas((anterior) => anterior.filter((t) => t.id !== identificador));
-    const nombre = tarea ? `"${tarea.titulo}"` : "una tarea";
-    registrarActividad("tarea_eliminada", `Eliminaste ${nombre} definitivamente`);
+    setListaDeTareas((ant) => ant.filter((t) => t.id !== identificador));
+    registrarActividad("tarea_eliminada", `Eliminaste "${tarea?.titulo ?? "Tarea"}" definitivamente`);
   }
 
   function vaciarPapelera(): void {
     const cantidad = tareasEnPapelera.length;
-    setListaDeTareas((anterior) => anterior.filter((t) => !t.estaEnPapelera));
-    registrarActividad(
-      "papelera_vaciada",
-      `Vaciaste la papelera (${cantidad} tarea${cantidad !== 1 ? "s" : ""})`
-    );
+    setListaDeTareas((ant) => ant.filter((t) => !t.estaEnPapelera));
+    registrarActividad("papelera_vaciada", `Vaciaste la papelera (${cantidad} tarea${cantidad !== 1 ? "s" : ""})`);
   }
 
   return {
@@ -205,6 +208,7 @@ export function useTasks() {
     tareasEnPapelera,
     actividades,
     crearTarea,
+    editarTarea,
     cambiarEstadoTarea,
     actualizarProgreso,
     moverAPapelera,
