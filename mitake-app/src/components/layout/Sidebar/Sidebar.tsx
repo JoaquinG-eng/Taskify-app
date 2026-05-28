@@ -1,115 +1,127 @@
 // ============================================================
 // ARCHIVO: src/components/layout/Sidebar/Sidebar.tsx
-// ¿Para qué sirve? Menú lateral con navegación completa.
-// Ahora incluye ítems de Papelera y About.
 // ============================================================
 
 import "./Sidebar.css";
 
-// ------------------------------------------------------------
-// INTERFAZ: PropiedadesDeSidebar
-// ------------------------------------------------------------
+interface ElementoDeNavegacion {
+  id: string;
+  etiqueta: string;
+  icono: string;
+}
+
 interface PropiedadesDeSidebar {
   seccionActiva: string;
   alCambiarSeccion: (seccion: string) => void;
-  cantidadEnPapelera?: number; // Para mostrar el badge con la cantidad
+  cantidadEnPapelera: number;
+  estaAbierto: boolean;
+  alCerrar: () => void;
 }
 
-// ------------------------------------------------------------
-// CONFIGURACIÓN: ítems del menú principal
-// ------------------------------------------------------------
-const itemsDelMenuPrincipal = [
-  { identificador: "dashboard",    etiqueta: "Dashboard",    icono: "⊞" },
-  { identificador: "mis-tareas",   etiqueta: "Mis tareas",   icono: "✓" },
-  { identificador: "tickets",      etiqueta: "Tickets",      icono: "◈" },
-  { identificador: "estadisticas", etiqueta: "Estadísticas", icono: "↗" },
-  { identificador: "calendario",   etiqueta: "Calendario",   icono: "▦" },
+const elementosDeNavegacion: ElementoDeNavegacion[] = [
+  { id: "dashboard",  etiqueta: "Dashboard",    icono: "▦" },
+  { id: "mis-tareas", etiqueta: "Mis tareas",   icono: "✓" },
+  { id: "tickets",    etiqueta: "Tickets",       icono: "◈" },
 ];
 
-// ------------------------------------------------------------
-// COMPONENTE: Sidebar
-// ------------------------------------------------------------
 function Sidebar({
   seccionActiva,
   alCambiarSeccion,
-  cantidadEnPapelera = 0,
+  cantidadEnPapelera,
+  estaAbierto,
+  alCerrar,
 }: PropiedadesDeSidebar) {
+
+  function manejarClick(id: string) {
+    alCambiarSeccion(id);
+    alCerrar(); // en móvil cierra el sidebar al navegar
+  }
+
   return (
-    <aside className="sidebar">
+    <>
+      {/* Overlay oscuro — solo visible en móvil cuando el sidebar está abierto */}
+      {estaAbierto && (
+        <div
+          className="sidebar__overlay"
+          onClick={alCerrar}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* Logo */}
-      <div className="sidebar__logo">
-        <div className="sidebar__logo-icono">M</div>
-        <div className="sidebar__logo-texto-grupo">
-          <span className="sidebar__logo-nombre">Mitake</span>
-          <span className="sidebar__logo-version">v1.0</span>
-        </div>
-      </div>
+      <aside className={`sidebar ${estaAbierto ? "sidebar--abierto" : ""}`}>
 
-      {/* Menú principal */}
-      <nav className="sidebar__navegacion">
-        <p className="sidebar__seccion-titulo">Menú principal</p>
-        {itemsDelMenuPrincipal.map((itemActual) => (
+        {/* Logo */}
+        <div className="sidebar__logo">
+          <div className="sidebar__logo-icono">M</div>
+          <span className="sidebar__logo-texto">Mitake</span>
+          {/* Botón cerrar — solo visible en móvil */}
           <button
-            key={itemActual.identificador}
-            className={`sidebar__item ${
-              seccionActiva === itemActual.identificador
-                ? "sidebar__item--activo"
-                : ""
-            }`}
-            onClick={() => alCambiarSeccion(itemActual.identificador)}
+            className="sidebar__boton-cerrar"
+            onClick={alCerrar}
+            aria-label="Cerrar menú"
           >
-            <span className="sidebar__item-icono">{itemActual.icono}</span>
-            <span className="sidebar__item-etiqueta">{itemActual.etiqueta}</span>
-            {seccionActiva === itemActual.identificador && (
-              <span className="sidebar__item-indicador"></span>
+            ✕
+          </button>
+        </div>
+
+        {/* Navegación principal */}
+        <nav className="sidebar__nav">
+          <p className="sidebar__seccion-label">Menú principal</p>
+          {elementosDeNavegacion.map((elemento) => (
+            <button
+              key={elemento.id}
+              className={`sidebar__item ${
+                seccionActiva === elemento.id ? "sidebar__item--activo" : ""
+              }`}
+              onClick={() => manejarClick(elemento.id)}
+            >
+              <span className="sidebar__item-icono">{elemento.icono}</span>
+              <span className="sidebar__item-texto">{elemento.etiqueta}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Sistema */}
+        <div className="sidebar__sistema">
+          <p className="sidebar__seccion-label">Sistema</p>
+
+          <button
+            className={`sidebar__item ${
+              seccionActiva === "papelera" ? "sidebar__item--activo" : ""
+            }`}
+            onClick={() => manejarClick("papelera")}
+          >
+            <span className="sidebar__item-icono">🗑</span>
+            <span className="sidebar__item-texto">Papelera</span>
+            {cantidadEnPapelera > 0 && (
+              <span className="sidebar__badge">{cantidadEnPapelera}</span>
             )}
           </button>
-        ))}
-      </nav>
 
-      {/* Sección inferior */}
-      <div className="sidebar__navegacion sidebar__navegacion--inferior">
-        <p className="sidebar__seccion-titulo">Sistema</p>
+          <button
+            className={`sidebar__item ${
+              seccionActiva === "about" ? "sidebar__item--activo" : ""
+            }`}
+            onClick={() => manejarClick("about")}
+          >
+            <span className="sidebar__item-icono">◎</span>
+            <span className="sidebar__item-texto">Sobre Mitake</span>
+          </button>
+        </div>
 
-        {/* Papelera con badge de cantidad */}
-        <button
-          className={`sidebar__item ${
-            seccionActiva === "papelera" ? "sidebar__item--activo" : ""
-          }`}
-          onClick={() => alCambiarSeccion("papelera")}
-        >
-          <span className="sidebar__item-icono">🗑</span>
-          <span className="sidebar__item-etiqueta">Papelera</span>
-          {cantidadEnPapelera > 0 && (
-            <span className="sidebar__badge">{cantidadEnPapelera}</span>
-          )}
-        </button>
-
-        {/* About */}
-        <button
-          className={`sidebar__item ${
-            seccionActiva === "about" ? "sidebar__item--activo" : ""
-          }`}
-          onClick={() => alCambiarSeccion("about")}
-        >
-          <span className="sidebar__item-icono">◎</span>
-          <span className="sidebar__item-etiqueta">Sobre Mitake</span>
-        </button>
-      </div>
-
-      {/* Pie con info del usuario */}
-      <div className="sidebar__pie">
-        <div className="sidebar__usuario">
-          <div className="sidebar__usuario-avatar">U</div>
-          <div className="sidebar__usuario-info">
-            <span className="sidebar__usuario-nombre">Usuario</span>
-            <span className="sidebar__usuario-rol">Desarrollador</span>
+        {/* Usuario */}
+        <div className="sidebar__pie">
+          <div className="sidebar__usuario">
+            <div className="sidebar__usuario-avatar">U</div>
+            <div className="sidebar__usuario-info">
+              <span className="sidebar__usuario-nombre">Usuario</span>
+              <span className="sidebar__usuario-rol">Desarrollador</span>
+            </div>
           </div>
         </div>
-      </div>
 
-    </aside>
+      </aside>
+    </>
   );
 }
 

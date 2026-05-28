@@ -1,44 +1,105 @@
+/* ============================================================
+   ARCHIVO: src/components/tasks/TaskCard/TaskCard.css
+   ============================================================ */
+
+/* ---- TARJETA CONTENEDORA ---- */
 .task-card {
   background: var(--color-card);
   border-radius: var(--radius-sm);
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   border: 1px solid var(--color-border);
   transition: all var(--transition-normal);
   backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea de acento izquierda según prioridad */
+.task-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .task-card:hover {
   transform: translateY(-2px);
   border-color: var(--color-border-glow);
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3), var(--shadow-sm);
+  box-shadow: 0 10px 24px -5px rgba(0, 0, 0, 0.35);
 }
 
+.task-card:hover::before {
+  opacity: 1;
+}
+
+.task-card:has(.task-card__priority--alta)::before  { background: var(--color-red); }
+.task-card:has(.task-card__priority--media)::before { background: var(--color-orange); }
+.task-card:has(.task-card__priority--baja)::before  { background: var(--color-green); }
+
+/* ---- FILA SUPERIOR ---- */
 .task-card__top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
 }
 
 .task-card__top h3 {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
 }
 
+/* ---- BADGE DE PRIORIDAD ---- */
+.task-card__priority {
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-card__priority--alta {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-red);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.task-card__priority--media {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-orange);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.task-card__priority--baja {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ---- DESCRIPCIÓN ---- */
 .task-card__description {
   color: var(--color-text-secondary);
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -46,106 +107,177 @@
   overflow: hidden;
 }
 
-.task-card__bottom {
+/* ---- BARRA DE PROGRESO ---- */
+.task-card__progress-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.task-card__progress-label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto;
-  font-size: 12px;
 }
 
-.task-card__priority {
-  padding: 4px 10px;
-  border-radius: 99px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.task-card__priority--alta {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--color-red);
-}
-
-.task-card__priority--media {
-  background: rgba(245, 158, 11, 0.15);
-  color: var(--color-orange);
-}
-
-.task-card__priority--baja {
-  background: rgba(16, 185, 129, 0.15);
-  color: var(--color-green);
-}
-
-.task-card__status {
+.task-card__progress-texto {
+  font-size: 11px;
   color: var(--color-text-muted);
   font-weight: 500;
 }
 
-.task-card__status--pendiente {
-  color: var(--color-blue);
-}
-
-.task-card__status--en-progreso {
-  color: var(--color-orange);
-}
-
-.task-card__status--completada {
-  color: var(--color-green);
-}
-
-.task-card__progress {
+.task-card__progress-porcentaje {
+  font-size: 11px;
+  font-weight: 700;
   color: var(--color-text-secondary);
-  font-weight: 500;
 }
 
+.task-card__progress-pista {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.task-card__progress-relleno {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--color-purple), #818cf8);
+  transition: width 0.4s ease;
+}
+
+.task-card__progress-relleno--completo {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+/* ---- FILA INFERIOR: estado + botones ---- */
+.task-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap; /* permite salto de línea en pantallas chicas */
+  margin-top: 2px;
+}
+
+/* Estado con punto de color */
+.task-card__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.task-card__status::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.task-card__status--pendiente        { color: var(--color-blue); }
+.task-card__status--pendiente::before { background: var(--color-blue); }
+
+.task-card__status--en-progreso        { color: var(--color-orange); }
+.task-card__status--en-progreso::before {
+  background: var(--color-orange);
+  animation: pulsarPunto 1.5s ease-in-out infinite;
+}
+
+.task-card__status--completada        { color: var(--color-green); }
+.task-card__status--completada::before { background: var(--color-green); }
+
+@keyframes pulsarPunto {
+  0%, 100% { opacity: 1; transform: scale(1);   }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ---- BOTONES DE ACCIÓN ---- */
 .task-card__actions {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 6px;
+  flex-wrap: wrap; /* los botones saltan de línea si no caben */
 }
 
 .task-card__actions button {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
+  padding: 6px 10px;
   border-radius: var(--radius-xs);
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   transition: all var(--transition-fast);
-  text-align: center;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  font-family: inherit;
 }
 
-.task-card__actions button:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-text);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.task-card__actions button:first-child {
-  background: rgba(139, 92, 246, 0.1);
+/* Completar — violeta */
+.task-card__actions button:nth-child(1) {
+  background: rgba(139, 92, 246, 0.12);
   color: #a98af9;
   border-color: rgba(139, 92, 246, 0.2);
 }
-
-.task-card__actions button:first-child:hover {
-  background: rgba(139, 92, 246, 0.2);
+.task-card__actions button:nth-child(1):hover {
+  background: rgba(139, 92, 246, 0.22);
   color: #c084fc;
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.35);
+  transform: translateY(-1px);
 }
 
-.task-card__actions button:last-child {
-  background: rgba(239, 68, 68, 0.05);
+/* Boton proceso— azul */
+.task-card__actions button:nth-child(2) {
+  background: rgba(59, 130, 246, 0.08);
+  color: rgba(147, 197, 253, 0.8);
+  border-color: rgba(59, 130, 246, 0.15);
+}
+.task-card__actions button:nth-child(2):hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Eliminar — rojo */
+.task-card__actions button:nth-child(3) {
+  background: rgba(239, 68, 68, 0.07);
   color: #f09595;
   border-color: rgba(239, 68, 68, 0.15);
 }
-
-.task-card__actions button:last-child:hover {
-  background: rgba(239, 68, 68, 0.12);
+.task-card__actions button:nth-child(3):hover {
+  background: rgba(239, 68, 68, 0.14);
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   RESPONSIVE — Mobile (≤ 480px)
+   En pantallas muy chicas la fila inferior se apila:
+   estado arriba, botones abajo en fila completa.
+   ========================================================= */
+@media (max-width: 480px) {
+  .task-card {
+    padding: 14px 16px;
+  }
+
+  .task-card__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .task-card__actions {
+    width: 100%;
+  }
+
+  /* Los 3 botones se reparten el ancho disponible */
+  .task-card__actions button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
 }

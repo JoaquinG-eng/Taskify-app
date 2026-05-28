@@ -2,178 +2,183 @@
    ARCHIVO: src/components/layout/Sidebar/Sidebar.css
    ============================================================ */
 
+/* ---- OVERLAY — fondo oscuro en móvil ---- */
+.sidebar__overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar__overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 40;
+    backdrop-filter: blur(2px);
+  }
+}
+
+/* ---- SIDEBAR CONTENEDOR ---- */
 .sidebar {
-  width: 230px;
+  width: 220px;
   min-height: 100vh;
-  background: linear-gradient(180deg, #1a1726 0%, #161222 100%);
+  background-color: #0b0e1a;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  position: relative;
 }
 
-/* Línea decorativa en el borde derecho */
-.sidebar::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 20%;
-  bottom: 20%;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(124, 90, 246, 0.3),
-    transparent
-  );
+/* En móvil: se convierte en drawer lateral */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    width: 260px;
+    overflow-y: auto;
+  }
+
+  .sidebar--abierto {
+    transform: translateX(0);
+  }
 }
 
-/* ------------------------------------------------------------
-   LOGO
-   ------------------------------------------------------------ */
+/* ---- LOGO ---- */
 .sidebar__logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 10px 20px 10px;
+  padding: 4px 8px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   margin-bottom: 8px;
 }
 
 .sidebar__logo-icono {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, #7c5af6, #5a3dd4);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
+  font-size: 16px;
   font-weight: 800;
-  font-size: 17px;
-  box-shadow: 0 4px 12px rgba(124, 90, 246, 0.4);
   flex-shrink: 0;
 }
 
-.sidebar__logo-texto-grupo {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+.sidebar__logo-texto {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
 }
 
-.sidebar__logo-nombre {
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
+/* Botón cerrar — solo en móvil */
+.sidebar__boton-cerrar {
+  display: none;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 1;
+  margin-left: auto;
 }
 
-.sidebar__logo-version {
-  color: rgba(255, 255, 255, 0.28);
-  font-size: 10px;
-  font-weight: 500;
+.sidebar__boton-cerrar:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.06);
 }
 
-/* ------------------------------------------------------------
-   SECCIONES DE NAVEGACIÓN
-   ------------------------------------------------------------ */
-.sidebar__navegacion {
+@media (max-width: 768px) {
+  .sidebar__boton-cerrar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ---- NAVEGACIÓN ---- */
+.sidebar__nav,
+.sidebar__sistema {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 4px;
 }
 
-.sidebar__navegacion--inferior {
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+.sidebar__sistema {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.sidebar__seccion-titulo {
-  color: rgba(255, 255, 255, 0.25);
+.sidebar__seccion-label {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.25);
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 0 10px;
-  margin: 10px 0 6px 0;
+  letter-spacing: 0.08em;
+  padding: 0 8px;
+  margin: 0 0 6px 0;
 }
 
-/* ------------------------------------------------------------
-   ÍTEMS DEL MENÚ
-   ------------------------------------------------------------ */
+/* ---- ITEM DE NAVEGACIÓN ---- */
 .sidebar__item {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 9px 12px;
   border-radius: 10px;
   border: none;
-  background-color: transparent;
+  background: none;
   color: rgba(255, 255, 255, 0.45);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
   font-family: inherit;
+  text-align: left;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .sidebar__item:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.85);
-  transform: translateX(2px);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .sidebar__item--activo {
-  background: linear-gradient(
-    135deg,
-    rgba(124, 90, 246, 0.18) 0%,
-    rgba(124, 90, 246, 0.08) 100%
-  );
-  color: #a98af9;
-  border: 1px solid rgba(124, 90, 246, 0.2);
+  background-color: rgba(124, 90, 246, 0.15);
+  color: #c4b5fd;
 }
 
 .sidebar__item--activo:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(124, 90, 246, 0.22) 0%,
-    rgba(124, 90, 246, 0.12) 100%
-  );
-  color: #a98af9;
-  transform: none;
+  background-color: rgba(124, 90, 246, 0.2);
+  color: #c4b5fd;
 }
 
 .sidebar__item-icono {
   font-size: 15px;
-  width: 20px;
+  width: 18px;
   text-align: center;
   flex-shrink: 0;
-  opacity: 0.8;
 }
 
-.sidebar__item-etiqueta {
+.sidebar__item-texto {
   flex: 1;
 }
 
-/* Punto indicador activo */
-.sidebar__item-indicador {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #7c5af6;
-  box-shadow: 0 0 6px rgba(124, 90, 246, 0.6);
-  flex-shrink: 0;
-}
-
-/* Badge de cantidad (papelera) */
+/* ---- BADGE (papelera) ---- */
 .sidebar__badge {
   background-color: rgba(240, 149, 149, 0.2);
   color: #f09595;
@@ -185,13 +190,11 @@
   flex-shrink: 0;
 }
 
-/* ------------------------------------------------------------
-   PIE CON USUARIO
-   ------------------------------------------------------------ */
+/* ---- PIE CON USUARIO ---- */
 .sidebar__pie {
+  margin-top: auto;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 8px;
 }
 
 .sidebar__usuario {

@@ -1,11 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+// ============================================================
+// ARCHIVO: src/main.tsx
+// ¿Para qué sirve? Punto de entrada de la aplicación.
+// Agregamos AlertProvider para que toda la app pueda
+// disparar alertas desde cualquier componente.
+// ============================================================
 
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-createRoot(document.getElementById('root')!).render(
+import { AlertProvider } from "./context/AlertContext";
+
+import "./index.css";
+import App from "./App.tsx";
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    {/* AlertProvider envuelve toda la app — las alertas
+        funcionan en cualquier componente hijo */}
+    <AlertProvider>
+      <App />
+    </AlertProvider>
+  </StrictMode>
+);

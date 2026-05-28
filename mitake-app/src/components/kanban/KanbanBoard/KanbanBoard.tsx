@@ -1,28 +1,33 @@
+// ============================================================
+// ARCHIVO: src/components/kanban/KanbanBoard/KanbanBoard.tsx
+// ============================================================
+
 import TaskCard from "../../tasks/TaskCard/TaskCard";
-
-import type {
-  EstadoTarea,
-  Tarea,
-} from "../../../types/task";
-
+import type { EstadoTarea, Tarea } from "../../../types/task";
 import "./KanbanBoard.css";
 
 type KanbanBoardProps = {
   tareas: Tarea[];
+  alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
+  alActualizarProgreso: (id: string, nuevoProgreso: number) => void;
+  alMoverAPapelera: (id: string) => void;
+};
 
-  alCambiarEstado: (
-    id: string,
-    nuevoEstado: EstadoTarea,
-  ) => void;
+const configuracionDeColumnas: {
+  titulo: string;
+  estado: EstadoTarea;
+  mensajeVacio: string;
+}[] = [
+  { titulo: "Pendientes",   estado: "pendiente",  mensajeVacio: "Sin tareas pendientes" },
+  { titulo: "En progreso",  estado: "en-progreso", mensajeVacio: "Nada en progreso"     },
+  { titulo: "Completadas",  estado: "completada",  mensajeVacio: "Nada completado aún"  },
+];
 
-  alActualizarProgreso: (
-    id: string,
-    progresoNuevo: number,
-  ) => void;
-
-  alMoverAPapelera: (
-    id: string,
-  ) => void;
+// Mapa de orden: Alta primero, Baja último
+const ordenDePrioridad: Record<string, number> = {
+  alta:  0,
+  media: 1,
+  baja:  2,
 };
 
 function KanbanBoard({
@@ -31,71 +36,59 @@ function KanbanBoard({
   alActualizarProgreso,
   alMoverAPapelera,
 }: KanbanBoardProps) {
-  const columnas = [
-    {
-      titulo: "Pendientes",
-      estado: "pendiente",
-    },
-    {
-      titulo: "En progreso",
-      estado: "en-progreso",
-    },
-    {
-      titulo: "Completadas",
-      estado: "completada",
-    },
-  ];
-
   return (
     <section className="kanban">
-      <div className="kanban__grid">
-        {columnas.map((columna) => (
-          <div
-            key={columna.estado}
-            className="kanban__column"
-          >
-            <h3>
-              {columna.titulo}
 
-              <span>
-                {
-                  tareas.filter(
-                    (tarea) =>
-                      tarea.estado ===
-                      columna.estado,
-                  ).length
-                }
-              </span>
-            </h3>
-
-            <div className="kanban__tasks">
-              {tareas
-                .filter(
-                  (tarea) =>
-                    tarea.estado ===
-                    columna.estado,
-                )
-                .map((tarea) => (
-                  <TaskCard
-                    key={tarea.id}
-                    datosDeLaTarea={
-                      tarea
-                    }
-                    alCambiarEstado={
-                      alCambiarEstado
-                    }
-                    alActualizarProgreso={
-                      alActualizarProgreso
-                    }
-                    alMoverAPapelera={
-                      alMoverAPapelera
-                    }
-                  />
-                ))}
-            </div>
-          </div>
-        ))}
+      <div className="kanban__encabezado">
+        <div>
+          <h2 className="kanban__titulo">Tablero Kanban</h2>
+          <p className="kanban__subtitulo">
+            Vista organizada por estado — {tareas.length} tarea{tareas.length !== 1 ? "s" : ""} en total
+          </p>
+        </div>
       </div>
+
+      <div className="kanban__grid">
+        {configuracionDeColumnas.map((columna) => {
+          // Filtramos por estado y ordenamos Alta → Media → Baja
+          const tareasDeEstaColumna = tareas
+            .filter((tarea) => tarea.estado === columna.estado)
+            .sort(
+              (a, b) =>
+                ordenDePrioridad[a.prioridad] - ordenDePrioridad[b.prioridad]
+            );
+
+          return (
+            <div key={columna.estado} className="kanban__column">
+
+              <h3>
+                {columna.titulo}
+                <span>{tareasDeEstaColumna.length}</span>
+              </h3>
+
+              <div className="kanban__tasks">
+                {tareasDeEstaColumna.length === 0 ? (
+                  <div className="kanban__columna-vacia">
+                    {columna.mensajeVacio}
+                  </div>
+                ) : (
+                  tareasDeEstaColumna.map((tarea) => (
+                    <TaskCard
+                      key={tarea.id}
+                      datosDeLaTarea={tarea}
+                      alCambiarEstado={alCambiarEstado}
+                      alActualizarProgreso={alActualizarProgreso}
+                      alMoverAPapelera={alMoverAPapelera}
+                    />
+                  ))
+                )}
+              </div>
+
+            </div>
+          );
+        })}
+      </div>
+
     </section>
   );
 }

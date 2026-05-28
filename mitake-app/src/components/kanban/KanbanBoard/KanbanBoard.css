@@ -1,47 +1,71 @@
-/* Contenedor del Kanban */
+/* ============================================================
+   ARCHIVO: src/components/kanban/KanbanBoard/KanbanBoard.css
+   ============================================================ */
+
 .kanban {
   width: 100%;
 }
 
-/* Rejilla de Columnas */
-.kanban__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  align-items: start;
-}
-
-/* Columna Individual */
-.kanban__column {
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  transition: background var(--transition-normal);
-}
-
-.kanban__column:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-/* Cabecera de la columna */
-.kanban__column h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text);
+/* ---- ENCABEZADO ---- */
+.kanban__encabezado {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 24px;
 }
 
-/* Contador de tareas */
+.kanban__titulo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.kanban__subtitulo {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 4px 0 0 0;
+}
+
+/* ---- REJILLA DE 3 COLUMNAS ---- */
+.kanban__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---- COLUMNA ---- */
+.kanban__column {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 260px;
+  transition: background var(--transition-normal), border-color var(--transition-normal);
+}
+
+.kanban__column:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* ---- CABECERA DE COLUMNA ---- */
+.kanban__column h3 {
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 4px 0;
+  padding-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
 .kanban__column h3 span {
   font-size: 11px;
   background: rgba(255, 255, 255, 0.06);
@@ -50,36 +74,124 @@
   border-radius: 99px;
   font-weight: 600;
   border: 1px solid var(--color-border);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-/* Contenedor de tareas (Arrastrables / Dropzone) */
+/* Colores de borde y título por columna */
+.kanban__column:nth-child(1) {
+  border-top: 2px solid rgba(59, 130, 246, 0.5);
+}
+.kanban__column:nth-child(1) h3 {
+  color: rgba(147, 197, 253, 0.9);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.kanban__column:nth-child(2) {
+  border-top: 2px solid rgba(245, 158, 11, 0.5);
+}
+.kanban__column:nth-child(2) h3 {
+  color: rgba(253, 211, 107, 0.9);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.kanban__column:nth-child(3) {
+  border-top: 2px solid rgba(16, 185, 129, 0.5);
+}
+.kanban__column:nth-child(3) h3 {
+  color: rgba(110, 231, 183, 0.9);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ---- LISTA DE TAREAS ---- */
 .kanban__tasks {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-height: 300px;
-  height: 100%;
+  gap: 10px;
+  flex: 1;
 }
 
-/* Colores de cabecera específicos por columna */
-.kanban__column:nth-child(1) h3 {
-  border-bottom-color: rgba(59, 130, 246, 0.3); /* Azul */
-}
-.kanban__column:nth-child(2) h3 {
-  border-bottom-color: rgba(245, 158, 11, 0.3); /* Naranja */
-}
-.kanban__column:nth-child(3) h3 {
-  border-bottom-color: rgba(16, 185, 129, 0.3); /* Verde */
+/* ---- COLUMNA VACÍA ---- */
+.kanban__columna-vacia {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 12px;
+  font-style: italic;
 }
 
-/* Responsivo */
+/* =========================================================
+   RESPONSIVE — Tablet (≤ 1024px)
+   Las columnas se achican pero mantienen grid de 3.
+   ========================================================= */
 @media (max-width: 1024px) {
   .kanban__grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 12px;
   }
-  
+
   .kanban__column {
-    min-height: auto;
+    padding: 14px 12px;
+    min-height: 200px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — Mobile (≤ 768px)
+   Scroll horizontal: las 3 columnas se ven de a una y media,
+   es más natural que apilarlas verticalmente.
+   ========================================================= */
+@media (max-width: 768px) {
+  /* El wrapper necesita salir del padding del padre */
+  .kanban__grid {
+    display: flex;                     /* cambiamos a flex para scroll */
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;    /* snap al deslizar */
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    padding-bottom: 12px;             /* espacio para la scrollbar */
+
+    /* Margen negativo para que llegue al borde en mobile */
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Ocultar scrollbar visualmente (sigue funcionando) */
+  .kanban__grid::-webkit-scrollbar {
+    height: 4px;
+  }
+  .kanban__grid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .kanban__grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+  }
+
+  .kanban__column {
+    /* Cada columna ocupa ~85% del viewport → se ve la siguiente */
+    min-width: 85vw;
+    max-width: 85vw;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: 200px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — Mobile pequeño (≤ 480px)
+   Columna más ancha para aprovechar el espacio.
+   ========================================================= */
+@media (max-width: 480px) {
+  .kanban__column {
+    min-width: 90vw;
+    max-width: 90vw;
   }
 }
