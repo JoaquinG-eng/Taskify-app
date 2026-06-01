@@ -1,7 +1,11 @@
- import { useState } from "react";
- import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
- import TaskForm from "../TaskForm/TaskForm";
- import "./TaskCard.css";
+// ============================================================
+// ARCHIVO: src/components/tasks/TaskCard/TaskCard.tsx
+// ============================================================
+
+import { useState, useEffect } from "react";
+import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
+import TaskForm from "../TaskForm/TaskForm";
+import "./TaskCard.css";
 
 type TaskCardProps = {
   datosDeLaTarea: Tarea;
@@ -28,6 +32,33 @@ function TaskCard({
   alEditarTarea,
 }: TaskCardProps) {
   const [estaEditando, setEstaEditando] = useState(false);
+
+  // =========================================================
+  // EFECTO: CONTADOR AUTOMÁTICO DE PROGRESO DE 10 EN 10
+  // =========================================================
+  useEffect(() => {
+    // 1. Validamos que el estado sea exactamente "en-progreso" y no haya llegado a 100%
+    if (datosDeLaTarea.estado === "en-progreso" && datosDeLaTarea.progreso < 100) {
+      
+      const intervalo = setInterval(() => {
+        const siguienteProgreso = datosDeLaTarea.progreso + 10;
+        
+        if (siguienteProgreso >= 100) {
+          clearInterval(intervalo);
+          alActualizarProgreso(datosDeLaTarea.id, 100);
+          // Opcional: Si quieres que al llegar a 100 pase automáticamente a Completada
+          alCambiarEstado(datosDeLaTarea.id, "completada");
+        } else {
+          // Despachamos el aumento del 10% hacia el servicio/estado global (Firebase)
+          alActualizarProgreso(datosDeLaTarea.id, siguienteProgreso);
+        }
+      }, 2000); // <-- Modifica este número (5000ms = 5 segundos) para controlar el tiempo del aumento
+
+      // 2. FUNCIÓN DE LIMPIEZA: Destruye el timer si la tarea se mueve, se edita o se destruye
+      return () => clearInterval(intervalo);
+    }
+  }, [datosDeLaTarea.estado, datosDeLaTarea.progreso, datosDeLaTarea.id]); 
+  // Escucha id, estado y progreso para recalcular el siguiente paso de manera segura
 
   function manejarGuardarEdicion(datosEditados: TareaNueva) {
     alEditarTarea(datosDeLaTarea.id, datosEditados);
@@ -81,7 +112,9 @@ function TaskCard({
         {/* Barra de progreso */}
         <div className="task-card__progress-bar">
           <div className="task-card__progress-label">
-            <span className="task-card__progress-texto">Progreso</span>
+            <span className="task-card__progress-texto">
+              {datosDeLaTarea.estado === "en-progreso" ? "Progreso automático..." : "Progreso"}
+            </span>
             <span className="task-card__progress-porcentaje">{progresoLimitado}%</span>
           </div>
           <div className="task-card__progress-pista">
@@ -109,7 +142,7 @@ function TaskCard({
             <button
               className="task-card__btn task-card__btn--progreso"
               onClick={() => alActualizarProgreso(datosDeLaTarea.id, datosDeLaTarea.progreso + 10)}
-              disabled={estaCompletada}
+              disabled={estaCompletada || barraEstaCompleta}
               title="+10% de progreso"
             >Avance</button>
 

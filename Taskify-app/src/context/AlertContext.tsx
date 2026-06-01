@@ -8,72 +8,101 @@ import { createContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 
 // ------------------------------------------------------------
-// TIPOS: definimos los posibles tipos de alerta
+// TIPOS
 // ------------------------------------------------------------
-export type TipoDeAlerta = "exito" | "error" | "advertencia" | "info";
+export type TipoDeAlerta =
+  | "exito"
+  | "error"
+  | "advertencia"
+  | "info";
 
 // ------------------------------------------------------------
 // INTERFAZ: DatosDeAlerta
-// La estructura de cada alerta individual.
 // ------------------------------------------------------------
 export interface DatosDeAlerta {
-  identificadorUnico: string;  // ID para poder cerrar la alerta correcta
+  identificadorUnico: string;
   tipo: TipoDeAlerta;
-  titulo?: string;             // Título opcional en negrita
+  titulo?: string;
   mensaje: string;
-  duracionEnMs: number;        // Cuántos ms antes de cerrarse sola
+  duracionEnMs: number;
 }
 
 // ------------------------------------------------------------
 // INTERFAZ: ValorDelContexto
-// Lo que el contexto expone a todos los componentes.
 // ------------------------------------------------------------
 interface ValorDelContexto {
   listaDeAlertas: DatosDeAlerta[];
+
   mostrarAlerta: (
     tipo: TipoDeAlerta,
     mensaje: string,
     titulo?: string,
     duracionEnMs?: number
   ) => void;
-  cerrarAlerta: (identificadorUnico: string) => void;
+
+  cerrarAlerta: (
+    identificadorUnico: string
+  ) => void;
+
+  alertaExito: (
+    mensaje: string,
+    titulo?: string
+  ) => void;
+
+  alertaError: (
+    mensaje: string,
+    titulo?: string
+  ) => void;
+
+  alertaAdvertencia: (
+    mensaje: string,
+    titulo?: string
+  ) => void;
+
+  alertaInfo: (
+    mensaje: string,
+    titulo?: string
+  ) => void;
+
+  alertaConfirmar: (
+    mensaje: string,
+    titulo?: string
+  ) => void;
 }
 
 // ------------------------------------------------------------
-// CREACIÓN DEL CONTEXTO
-// El valor por defecto es undefined — forzamos a usar
-// el provider para obtener el valor real.
+// CONTEXTO
 // ------------------------------------------------------------
-export const AlertContext = createContext<ValorDelContexto | undefined>(
-  undefined
-);
+export const AlertContext =
+  createContext<ValorDelContexto | undefined>(
+    undefined
+  );
 
 // ------------------------------------------------------------
-// COMPONENTE: AlertProvider
-// Envuelve la app y provee el estado y las funciones de alerta.
-// Se agrega en main.tsx una sola vez.
+// PROVIDER
 // ------------------------------------------------------------
-export function AlertProvider({ children }: { children: ReactNode }) {
-  // Lista de alertas activas en pantalla
-  const [listaDeAlertas, setListaDeAlertas] = useState<DatosDeAlerta[]>([]);
+export function AlertProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [listaDeAlertas, setListaDeAlertas] =
+    useState<DatosDeAlerta[]>([]);
 
-  // --------------------------------------------------------
-  // FUNCIÓN: mostrarAlerta
-  // Agrega una alerta nueva a la lista.
-  // Se cierra automáticamente después de la duración indicada.
-  // useCallback evita que se recree en cada render.
-  // --------------------------------------------------------
+  // ----------------------------------------------------------
+  // Mostrar alerta
+  // ----------------------------------------------------------
   const mostrarAlerta = useCallback(
     (
       tipo: TipoDeAlerta,
       mensaje: string,
       titulo?: string,
       duracionEnMs: number = 4000
-    ): void => {
-      // Generamos un ID único para esta alerta
-      const identificadorUnico = `alerta-${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2, 6)}`;
+    ) => {
+      const identificadorUnico =
+        `alerta-${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 8)}`;
 
       const alertaNueva: DatosDeAlerta = {
         identificadorUnico,
@@ -83,14 +112,17 @@ export function AlertProvider({ children }: { children: ReactNode }) {
         duracionEnMs,
       };
 
-      // Agregamos la alerta a la lista
-      setListaDeAlertas((anterior) => [...anterior, alertaNueva]);
+      setListaDeAlertas((anterior) => [
+        ...anterior,
+        alertaNueva,
+      ]);
 
-      // Programamos el cierre automático
       setTimeout(() => {
         setListaDeAlertas((anterior) =>
           anterior.filter(
-            (alerta) => alerta.identificadorUnico !== identificadorUnico
+            (alerta) =>
+              alerta.identificadorUnico !==
+              identificadorUnico
           )
         );
       }, duracionEnMs);
@@ -98,21 +130,94 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  // --------------------------------------------------------
-  // FUNCIÓN: cerrarAlerta
-  // Cierra una alerta específica al hacer click en la X.
-  // --------------------------------------------------------
-  const cerrarAlerta = useCallback((identificadorUnico: string): void => {
-    setListaDeAlertas((anterior) =>
-      anterior.filter(
-        (alerta) => alerta.identificadorUnico !== identificadorUnico
-      )
-    );
-  }, []);
+  // ----------------------------------------------------------
+  // Cerrar alerta
+  // ----------------------------------------------------------
+  const cerrarAlerta = useCallback(
+    (identificadorUnico: string) => {
+      setListaDeAlertas((anterior) =>
+        anterior.filter(
+          (alerta) =>
+            alerta.identificadorUnico !==
+            identificadorUnico
+        )
+      );
+    },
+    []
+  );
+
+  // ----------------------------------------------------------
+  // Helpers
+  // ----------------------------------------------------------
+  const alertaExito = useCallback(
+    (mensaje: string, titulo?: string) => {
+      mostrarAlerta(
+        "exito",
+        mensaje,
+        titulo
+      );
+    },
+    [mostrarAlerta]
+  );
+
+  const alertaError = useCallback(
+    (mensaje: string, titulo?: string) => {
+      mostrarAlerta(
+        "error",
+        mensaje,
+        titulo,
+        5000
+      );
+    },
+    [mostrarAlerta]
+  );
+
+  const alertaAdvertencia = useCallback(
+    (mensaje: string, titulo?: string) => {
+      mostrarAlerta(
+        "advertencia",
+        mensaje,
+        titulo
+      );
+    },
+    [mostrarAlerta]
+  );
+
+  const alertaInfo = useCallback(
+    (mensaje: string, titulo?: string) => {
+      mostrarAlerta(
+        "info",
+        mensaje,
+        titulo,
+        3000
+      );
+    },
+    [mostrarAlerta]
+  );
+
+  const alertaConfirmar = useCallback(
+    (mensaje: string, titulo?: string) => {
+      mostrarAlerta(
+        "advertencia",
+        mensaje,
+        titulo
+      );
+    },
+    [mostrarAlerta]
+  );
 
   return (
     <AlertContext.Provider
-      value={{ listaDeAlertas, mostrarAlerta, cerrarAlerta }}
+      value={{
+        listaDeAlertas,
+        mostrarAlerta,
+        cerrarAlerta,
+        alertaExito,
+        alertaError,
+        alertaAdvertencia,
+        alertaInfo,
+        alertaConfirmar,
+      }}
     >
       {children}
     </AlertContext.Provider>

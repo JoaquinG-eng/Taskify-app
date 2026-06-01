@@ -26,49 +26,102 @@ export function useAlert() {
     );
   }
 
-  const { listaDeAlertas, mostrarAlerta, cerrarAlerta } = contexto;
+  const {
+    listaDeAlertas,
+    mostrarAlerta,
+    cerrarAlerta,
+  } = contexto;
 
   // --------------------------------------------------------
-  // ATAJOS por tipo — evitan repetir el tipo en cada llamada
+  // ATAJOS POR TIPO
   // --------------------------------------------------------
 
-  // Alerta de éxito (verde) — para acciones completadas
-  function alertaExito(mensaje: string, titulo?: string): void {
-    mostrarAlerta("exito", mensaje, titulo);
-  }
+  const alertaExito = (
+    mensaje: string,
+    titulo?: string
+  ): void => {
+    mostrarAlerta(
+      "exito",
+      mensaje,
+      titulo
+    );
+  };
 
-  // Alerta de error (rojo) — para fallos o acciones destructivas
-  function alertaError(mensaje: string, titulo?: string): void {
-    mostrarAlerta("error", mensaje, titulo, 5000); // Más tiempo para errores
-  }
+  const alertaError = (
+    mensaje: string,
+    titulo?: string
+  ): void => {
+    mostrarAlerta(
+      "error",
+      mensaje,
+      titulo,
+      5000
+    );
+  };
 
-  // Alerta de advertencia (naranja) — para acciones reversibles
-  function alertaAdvertencia(mensaje: string, titulo?: string): void {
-    mostrarAlerta("advertencia", mensaje, titulo);
-  }
+  const alertaAdvertencia = (
+    mensaje: string,
+    titulo?: string
+  ): void => {
+    mostrarAlerta(
+      "advertencia",
+      mensaje,
+      titulo
+    );
+  };
 
-  // Alerta informativa (azul) — para cambios de estado neutros
-  function alertaInfo(mensaje: string, titulo?: string): void {
-    mostrarAlerta("info", mensaje, titulo, 3000); // Menos tiempo para info
-  }
+  const alertaInfo = (
+    mensaje: string,
+    titulo?: string
+  ): void => {
+    mostrarAlerta(
+      "info",
+      mensaje,
+      titulo,
+      3000
+    );
+  };
 
-  // Función genérica por si se necesita control total
-  function alerta(
+  // Alias para compatibilidad con tests
+  const alertaConfirmar = (
+    mensaje: string,
+    titulo?: string
+  ): void => {
+    mostrarAlerta(
+      "advertencia",
+      mensaje,
+      titulo
+    );
+  };
+
+  // --------------------------------------------------------
+  // FUNCIÓN GENÉRICA
+  // --------------------------------------------------------
+
+  const alerta = (
     tipo: TipoDeAlerta,
     mensaje: string,
     titulo?: string,
     duracionEnMs?: number
-  ): void {
-    mostrarAlerta(tipo, mensaje, titulo, duracionEnMs);
-  }
+  ): void => {
+    mostrarAlerta(
+      tipo,
+      mensaje,
+      titulo,
+      duracionEnMs
+    );
+  };
 
   return {
     listaDeAlertas,
     cerrarAlerta,
+
     alerta,
+
     alertaExito,
     alertaError,
     alertaAdvertencia,
     alertaInfo,
+    alertaConfirmar,
   };
 }

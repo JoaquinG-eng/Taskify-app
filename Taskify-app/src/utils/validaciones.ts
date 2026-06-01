@@ -31,19 +31,22 @@
   // Opcional, pero si se completa no puede superar 200 caracteres.
   // ------------------------------------------------------------
   export function validarDescripcion(valor: string): string {
-    if (valor.length > 1000) {
-      return "La descripción no puede superar los 1000 caracteres.";
-    }
+  const valorLimpio = valor.trim();
 
-    const valorLimpio = valor.trim();
-
-    if (valorLimpio.length < 20) {
-      return "La descripción debe tener al menos 20 caracteres.";
-    }
-
-    return "";
+  if (!valorLimpio) {
+    return "La descripción es obligatoria.";
   }
 
+  if (valorLimpio.length < 20) {
+    return "La descripción debe tener al menos 20 caracteres.";
+  }
+
+  if (valorLimpio.length > 1000) {
+    return "La descripción no puede superar los 1000 caracteres.";
+  }
+
+  return "";
+}
   // ------------------------------------------------------------
   // FUNCIÓN: validarFechaLimite
   // Opcional, pero si se completa debe ser hoy o posterior.

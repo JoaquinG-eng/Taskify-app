@@ -3,8 +3,14 @@
 // ============================================================
 
 import { useState } from "react";
-import { iniciarSesion, iniciarSesionConGoogle } from "../../services/authService";
+import { 
+  iniciarSesion, 
+  iniciarSesionConGoogle, 
+  enviarEmailDeRecuperacion, // <--- IMPORTADO
+  obtenerMensajeDeError       // <--- IMPORTADO
+} from "../../services/authService";
 import { swalExito, swalError } from "../../utils/sweetAlerts";
+import Swal from "sweetalert2"; // Asegúrate de tener SweetAlert2 instalado
 import "./AuthPage.css";
 
 // IMPORTACIÓN DEL LOGO OFICIAL DESDE LA RUTA COINCIDENTE
@@ -44,7 +50,8 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
       await swalExito("¡Bienvenido de vuelta!", `Ingresaste como ${email}`);
       alIniciarSesion();
     } catch (error: unknown) {
-      await swalError("Error al ingresar", (error as Error).message);
+      const codigo = (error as { code?: string }).code ?? "";
+      await swalError("Error al ingresar", obtenerMensajeDeError(codigo));
     } finally {
       setCargando(false);
     }
@@ -57,9 +64,54 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
       await swalExito("¡Bienvenido!", "Ingresaste con tu cuenta de Google.");
       alIniciarSesion();
     } catch (error: unknown) {
-      await swalError("Error con Google", (error as Error).message);
+      const codigo = (error as { code?: string }).code ?? "";
+      await swalError("Error con Google", obtenerMensajeDeError(codigo));
     } finally {
       setCargandoGoogle(false);
+    }
+  }
+
+  // =========================================================
+  // LOGICA PARA RECUPERAR CONTRASEÑA
+  // =========================================================
+  async function manejarRecuperacionContrasena() {
+    // Abrimos un modal interactivo para solicitar el correo
+    const { value: correoIngresado } = await Swal.fire({
+      title: "Recuperar contraseña",
+      text: "Ingresá tu correo electrónico y te enviaremos un enlace de restablecimiento.",
+      input: "email",
+      inputPlaceholder: "tu@email.com",
+      inputValue: email, // Precarga el mail si el usuario ya lo escribió en el login
+      showCancelButton: true,
+      confirmButtonText: "Enviar enlace",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#7c5af6",
+      background: "#0d0f1a",
+      color: "#ffffff",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off"
+      },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage("El correo es obligatorio");
+        }
+        return value;
+      }
+    });
+
+    if (correoIngresado) {
+      try {
+        // Ejecutamos tu servicio nativo de Firebase
+        await enviarEmailDeRecuperacion(correoIngresado);
+        await swalExito(
+          "¡Correo enviado!", 
+          `Revisá la bandeja de entrada de ${correoIngresado} (y la carpeta de spam).`
+        );
+      } catch (error: unknown) {
+        const codigo = (error as { code?: string }).code ?? "";
+        await swalError("Error de envío", obtenerMensajeDeError(codigo));
+      }
     }
   }
 
@@ -68,7 +120,6 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
 
       <div className="auth-layout__panel">
         <div className="auth-layout__panel-logo">
-          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
           <div className="auth-layout__logo-icono">
             <img 
               src={logoTaskify} 
@@ -94,7 +145,6 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
 
           <div className="auth-form__encabezado">
             <h2 className="auth-form__titulo">Bienvenido</h2>
-
           </div>
 
           <div className="auth-campo">
@@ -103,11 +153,12 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
               <span className="auth-campo__icono">@</span>
               <input
                 id="login-email"
+                name="email"
+                autoComplete="username"
                 type="email"
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
                 autoFocus
               />
             </div>
@@ -116,17 +167,25 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
           <div className="auth-campo">
             <div className="auth-campo__label-fila">
               <label className="auth-campo__etiqueta" htmlFor="login-password">Contraseña</label>
-              <button type="button" className="auth-campo__link">¿Olvidaste tu contraseña?</button>
+              {/* MODIFICADO: Conectamos la acción onClick a la función de recuperación */}
+              <button 
+                type="button" 
+                className="auth-campo__link"
+                onClick={manejarRecuperacionContrasena}
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
             </div>
             <div className="auth-campo__input-wrap">
               <span className="auth-campo__icono">🔒</span>
               <input
                 id="login-password"
+                name="password"
+                autoComplete="current-password"
                 type={verPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
               />
               <button
                 type="button"
