@@ -1,29 +1,26 @@
- import "./Topbar.css";
+// ============================================================
+// ARCHIVO: src/components/layout/Topbar/Topbar.tsx
+// CAMBIO: agrega botón opcional para enviar resumen por email
+// ============================================================
 
-// ------------------------------------------------------------
-// INTERFAZ: ConfiguracionDeBoton
-// Estructura de un botón de acción en la topbar.
-// ------------------------------------------------------------
+import "./Topbar.css";
+
 interface ConfiguracionDeBoton {
   etiqueta: string;
   alHacerClick: () => void;
 }
 
-// ------------------------------------------------------------
-// INTERFAZ: PropiedadesDeTopbar
-// ------------------------------------------------------------
 interface PropiedadesDeTopbar {
   tituloSeccion: string;
   subtituloSeccion: string;
   nombreDelUsuario?: string;
   alAbrirSidebar?: () => void;
-  botonPrimario?: ConfiguracionDeBoton;    // Botón violeta (ej: "Nueva tarea")
-  botonSecundario?: ConfiguracionDeBoton;  // Botón secundario (ej: "Nuevo ticket" futuramente)
+  botonPrimario?: ConfiguracionDeBoton;
+  botonSecundario?: ConfiguracionDeBoton;
+  alEnviarEmail?: () => void;        // nuevo: botón email
+  enviandoEmail?: boolean;           // nuevo: estado de carga
 }
 
-// ------------------------------------------------------------
-// COMPONENTE: Topbar
-// ------------------------------------------------------------
 function Topbar({
   tituloSeccion,
   subtituloSeccion,
@@ -31,8 +28,9 @@ function Topbar({
   alAbrirSidebar,
   botonPrimario,
   botonSecundario,
+  alEnviarEmail,
+  enviandoEmail = false,
 }: PropiedadesDeTopbar) {
-  // Primera letra del nombre para el avatar
   const inicialDelUsuario = nombreDelUsuario
     ? nombreDelUsuario.charAt(0).toUpperCase()
     : "U";
@@ -40,7 +38,6 @@ function Topbar({
   return (
     <header className="topbar">
 
-      {/* Botón hamburguesa — solo en móvil */}
       {alAbrirSidebar && (
         <button
           className="topbar__boton-menu"
@@ -51,16 +48,32 @@ function Topbar({
         </button>
       )}
 
-      {/* Título y subtítulo de la sección */}
       <div className="topbar__titulo">
         <h1 className="topbar__titulo-texto">{tituloSeccion}</h1>
         <p className="topbar__titulo-subtexto">{subtituloSeccion}</p>
       </div>
 
-      {/* Acciones del lado derecho */}
       <div className="topbar__acciones">
 
-        {/* Botón secundario (si existe) */}
+        {/* Botón enviar resumen por email */}
+        {alEnviarEmail && (
+          <button
+            className={`topbar__boton-email ${enviandoEmail ? "topbar__boton-email--cargando" : ""}`}
+            onClick={alEnviarEmail}
+            disabled={enviandoEmail}
+            title="Enviar resumen por email"
+          >
+            {enviandoEmail ? (
+              <span className="topbar__email-spinner" />
+            ) : (
+              <>
+                <span className="topbar__email-icono">✉</span>
+                <span className="topbar__email-texto">Resumen</span>
+              </>
+            )}
+          </button>
+        )}
+
         {botonSecundario && (
           <button
             className="topbar__boton-secundario"
@@ -70,7 +83,6 @@ function Topbar({
           </button>
         )}
 
-        {/* Botón primario (si existe) — ej: "Nueva tarea" */}
         {botonPrimario && (
           <button
             className="topbar__boton-primario"
@@ -80,11 +92,7 @@ function Topbar({
           </button>
         )}
 
-        {/* Avatar del usuario */}
-        <div
-          className="topbar__avatar"
-          title={nombreDelUsuario || "Usuario"}
-        >
+        <div className="topbar__avatar" title={nombreDelUsuario || "Usuario"}>
           <span>{inicialDelUsuario}</span>
         </div>
 

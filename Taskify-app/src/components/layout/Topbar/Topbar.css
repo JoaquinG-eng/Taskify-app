@@ -166,3 +166,60 @@
     padding: 9px 12px;
   }
 }
+/* ------------------------------------------------------------
+   NUEVO: Botón enviar por email
+   ------------------------------------------------------------ */
+
+/* Botón base */
+.topbar__boton-email {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+  white-space: nowrap;
+}
+
+.topbar__boton-email:hover:not(:disabled) {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.3);
+  color: #fff;
+}
+
+.topbar__boton-email:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Estilo del spinner dentro del botón cuando carga */
+.topbar__email-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 999px;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* En móvil mostramos solo el ícono */
+@media (max-width: 768px) {
+  .topbar__boton-email {
+    padding: 8px;
+  }
+  .topbar__email-texto {
+    display: none;
+  }
+}
