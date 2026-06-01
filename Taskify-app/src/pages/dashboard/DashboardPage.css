@@ -1,0 +1,231 @@
+/* ============================================================
+   ARCHIVO: src/pages/dashboard/DashboardPage.css
+   ============================================================ */
+
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #0c0f20 0%, #060812 60%, #030408 100%);
+}
+
+.dashboard-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.dashboard-layout__contenido {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn var(--transition-slow) forwards;
+}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+.dashboard-layout__estadisticas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* =========================================================
+   DOBLE COLUMNA
+   ========================================================= */
+.dashboard-layout__doble-columna {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.dashboard-layout__kanban-wrap { min-width: 0; }
+
+.dashboard-layout__feed-wrap {
+  position: sticky;
+  top: 20px;
+}
+
+.dashboard-layout__feed-wrap .activity-feed {
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+/* =========================================================
+   PRÓXIMAMENTE
+   ========================================================= */
+.dashboard-layout__proximamente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 360px;
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+}
+.dashboard-layout__proximamente-icono { font-size: 48px; opacity: .25; }
+.dashboard-layout__proximamente h2 { color: rgba(255,255,255,.6); font-size: 20px; font-weight: 700; margin: 0; }
+.dashboard-layout__proximamente p  { color: rgba(255,255,255,.3); font-size: 14px; margin: 0; max-width: 400px; line-height: 1.6; }
+
+/* =========================================================
+   BARRA DE FILTROS
+   ========================================================= */
+.filtros-barra {
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Campo con ícono interno */
+.filtros-barra__campo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  transition: border-color var(--transition-fast);
+}
+
+.filtros-barra__campo:focus-within {
+  border-color: var(--color-purple);
+  box-shadow: 0 0 0 3px var(--color-input-focus);
+}
+
+.filtros-barra__campo--busqueda {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtros-barra__campo-icono {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.filtros-barra__input {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.filtros-barra__input::placeholder { color: rgba(255, 255, 255, 0.2); }
+
+/* Botón ✕ dentro del input */
+.filtros-barra__limpiar-input {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.filtros-barra__limpiar-input:hover { color: rgba(255,255,255,.7); background: rgba(255,255,255,.06); }
+
+/* Botones de estado */
+.filtros-barra__botones {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  flex-wrap: wrap;
+}
+
+.filtros-barra__botones button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 5px 12px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.filtros-barra__botones button:hover { color: var(--color-text); background: rgba(255,255,255,.05); }
+.filtros-barra__botones button.activo { background: rgba(139,92,246,.15); color: #a98af9; }
+
+/* Botón limpiar todo */
+.filtros-barra__limpiar-todo {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f09595;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+}
+.filtros-barra__limpiar-todo:hover { background: rgba(239,68,68,.15); }
+
+/* Resultado de búsqueda */
+.filtros-barra__resultado {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: -8px 0 0 0;
+  padding: 0 4px;
+}
+
+/* =========================================================
+   RESPONSIVE — 1200px
+   ========================================================= */
+@media (max-width: 1200px) {
+  .dashboard-layout__estadisticas { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-layout__doble-columna { grid-template-columns: 1fr; }
+  .dashboard-layout__feed-wrap { position: static; }
+  .dashboard-layout__feed-wrap .activity-feed { max-height: 400px; }
+}
+
+/* =========================================================
+   RESPONSIVE — 768px
+   ========================================================= */
+@media (max-width: 768px) {
+  .dashboard-layout__contenido { padding: 16px; gap: 16px; }
+  .dashboard-layout__estadisticas { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  .filtros-barra { padding: 12px; gap: 8px; }
+  .filtros-barra__campo--busqueda { min-width: 100%; }
+  .filtros-barra__botones { width: 100%; justify-content: stretch; }
+  .filtros-barra__botones button { flex: 1; text-align: center; }
+}
+
+/* =========================================================
+   RESPONSIVE — 480px
+   ========================================================= */
+@media (max-width: 480px) {
+  .dashboard-layout__contenido { padding: 12px; }
+  .dashboard-layout__estadisticas { gap: 8px; }
+  .filtros-barra__campo { min-width: 100%; }
+}

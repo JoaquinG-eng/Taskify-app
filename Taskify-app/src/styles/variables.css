@@ -1,0 +1,66 @@
+:root {
+  /* ======================================================
+     PALETA DE COLORES - MODO OSCURO PREMIUM
+  ====================================================== */
+
+  /* Fondos del Dashboard */
+  --color-bg-dark: #080b16;
+  --color-bg-deep: #04050a;
+  --color-sidebar: #0b0e1a;
+  
+  /* Paneles Glassmorphic (Efecto Cristal) */
+  --color-card: rgba(13, 20, 38, 0.45);
+  --color-card-hover: rgba(20, 29, 54, 0.6);
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-border-glow: rgba(139, 92, 246, 0.15);
+
+  /* Texto de Alta Legibilidad */
+  --color-text: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  /* Estados y Acentos (Colores vibrantes con efecto brillo) */
+  --color-purple: #8b5cf6;         /* Acento principal / UI */
+  --color-purple-hover: #7c3aed;
+  --color-purple-glow: rgba(139, 92, 246, 0.25);
+
+  --color-orange: #f59e0b;         /* En Progreso */
+  --color-orange-glow: rgba(245, 158, 11, 0.2);
+
+  --color-green: #10b981;          /* Completadas */
+  --color-green-glow: rgba(16, 185, 129, 0.2);
+
+  --color-blue: #3b82f6;           /* Por Hacer / Planificado */
+  --color-blue-glow: rgba(59, 130, 246, 0.2);
+
+  --color-red: #ef4444;            /* Urgentes / Vencidas */
+  --color-red-glow: rgba(239, 68, 68, 0.2);
+
+  /* Entradas de Formulario (Inputs) */
+  --color-input-bg: rgba(9, 13, 26, 0.6);
+  --color-input-focus: rgba(139, 92, 246, 0.12);
+
+  /* ======================================================
+     RADIOS DE CURVATURA (BORDES)
+  ====================================================== */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* ======================================================
+     SOMBRAS 3D & PROFUNDIDAD
+  ====================================================== */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--color-purple-glow);
+
+  /* ======================================================
+     TRANSICIONES (MICRO-ANIMACIONES)
+  ====================================================== */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}

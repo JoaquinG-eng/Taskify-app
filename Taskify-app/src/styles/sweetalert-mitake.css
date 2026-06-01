@@ -1,0 +1,162 @@
+/* ============================================================
+   ARCHIVO: src/styles/sweetalert-mitake.css
+   Tema visual de SweetAlert2 que coincide con Mitake.
+   Se importa en main.tsx después de sweetalert2.min.css
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   POPUP BASE
+   ------------------------------------------------------------ */
+.swal-mitake__popup {
+  background: linear-gradient(135deg, #1a1726 0%, #161222 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(124, 90, 246, 0.08) !important;
+  padding: 32px 28px 28px !important;
+}
+
+/* ------------------------------------------------------------
+   TÍTULO
+   ------------------------------------------------------------ */
+.swal-mitake__titulo {
+  color: #ffffff !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* ------------------------------------------------------------
+   CONTENIDO / TEXTO
+   ------------------------------------------------------------ */
+.swal-mitake__contenido {
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-size: 14px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  line-height: 1.6 !important;
+}
+
+.swal-mitake__contenido strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------
+   ÍCONOS POR TIPO
+   ------------------------------------------------------------ */
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: rgba(29, 158, 117, 0.3) !important;
+}
+.swal2-icon.swal2-success [class^="swal2-success-line"] {
+  background-color: #1d9e75 !important;
+}
+.swal2-icon.swal2-error {
+  border-color: rgba(226, 75, 74, 0.4) !important;
+  color: #f09595 !important;
+}
+.swal2-icon.swal2-warning {
+  border-color: rgba(232, 157, 42, 0.4) !important;
+  color: #fac775 !important;
+}
+.swal2-icon.swal2-info {
+  border-color: rgba(59, 158, 237, 0.4) !important;
+  color: #7ec8f5 !important;
+}
+.swal2-icon.swal2-question {
+  border-color: rgba(124, 90, 246, 0.4) !important;
+  color: #a98af9 !important;
+}
+
+/* ------------------------------------------------------------
+   ACCIONES
+   ------------------------------------------------------------ */
+.swal-mitake__acciones {
+  gap: 10px !important;
+  margin-top: 8px !important;
+}
+
+/* ------------------------------------------------------------
+   BOTÓN CONFIRMAR — violeta por defecto
+   ------------------------------------------------------------ */
+.swal-mitake__boton-confirmar {
+  background: linear-gradient(135deg, #7c5af6, #5a3dd4) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  padding: 11px 24px !important;
+  box-shadow: 0 4px 14px rgba(124, 90, 246, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.swal-mitake__boton-confirmar:hover {
+  background: linear-gradient(135deg, #6b4be0, #4e33c0) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124, 90, 246, 0.45) !important;
+}
+
+.swal-mitake__boton-confirmar:focus {
+  box-shadow:
+    0 4px 14px rgba(124, 90, 246, 0.35),
+    0 0 0 3px rgba(124, 90, 246, 0.25) !important;
+}
+
+/* Cuando el ícono es warning o error, el confirm se vuelve rojo */
+.swal2-icon.swal2-warning ~ .swal2-actions .swal-mitake__boton-confirmar,
+.swal2-icon.swal2-error    ~ .swal2-actions .swal-mitake__boton-confirmar {
+  background: linear-gradient(135deg, #e24b4a, #c43d3c) !important;
+  box-shadow: 0 4px 14px rgba(226, 75, 74, 0.3) !important;
+}
+
+/* ------------------------------------------------------------
+   BOTÓN CANCELAR — transparente
+   ------------------------------------------------------------ */
+.swal-mitake__boton-cancelar {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  padding: 11px 24px !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.swal-mitake__boton-cancelar:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ------------------------------------------------------------
+   BARRA DE PROGRESO (timer)
+   ------------------------------------------------------------ */
+.swal2-timer-progress-bar {
+  background: linear-gradient(90deg, #7c5af6, #a98af9) !important;
+  border-radius: 4px !important;
+}
+
+/* ------------------------------------------------------------
+   ANIMACIONES
+   ------------------------------------------------------------ */
+.swal2-show {
+  animation: swalEntrar 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.swal2-hide {
+  animation: swalSalir 0.18s ease forwards !important;
+}
+
+@keyframes swalEntrar {
+  from { opacity: 0; transform: scale(0.88) translateY(-8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0);       }
+}
+
+@keyframes swalSalir {
+  from { opacity: 1; transform: scale(1);    }
+  to   { opacity: 0; transform: scale(0.94); }
+}
