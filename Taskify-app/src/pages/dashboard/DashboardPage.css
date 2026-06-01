@@ -5,7 +5,7 @@
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background: radial-gradient(circle at top left, #0c0f20 0%, #060812 60%, #030408 100%);
+  position: relative;
 }
 
 .dashboard-layout__main {
@@ -45,16 +45,27 @@
   align-items: start;
 }
 
-.dashboard-layout__kanban-wrap { min-width: 0; }
+.dashboard-layout__kanban-wrap {
+  min-width: 0;
+  background: rgba(10, 12, 22, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+}
 
 .dashboard-layout__feed-wrap {
   position: sticky;
   top: 20px;
-}
-
-.dashboard-layout__feed-wrap .activity-feed {
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
+  background: rgba(10, 12, 22, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 20px;
+  padding: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
 }
 
 /* =========================================================
@@ -69,13 +80,16 @@
   min-height: 360px;
   text-align: center;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-lg);
+  background: rgba(10, 12, 22, .45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 24px;
 }
+
 .dashboard-layout__proximamente-icono { font-size: 48px; opacity: .25; }
-.dashboard-layout__proximamente h2 { color: rgba(255,255,255,.6); font-size: 20px; font-weight: 700; margin: 0; }
-.dashboard-layout__proximamente p  { color: rgba(255,255,255,.3); font-size: 14px; margin: 0; max-width: 400px; line-height: 1.6; }
+.dashboard-layout__proximamente h2 { color: rgba(255, 255, 255, .6); font-size: 20px; font-weight: 700; margin: 0; }
+.dashboard-layout__proximamente p { color: rgba(255, 255, 255, .3); font-size: 14px; margin: 0; max-width: 400px; line-height: 1.6; }
 
 /* =========================================================
    BARRA DE FILTROS
@@ -83,15 +97,16 @@
 .filtros-barra {
   display: flex;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(10, 12, 22, .45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   padding: 14px 16px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, .08);
   align-items: center;
   flex-wrap: wrap;
 }
 
-/* Campo con ícono interno */
 .filtros-barra__campo {
   display: flex;
   align-items: center;
@@ -133,7 +148,6 @@
 
 .filtros-barra__input::placeholder { color: rgba(255, 255, 255, 0.2); }
 
-/* Botón ✕ dentro del input */
 .filtros-barra__limpiar-input {
   background: none;
   border: none;
@@ -146,9 +160,8 @@
   font-family: inherit;
   flex-shrink: 0;
 }
-.filtros-barra__limpiar-input:hover { color: rgba(255,255,255,.7); background: rgba(255,255,255,.06); }
+.filtros-barra__limpiar-input:hover { color: rgba(255, 255, 255, .7); background: rgba(255, 255, 255, .06); }
 
-/* Botones de estado */
 .filtros-barra__botones {
   display: flex;
   gap: 4px;
@@ -171,10 +184,9 @@
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
-.filtros-barra__botones button:hover { color: var(--color-text); background: rgba(255,255,255,.05); }
-.filtros-barra__botones button.activo { background: rgba(139,92,246,.15); color: #a98af9; }
+.filtros-barra__botones button:hover { color: var(--color-text); background: rgba(255, 255, 255, .05); }
+.filtros-barra__botones button.activo { background: rgba(139, 92, 246, .15); color: #a98af9; }
 
-/* Botón limpiar todo */
 .filtros-barra__limpiar-todo {
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.2);
@@ -188,9 +200,8 @@
   white-space: nowrap;
   transition: background var(--transition-fast);
 }
-.filtros-barra__limpiar-todo:hover { background: rgba(239,68,68,.15); }
+.filtros-barra__limpiar-todo:hover { background: rgba(239, 68, 68, .15); }
 
-/* Resultado de búsqueda */
 .filtros-barra__resultado {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.4);
@@ -214,7 +225,6 @@
 @media (max-width: 768px) {
   .dashboard-layout__contenido { padding: 16px; gap: 16px; }
   .dashboard-layout__estadisticas { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
   .filtros-barra { padding: 12px; gap: 8px; }
   .filtros-barra__campo--busqueda { min-width: 100%; }
   .filtros-barra__botones { width: 100%; justify-content: stretch; }
@@ -228,4 +238,46 @@
   .dashboard-layout__contenido { padding: 12px; }
   .dashboard-layout__estadisticas { gap: 8px; }
   .filtros-barra__campo { min-width: 100%; }
+}
+
+/* =========================================================
+   CAPA DE FONDO: WALLPAPER ÚNICO ADAPTATIVO (COVER)
+   ========================================================= */
+.dashboard-layout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  /* Carga de la nueva imagen de fondo */
+  background-image: url("../../ASSETS/taskify_wallpaper.jpg");
+  
+  /* Ajuste responsivo cubriente al 100% */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  /* Nivel de claridad unificado (0.60) */
+  background-color: rgba(10, 12, 22, 0.60);
+  background-blend-mode: multiply;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   AJUSTE DE TRANSPARENCIA PARA EL MENÚ LATERAL (SIDEBAR)
+   ========================================================= */
+.dashboard-layout__sidebar, 
+aside, 
+.sidebar {
+  background: rgba(10, 12, 22, 0.25) !important; 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filtros-barra__botones button.activo,
+[class*="active"], 
+[class*="seleccionado"] {
+  background: rgba(139, 92, 246, 0.2) !important;
 }

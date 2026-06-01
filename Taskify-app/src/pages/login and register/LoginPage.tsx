@@ -7,6 +7,9 @@ import { iniciarSesion, iniciarSesionConGoogle } from "../../services/authServic
 import { swalExito, swalError } from "../../utils/sweetAlerts";
 import "./AuthPage.css";
 
+// IMPORTACIÓN DEL LOGO OFICIAL DESDE LA RUTA COINCIDENTE
+import logoTaskify from "../../ASSETS/taskify_logo.jpg";
+
 type PropiedadesDeLoginPage = {
   alIniciarSesion: () => void;
   alIrARegistro: () => void;
@@ -65,7 +68,14 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
 
       <div className="auth-layout__panel">
         <div className="auth-layout__panel-logo">
-          <div className="auth-layout__logo-icono">T</div>
+          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
+          <div className="auth-layout__logo-icono">
+            <img 
+              src={logoTaskify} 
+              alt="Taskify Logo" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            />
+          </div>
           <span className="auth-layout__logo-texto">Taskify</span>
         </div>
         <div className="auth-layout__panel-tagline">
@@ -124,7 +134,7 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
                 onClick={() => setVerPassword((v) => !v)}
                 tabIndex={-1}
               >
-                {verPassword ? "🙈" : "👁"}
+                {verPassword ? "👁" : "👁"}
               </button>
             </div>
           </div>

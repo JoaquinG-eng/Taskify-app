@@ -5,6 +5,9 @@
 
 import "./Sidebar.css";
 
+// IMPORTACIÓN DEL LOGO OFICIAL DESDE LA RUTA COINCIDENTE (3 niveles arriba)
+import logoTaskify from "../../../ASSETS/taskify_logo.jpg";
+
 interface ElementoDeNavegacion {
   id: string;
   etiqueta: string;
@@ -59,7 +62,14 @@ function Sidebar({
 
         {/* Logo */}
         <div className="sidebar__logo">
-          <div className="sidebar__logo-icono">T</div>
+          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
+          <div className="sidebar__logo-icono">
+            <img 
+              src={logoTaskify} 
+              alt="Taskify Logo" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            />
+          </div>
           <span className="sidebar__logo-texto">Taskify</span>
           <button className="sidebar__boton-cerrar" onClick={alCerrar} aria-label="Cerrar menú">✕</button>
         </div>

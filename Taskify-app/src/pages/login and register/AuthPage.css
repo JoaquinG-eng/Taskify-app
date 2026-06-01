@@ -3,7 +3,7 @@
    ============================================================ */
 
 :root {
-  --bg-imagen: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80");
+  --bg-imagen: url("../../ASSETS/bg-auth.jpg");
 }
 
 .auth-layout {
@@ -55,15 +55,18 @@
 .auth-layout__logo-icono {
   width: 42px;
   height: 42px;
-  background: linear-gradient(135deg, #7c5af6, #5a3dd4);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 800;
-  box-shadow: 0 6px 20px rgba(124,90,246,.4);
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(124,90,246,.25);
+}
+
+.auth-layout__logo-icono img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .auth-layout__logo-texto {
@@ -163,7 +166,6 @@
   gap: 18px;
 }
 
-/* Encabezado con botón volver */
 .auth-form__encabezado {
   display: flex;
   align-items: flex-start;
@@ -186,7 +188,6 @@
   margin: 0;
 }
 
-/* Botón X para volver */
 .auth-form__boton-volver {
   width: 34px;
   height: 34px;
@@ -211,7 +212,7 @@
   transform: scale(1.05);
 }
 
-/* ---- CAMPOS ---- */
+/* ---- CAMPOS ENTRADA DE TEXTO ---- */
 .auth-campo {
   display: flex;
   flex-direction: column;
@@ -235,8 +236,8 @@
 .auth-campo__input-wrap {
   display: flex;
   align-items: center;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
   border-radius: 12px;
   padding: 0 14px;
   gap: 10px;
@@ -245,8 +246,8 @@
 
 .auth-campo__input-wrap:focus-within {
   border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139,92,246,.15);
-  background: rgba(255,255,255,.1);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.25);
+  background: rgba(255,255,255,.09);
 }
 
 .auth-campo__icono {
@@ -258,27 +259,54 @@
 .auth-campo__input-wrap input {
   flex: 1;
   padding: 13px 0;
-  background: transparent;
+  background: transparent !important;
   border: none;
   outline: none;
-  color: #fff;
+  color: #fff !important;
   font-family: inherit;
   font-size: 14px;
+  box-shadow: none !important;
 }
 
-.auth-campo__input-wrap input::placeholder { color: rgba(255,255,255,.2); }
+.auth-campo__input-wrap input::placeholder { 
+  color: rgba(255,255,255,.25); 
+}
 
+/* CORRECCIÓN DE UX: Fuerza a que los navegadores mantengan el fondo oscuro al autocompletar */
+.auth-campo__input-wrap input:-webkit-autofill,
+.auth-campo__input-wrap input:-webkit-autofill:hover, 
+.auth-campo__input-wrap input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  background-clip: text !important;
+}
+
+/* CORRECCIÓN DE UX: Ajustes para el botón del Ojo */
 .auth-campo__toggle-pass {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 14px;
-  padding: 4px;
-  opacity: .45;
-  transition: opacity .15s;
+  padding: 8px 4px;
+  color: #fff;
+  opacity: .40;
+  transition: opacity .15s ease, transform .1s ease;
   font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
-.auth-campo__toggle-pass:hover { opacity: 1; }
+
+.auth-campo__toggle-pass:hover { 
+  opacity: .95; 
+  transform: scale(1.1);
+}
+
+.auth-campo__toggle-pass:active {
+  transform: scale(0.95);
+}
 
 .auth-campo__check { font-size: 14px; font-weight: 700; flex-shrink: 0; }
 
@@ -390,19 +418,4 @@
   color: #a98af9;
   font-size: inherit;
   font-family: inherit;
-  font-weight: 600;
-  padding: 0;
-  transition: color .15s;
-}
-.auth-form__link:hover { color: #c4b5fd; }
-
-/* ---- MOBILE ---- */
-@media (max-width: 767px) {
-  .auth-layout__form-wrap {
-    background: rgba(6,8,18,.78);
-    backdrop-filter: blur(20px);
-    min-height: 100dvh;
-    align-items: center;
-    padding: 48px 24px;
-  }
 }

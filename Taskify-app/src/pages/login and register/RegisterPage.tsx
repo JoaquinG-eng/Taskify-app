@@ -11,6 +11,10 @@ import {
 } from "../../utils/sweetAlerts";
 import "./AuthPage.css";
 
+// IMPORTACIÓN DEL LOGO OFICIAL
+import logoTaskify from "../../ASSETS/taskify_logo.jpg";
+
+
 type PropiedadesDeRegisterPage = {
   alRegistrarse: () => void;
   alIrALogin: () => void;
@@ -61,7 +65,14 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
 
       <div className="auth-layout__panel">
         <div className="auth-layout__panel-logo">
-          <div className="auth-layout__logo-icono">T</div>
+          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
+          <div className="auth-layout__logo-icono">
+            <img 
+              src={logoTaskify} 
+              alt="Taskify Logo" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            />
+          </div>
           <span className="auth-layout__logo-texto">Taskify</span>
         </div>
         <div className="auth-layout__panel-tagline">
@@ -120,14 +131,14 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
               <span className="auth-campo__icono">🔒</span>
               <input id="reg-password" type={verPass ? "text" : "password"} placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} />
               <button type="button" className="auth-campo__toggle-pass" onClick={() => setVerPass((v) => !v)} tabIndex={-1}>
-                {verPass ? "🙈" : "👁"}
+                {verPass ? "👁" : "👁"}
               </button>
             </div>
             {password.length > 0 && (
               <div className="auth-campo__fuerza">
                 <div className="auth-campo__fuerza-barras">
                   {[1, 2, 3].map((n) => (
-                    <div key={n} className="auth-campo__fuerza-barra" style={{ background: n <= fuerza.nivel ? fuerza.color : "rgba(255,255,255,0.08)" }} />
+                    <div key={n} className="auth-campo__fuerza-barra" style={{ background: n <= fuerza.nivel ? fuerza.color : "#FFFFFF20" }} />
                   ))}
                 </div>
                 <span style={{ color: fuerza.color, fontSize: "11px", fontWeight: 600 }}>{fuerza.etiqueta}</span>
