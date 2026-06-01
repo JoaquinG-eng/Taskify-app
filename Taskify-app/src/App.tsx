@@ -18,7 +18,7 @@ function AppContenido() {
   if (usuario) {
     return (
       <ProtectedRoute alNoAutenticado={() => setVistaAuth("login")}>
-        <DashboardPage usuario={usuario} />
+        <DashboardPage />
       </ProtectedRoute>
     );
   }

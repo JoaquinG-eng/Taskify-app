@@ -21,5 +21,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "api"]
+  "include": ["src"], // <-- CORREGIDO: Únicamente compilar la carpeta del frontend
+  "exclude": ["node_modules", "dist", "api", "tests"] // <-- AGREGADO: Forzamos a ignorar el servidor y los tests
 }
