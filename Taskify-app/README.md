@@ -796,18 +796,73 @@ npm run build
 
 **Última actualización**
 
-- Actividades recientes
-- Estadísticas
-- Autenticación Firebase
-- Login Google
-- Firestore en tiempo real
-- Alertas globales
-- Envío de emails
-- Testing automatizado
+## Cambios recientes implementados
+
+En esta última iteración del proyecto Taskify, se realizaron mejoras en la experiencia de usuario, interfaz y validaciones del sistema:
+
+### 1. Mejora del Dashboard (UX más humana y personalizada)
+Se implementó un sistema de saludo dinámico según la hora del día:
+Buenos días ☀️
+Buenas tardes 🌤️
+Buenas noches 🌙
+
+
+El título del dashboard ahora es personalizado por usuario:
+Hola nuevamente, {nombreUsuario} 👋
+Se agregó un subtítulo más cálido y motivador:
+Qué bueno tenerte nuevamente por aquí. Tienes X tarea(s) pendiente(s) para continuar avanzando. 
+
+👉 Esto mejora la experiencia emocional del usuario dentro de la app.
+
+### 2. Mejoras en la interfaz del Sidebar
+Se integró correctamente el botón de cierre de sesión.
+Se añadió iconografía más clara y moderna para acciones del sistema.
+Se mejoró la organización visual del perfil de usuario.
+
+### 3. Corrección de errores y estabilidad del proyecto
+Se resolvieron errores de TypeScript en:
+Tests de servicios (sendEmail, taskService)
+Validaciones de formulario
+Tipado de requests mock en testing
+Se corrigieron incompatibilidades con vi.mock en Vitest.
+
+### 4. Tests y cobertura
+Se corrigieron fallos en tests de:
+Envío de emails con AWS SES
+Validaciones de título y descripción
+Contextos de alertas
+Se mejoró la estabilidad general del test suite.
+
+### 5. Git y control de versiones
+Se solucionaron problemas con .gitignore:
+node_modules
+coverage
+.env
+Se corrigió el seguimiento de archivos innecesarios en Git.
+
+### 6. UX general
+Se refinó el lenguaje de la aplicación para hacerlo más:
+Cercano
+Humano
+Motivador
+
+Ejemplo:
+
+“Qué bueno tenerte nuevamente por aquí” en lugar de mensajes fríos tipo dashboard genérico.
+
+### Resultado final
+
+Taskify ahora cuenta con:
+
+Interfaz más amigable 
+Mensajes personalizados por usuario 
+Mejor experiencia de navegación 
+Tests más estables 
+Código más limpio y mantenible 
 
 ---
 
-## 🚧 Mejoras futuras
+## Mejoras futuras
 
 - Drag & Drop real en Kanban
 - Compartir tareas entre usuarios

@@ -149,13 +149,44 @@ export default function DashboardPage() {
   const tareasEnProgreso  = tareasActivas.filter((t) => t.estado === "en-progreso").length;
   const tareasPendientes  = tareasActivas.filter((t) => t.estado === "pendiente").length;
 
-  const configTopbar: Record<SeccionActiva, { titulo: string; subtitulo: string }> = {
-    dashboard:    { titulo: "Dashboard",    subtitulo: cargando ? "Cargando..." : `${totalTareas} tarea${totalTareas !== 1 ? "s" : ""} en total` },
-    "mis-tareas": { titulo: "Mis tareas",   subtitulo: hayFiltrosActivos ? `${tareasFiltradas.length} resultado${tareasFiltradas.length !== 1 ? "s" : ""}` : `${tareasPendientes} pendiente${tareasPendientes !== 1 ? "s" : ""}` },
-    tickets:      { titulo: "Tickets",      subtitulo: "Próximamente" },
-    papelera:     { titulo: "Papelera",     subtitulo: `${tareasEnPapelera.length} elemento${tareasEnPapelera.length !== 1 ? "s" : ""}` },
-    about:        { titulo: "Sobre Mitake", subtitulo: "Información del proyecto" },
-  };
+ function obtenerSaludo(): string {
+  const hora = new Date().getHours();
+
+  if (hora < 12) return "Buenos días";
+  if (hora < 19) return "Buenas tardes";
+  return "Buenas noches";
+}
+
+const configTopbar: Record<SeccionActiva, { titulo: string; subtitulo: string }> = {
+  dashboard: {
+    titulo: `${obtenerSaludo()}, ${nombreUsuario} 👋`,
+    subtitulo: cargando
+      ? "Cargando..."
+      : `Qué bueno tenerte nuevamente por acá. Hoy tenés ${tareasPendientes} tarea${tareasPendientes !== 1 ? "s" : ""} pendiente${tareasPendientes !== 1 ? "s" : ""} para continuar avanzando.`
+  },
+
+  "mis-tareas": {
+    titulo: "Mis tareas",
+    subtitulo: hayFiltrosActivos
+      ? `${tareasFiltradas.length} resultado${tareasFiltradas.length !== 1 ? "s" : ""}`
+      : `${tareasPendientes} pendiente${tareasPendientes !== 1 ? "s" : ""}`
+  },
+
+  tickets: {
+    titulo: "Tickets",
+    subtitulo: "Próximamente"
+  },
+
+  papelera: {
+    titulo: "Papelera",
+    subtitulo: `${tareasEnPapelera.length} elemento${tareasEnPapelera.length !== 1 ? "s" : ""}`
+  },
+
+  about: {
+    titulo: "Sobre Mitake",
+    subtitulo: "Información del proyecto"
+  },
+};
 
   const mostrarBotonNueva = seccionActiva === "dashboard" || seccionActiva === "mis-tareas";
   const mostrarBotonEmail = seccionActiva === "dashboard" || seccionActiva === "mis-tareas";
