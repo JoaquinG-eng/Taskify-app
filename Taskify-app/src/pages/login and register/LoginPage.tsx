@@ -6,11 +6,11 @@ import { useState } from "react";
 import { 
   iniciarSesion, 
   iniciarSesionConGoogle, 
-  enviarEmailDeRecuperacion, // <--- IMPORTADO
-  obtenerMensajeDeError       // <--- IMPORTADO
+  enviarEmailDeRecuperacion, 
+  obtenerMensajeDeError       
 } from "../../services/authService";
 import { swalExito, swalError } from "../../utils/sweetAlerts";
-import Swal from "sweetalert2"; // Asegúrate de tener SweetAlert2 instalado
+import Swal from "sweetalert2";
 import "./AuthPage.css";
 
 // IMPORTACIÓN DEL LOGO OFICIAL DESDE LA RUTA COINCIDENTE
@@ -81,7 +81,7 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
       text: "Ingresá tu correo electrónico y te enviaremos un enlace de restablecimiento.",
       input: "email",
       inputPlaceholder: "tu@email.com",
-      inputValue: email, // Precarga el mail si el usuario ya lo escribió en el login
+      inputValue: email,
       showCancelButton: true,
       confirmButtonText: "Enviar enlace",
       cancelButtonText: "Cancelar",

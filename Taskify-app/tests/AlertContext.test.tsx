@@ -1,12 +1,13 @@
 // tests/AlertContext.test.tsx
 
+import type { PropsWithChildren } from "react";
 import { renderHook, act } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { AlertProvider } from "../src/context/AlertContext";
 import { useAlert } from "../src/hooks/useAlert";
 
 describe("AlertContext", () => {
-  const wrapper = ({ children }: any) => (
+  const wrapper = ({ children }: PropsWithChildren<{}>) => (
     <AlertProvider>{children}</AlertProvider>
   );
 

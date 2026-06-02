@@ -1,16 +1,9 @@
-// ============================================================
-// ARCHIVO: src/routes/ProtectedRoute.tsx
-// Componente que envuelve rutas privadas.
-// Si el usuario no está autenticado → redirige al login.
-// Mientras Firebase verifica la sesión → muestra un loader.
-// ============================================================
-
 import type { ReactNode } from "react";
 import { useAuth } from "../hooks/useAuth";
 
 interface PropiedadesDeProtectedRoute {
   children: ReactNode;
-  alNoAutenticado: () => void; // callback para ir al login
+  alNoAutenticado: () => void;
 }
 
 function ProtectedRoute({
@@ -19,9 +12,7 @@ function ProtectedRoute({
 }: PropiedadesDeProtectedRoute) {
   const { usuario, cargando } = useAuth();
 
-  // Mientras Firebase verifica si hay sesión activa
-  // mostramos un loader para evitar el parpadeo de redirección
-  if (cargando) {
+    if (cargando) {
     return (
       <div
         style={{
@@ -52,13 +43,11 @@ function ProtectedRoute({
     );
   }
 
-  // Si no hay usuario autenticado, redirigimos al login
-  if (!usuario) {
+    if (!usuario) {
     alNoAutenticado();
     return null;
   }
 
-  // Usuario autenticado — renderizamos el contenido protegido
   return <>{children}</>;
 }
 

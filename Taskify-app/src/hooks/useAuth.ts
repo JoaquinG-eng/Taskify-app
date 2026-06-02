@@ -10,8 +10,8 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
 interface EstadoDeAuth {
-  usuario:    User | null;   // null = no autenticado
-  cargando:   boolean;       // true mientras Firebase verifica la sesión
+  usuario:    User | null;
+  cargando:   boolean;       
 }
 
 export function useAuth(): EstadoDeAuth {
@@ -19,13 +19,12 @@ export function useAuth(): EstadoDeAuth {
   const [cargando, setCargando] = useState<boolean>(true);
 
   useEffect(() => {
-    // onAuthStateChanged devuelve una función para cancelar la suscripción
-    const cancelarSuscripcion = onAuthStateChanged(auth, (usuarioActual) => {
+      const cancelarSuscripcion = onAuthStateChanged(auth, (usuarioActual) => {
       setUsuario(usuarioActual);
       setCargando(false);
     });
 
-    // Cancelamos al desmontar para evitar memory leaks
+
     return () => cancelarSuscripcion();
   }, []);
 

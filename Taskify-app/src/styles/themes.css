@@ -1,0 +1,84 @@
+html.tema-claro {
+
+  /* Sidebar */
+  --sidebar-bg: rgba(255, 255, 255, 0.82);
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --sidebar-texto: rgba(0, 0, 0, 0.65);
+  --sidebar-texto-activo: #5a3dd4;
+  --sidebar-item-activo-bg: rgba(124, 90, 246, 0.1);
+  --sidebar-seccion-label: rgba(0, 0, 0, 0.35);
+
+  /* Topbar */
+  --topbar-bg: rgba(255, 255, 255, 0.75);
+  --topbar-border: rgba(0, 0, 0, 0.08);
+  --topbar-titulo: #0f0a1e;
+  --topbar-subtitulo: rgba(0, 0, 0, 0.45);
+
+  /* Cards / contenido */
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --texto-principal: #0f0a1e;
+  --texto-secundario: rgba(0, 0, 0, 0.55);
+}
+
+/* ---- Aplicación del tema claro ---- */
+html.tema-claro .sidebar {
+  background: var(--sidebar-bg, rgba(255, 255, 255, 0.82));
+  border-right-color: var(--sidebar-border);
+  backdrop-filter: blur(20px);
+}
+
+html.tema-claro .sidebar__seccion-label {
+  color: var(--sidebar-seccion-label);
+}
+
+html.tema-claro .sidebar__item {
+  color: var(--sidebar-texto);
+}
+
+html.tema-claro .sidebar__item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #0f0a1e;
+}
+
+html.tema-claro .sidebar__item--activo {
+  background: var(--sidebar-item-activo-bg);
+  color: var(--sidebar-texto-activo);
+}
+
+html.tema-claro .sidebar__logo-texto,
+html.tema-claro .sidebar__usuario-nombre {
+  color: #0f0a1e;
+}
+
+html.tema-claro .sidebar__usuario-rol {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+html.tema-claro .topbar {
+  background: var(--topbar-bg);
+  border-bottom-color: var(--topbar-border);
+}
+
+html.tema-claro .topbar__titulo-texto {
+  color: var(--topbar-titulo);
+}
+
+html.tema-claro .topbar__titulo-subtexto {
+  color: var(--topbar-subtitulo);
+}
+
+html.tema-claro .topbar__boton-tema {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+html.tema-claro .topbar__avatar-menu {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+html.tema-claro .topbar__avatar-menu-nombre {
+  color: rgba(0, 0, 0, 0.7);
+}

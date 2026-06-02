@@ -20,8 +20,8 @@ export interface Tarea {
     progreso: number;
     estaEnPapelera: boolean;
     fechaEliminacion?: string;
-    asignadoA?: string;   // Quién ejecuta la tarea
-    creadoPor?: string;   // Quién la registró
+    asignadoA?: string;   
+    creadoPor?: string;
 }
 
 // ------------------------------------------------------------

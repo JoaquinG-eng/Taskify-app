@@ -1,14 +1,4 @@
-  // ============================================================
-  // ¿Para qué sirve? Funciones puras de validación reutilizables
-  // en cualquier formulario de la app. Cada función recibe un
-  // valor y devuelve el mensaje de error, o string vacío si es válido.
-  // ============================================================
-
-  // ------------------------------------------------------------
-  // FUNCIÓN: validarTitulo
-  // Obligatorio, entre 3 y 60 caracteres.
-  // ------------------------------------------------------------
-  export function validarTitulo(valor: string): string {
+export function validarTitulo(valor: string): string {
     const valorLimpio = valor.trim();
 
     if (!valorLimpio) {
@@ -26,10 +16,7 @@
     return "";
   }
 
-  // ------------------------------------------------------------
-  // FUNCIÓN: validarDescripcion
-  // Opcional, pero si se completa no puede superar 200 caracteres.
-  // ------------------------------------------------------------
+
   export function validarDescripcion(valor: string): string {
   const valorLimpio = valor.trim();
 
@@ -47,18 +34,14 @@
 
   return "";
 }
-  // ------------------------------------------------------------
-  // FUNCIÓN: validarFechaLimite
-  // Opcional, pero si se completa debe ser hoy o posterior.
-  // ------------------------------------------------------------
+
   export function validarFechaLimite(valor: string): string {
     if (!valor) return "";
 
     const fechaIngresada = new Date(valor + "T00:00:00");
     const fechaDeHoy     = new Date();
 
-    // Limpiamos la hora para comparar solo la fecha
-    fechaDeHoy.setHours(0, 0, 0, 0);
+     fechaDeHoy.setHours(0, 0, 0, 0);
 
     if (isNaN(fechaIngresada.getTime())) {
       return "La fecha ingresada no es válida.";
@@ -71,11 +54,7 @@
     return "";
   }
 
-  // ------------------------------------------------------------
-  // FUNCIÓN: validarSeleccion
-  // Valida que un campo select tenga un valor seleccionado.
-  // Útil para estado y prioridad.
-  // ------------------------------------------------------------
+
   export function validarSeleccion(
     valor: string,
     nombreDelCampo: string
@@ -87,11 +66,7 @@
     return "";
   }
 
-  // ------------------------------------------------------------
-  // FUNCIÓN: hayErroresEnElFormulario
-  // Recibe un objeto de errores y devuelve true si alguno tiene
-  // contenido. Sirve para bloquear el submit.
-  // ------------------------------------------------------------
+
   export function hayErroresEnElFormulario(
     errores: Record<string, string>
   ): boolean {

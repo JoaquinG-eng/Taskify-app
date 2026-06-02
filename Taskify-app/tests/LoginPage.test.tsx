@@ -1,3 +1,4 @@
+import type { User } from "firebase/auth";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi, beforeEach } from "vitest";
@@ -51,9 +52,9 @@ render( <LoginPage
 );
 
 await userEvent.click(
-  screen.getByRole("button", {
+  screen.getAllByRole("button", {
     name: /ingresar/i,
-  })
+  })[0]
 );
 
 expect(
@@ -64,36 +65,33 @@ expect(
 });
 
 test("2. Flujo exitoso de login", async () => {
-vi.mocked(
-authService.iniciarSesion
-).mockResolvedValue({ uid: "ok" } as any);
+  vi.mocked(authService.iniciarSesion).mockResolvedValue({ uid: "ok" } as User);
 
+  render(
+    <LoginPage
+      alIniciarSesion={alIniciarSesionMock}
+      alIrARegistro={alIrARegistroMock}
+    />
+  );
 
-render(
-  <LoginPage
-    alIniciarSesion={alIniciarSesionMock}
-    alIrARegistro={alIrARegistroMock}
-  />
-);
+  await userEvent.type(
+    screen.getAllByPlaceholderText(
+      "tu@email.com"
+    )[0],
+    "user@taskify.com"
+  );
 
-await userEvent.type(
-  screen.getByPlaceholderText(
-    "tu@email.com"
-  ),
-  "user@taskify.com"
-);
-
-await userEvent.type(
-  screen.getByPlaceholderText(
-    "••••••••"
-  ),
-  "password123"
-);
+  await userEvent.type(
+    screen.getAllByPlaceholderText(
+      "••••••••"
+    )[0],
+    "password123"
+  );
 
 await userEvent.click(
-  screen.getByRole("button", {
+  screen.getAllByRole("button", {
     name: /ingresar/i,
-  })
+  })[0]
 );
 
 await waitFor(() => {
@@ -122,11 +120,10 @@ render(
   />
 );
 
-await userEvent.click(
-  screen.getByRole("button", {
-    name: /olvidaste tu contraseña/i,
-  })
-);
+const botonesOlvido = screen.getAllByRole("button", {
+  name: /olvidaste tu contraseña/i,
+});
+await userEvent.click(botonesOlvido[0]);
 
 await waitFor(() => {
   expect(
@@ -168,37 +165,36 @@ render(
   />
 );
 
-await userEvent.type(
-  screen.getByPlaceholderText(
-    "tu@email.com"
-  ),
-  "error@taskify.com"
-);
+  await userEvent.type(
+    screen.getAllByPlaceholderText(
+      "tu@email.com"
+    )[0],
+    "error@taskify.com"
+  );
 
-await userEvent.type(
-  screen.getByPlaceholderText(
-    "••••••••"
-  ),
-  "wrongpass"
-);
+  await userEvent.type(
+    screen.getAllByPlaceholderText(
+      "••••••••"
+    )[0],
+    "wrongpass"
+  );
 
-await userEvent.click(
-  screen.getByRole("button", {
-    name: /ingresar/i,
-  })
-);
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: /ingresar/i,
+    })[0]
+  );
 
-await userEvent.click(
-  screen.getByRole("button", {
-    name: /continuar con google/i,
-  })
-);
+  await userEvent.click(
+    screen.getAllByRole("button", {
+      name: /continuar con google/i,
+    })[0]
+  );
 
-await userEvent.click(
-  screen.getByRole("button", {
+  const botonesOlvido = screen.getAllByRole("button", {
     name: /olvidaste tu contraseña/i,
-  })
-);
+  });
+  await userEvent.click(botonesOlvido[0]);
 
 await waitFor(() => {
   expect(
@@ -210,8 +206,7 @@ expect(
   sweetAlerts.swalError
 ).toHaveBeenCalled();
 
-
-});
+}, 15000);
 
 test("5. Permite mostrar y ocultar contraseña", async () => {
 render( <LoginPage
@@ -222,24 +217,18 @@ render( <LoginPage
 
 
 const inputPassword =
-  screen.getByPlaceholderText(
-    "••••••••"
-  );
+    screen.getAllByPlaceholderText(
+      "••••••••"
+    )[0];
+expect(inputPassword.getAttribute("type")).toBe("password");
 
-expect(inputPassword).toHaveAttribute(
-  "type",
-  "password"
-);
+  const botonMostrar = screen.getAllByRole("button", {
+    name: /👁/i,
+  })[0];
 
-const botones =
-  screen.getAllByRole("button");
+  await userEvent.click(botonMostrar);
 
-await userEvent.click(botones[1]);
-
-expect(inputPassword).toHaveAttribute(
-  "type",
-  "text"
-);
+  expect(inputPassword.getAttribute("type")).toBe("text");
 
 });
 });

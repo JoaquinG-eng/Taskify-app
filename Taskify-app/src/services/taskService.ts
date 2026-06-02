@@ -124,9 +124,6 @@ export async function moverAPapelaraEnFirestore(
   });
 }
 
-// ============================================================
-// RESTAURAR DE PAPELERA
-// ============================================================
 export async function restaurarDePapeleraEnFirestore(
   tareaId: string
 ): Promise<void> {
@@ -137,9 +134,6 @@ export async function restaurarDePapeleraEnFirestore(
   });
 }
 
-// ============================================================
-// ELIMINAR PERMANENTEMENTE (hard delete)
-// ============================================================
 export async function eliminarPermanentementeEnFirestore(
   tareaId: string
 ): Promise<void> {

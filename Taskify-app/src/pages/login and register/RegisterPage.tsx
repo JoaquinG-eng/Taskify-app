@@ -10,8 +10,7 @@ import {
   alertaConfirmarRegistro,
 } from "../../utils/sweetAlerts";
 import "./AuthPage.css";
-
-// IMPORTACIÓN DEL LOGO OFICIAL
+  
 import logoTaskify from "../../ASSETS/taskify_logo.jpg";
 
 
@@ -33,7 +32,7 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
 
     if (!nombre.trim()) { await alertaErrorDeAutenticacion("El nombre es obligatorio."); return; }
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) { await alertaErrorDeAutenticacion("Ingresá un email válido."); return; }
-    if (password.length < 6) { await alertaErrorDeAutenticacion("La contraseña debe tener al menos 6 caracteres."); return; }
+    if (password.length < 6) { await alertaErrorDeAutenticacion("La contraseña debe tener minimo 6 caracteres."); return; }
     if (password !== confirmar) { await alertaErrorDeAutenticacion("Las contraseñas no coinciden."); return; }
 
     const confirmo = await alertaConfirmarRegistro(email);
@@ -64,8 +63,7 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
     <div className="auth-layout">
 
       <div className="auth-layout__panel">
-        <div className="auth-layout__panel-logo">
-          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
+          <div className="auth-layout__panel-logo">
           <div className="auth-layout__logo-icono">
             <img 
               src={logoTaskify} 
@@ -90,9 +88,7 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
       </div>
 
       <div className="auth-layout__form-wrap">
-        <form className="auth-form" onSubmit={manejarEnvio} noValidate>
-
-          {/* ENCABEZADO con botón volver */}
+          <form className="auth-form" onSubmit={manejarEnvio} noValidate>
           <div className="auth-form__encabezado">
             <div>
               <h2 className="auth-form__titulo">Crear cuenta</h2>

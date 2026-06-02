@@ -1,6 +1,5 @@
 // ============================================================
 // ARCHIVO: src/components/layout/Topbar/Topbar.tsx
-// CAMBIO: agrega botón opcional para enviar resumen por email
 // ============================================================
 
 import "./Topbar.css";
@@ -17,8 +16,8 @@ interface PropiedadesDeTopbar {
   alAbrirSidebar?: () => void;
   botonPrimario?: ConfiguracionDeBoton;
   botonSecundario?: ConfiguracionDeBoton;
-  alEnviarEmail?: () => void;        // nuevo: botón email
-  enviandoEmail?: boolean;           // nuevo: estado de carga
+  alEnviarEmail?: () => void;        
+  enviandoEmail?: boolean;           
 }
 
 function Topbar({
@@ -54,9 +53,7 @@ function Topbar({
       </div>
 
       <div className="topbar__acciones">
-
-        {/* Botón enviar resumen por email */}
-        {alEnviarEmail && (
+          {alEnviarEmail && (
           <button
             className={`topbar__boton-email ${enviandoEmail ? "topbar__boton-email--cargando" : ""}`}
             onClick={alEnviarEmail}
@@ -68,7 +65,7 @@ function Topbar({
             ) : (
               <>
                 <span className="topbar__email-icono">✉</span>
-                <span className="topbar__email-texto">Resumen</span>
+                <span className="topbar__email-texto">Enviar por mail</span>
               </>
             )}
           </button>

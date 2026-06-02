@@ -7,8 +7,6 @@ import Swal from "sweetalert2";
 const SwalTaskify = Swal.mixin({
   background: "#13111f",
   color:      "#f0f0f8",
-  // ↓ Quitamos buttonsStyling: false — dejamos que SweetAlert
-  //   aplique sus estilos base y nosotros solo sobreescribimos colores
   confirmButtonColor: "#7c5af6",
   cancelButtonColor:  "#374151",
   customClass: {
@@ -22,9 +20,6 @@ const SwalTaskify = Swal.mixin({
   hideClass:  { popup: "swal-Taskify--saliendo" },
 });
 
-// ============================================================
-// GENÉRICAS
-// ============================================================
 export function swalExito(titulo: string, texto?: string) {
   return SwalTaskify.fire({
     icon: "success", title: titulo, text: texto,
@@ -59,9 +54,6 @@ export function swalInfo(titulo: string, texto?: string) {
   });
 }
 
-// ============================================================
-// AUTH
-// ============================================================
 export function alertaLoginExitoso(nombreOEmail: string) {
   return SwalTaskify.fire({
     icon: "success", title: "¡Bienvenido/a!",
@@ -121,9 +113,6 @@ export async function alertaConfirmarRegistro(email: string): Promise<boolean> {
   return result.isConfirmed;
 }
 
-// ============================================================
-// PAPELERA
-// ============================================================
 export async function confirmarEliminarPermanentemente(tituloTarea: string): Promise<boolean> {
   const result = await SwalTaskify.fire({
     icon: "warning", title: "¿Eliminar definitivamente?",

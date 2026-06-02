@@ -6,13 +6,15 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
 // ---- Cliente SES con credenciales del servidor ----
-const clienteSES = new SESClient({
-  region: process.env.AWS_REGION ?? "us-east-2",
-  credentials: {
-    accessKeyId:     process.env.AWS_ACCESS_KEY_ID     ?? "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
-  },
-});
+function crearClienteSES() {
+  return new SESClient({
+    region: process.env.AWS_REGION ?? "us-east-2",
+    credentials: {
+      accessKeyId:     process.env.AWS_ACCESS_KEY_ID     ?? "",
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
+    },
+  });
+}
 
 // ---- Tipos del payload que manda el frontend ----
 interface TareaResumen {
@@ -203,15 +205,16 @@ export default async function handler(
       Source: "joamengancho@gmail.com", 
     });
 
+    const clienteSES = crearClienteSES();
     await clienteSES.send(comandoEmail);
 
     // RETORNO DE SEGURIDAD: Envía explícitamente el JSON para cerrar el búfer de red
-    return res.status(200).json({ mensaje: "Email enviado con éxito mediante AWS SES" });
+    return res.status(200).json({ mensaje: "Email enviado con éxito" });
 
   } catch (error: unknown) {
-    console.error("Error crítico en AWS SES:", error);
+    console.error("Error crítico:", error);
     return res.status(500).json({ 
-      error: "Error interno al procesar AWS SES", 
+      error: "Error interno al procesar", 
       detalles: (error as Error).message 
     });
   }

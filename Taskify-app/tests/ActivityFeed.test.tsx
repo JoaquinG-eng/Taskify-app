@@ -8,7 +8,7 @@ import type { Actividad } from "../src/types/actividad";
 
 // Interceptamos la llamada para que el componente acceda de forma segura al diccionario de estilos
 vi.mock("../src/types/actividad", async () => {
-  const original = await vi.importActual("../src/types/actividad") as any;
+  const original = await vi.importActual<typeof import("../src/types/actividad")>("../src/types/actividad");
   return {
     ...original,
     CONFIG_ACTIVIDAD: new Proxy({}, {
@@ -19,19 +19,19 @@ vi.mock("../src/types/actividad", async () => {
 
 describe("Pruebas unitarias en <ActivityFeed /> con Props Oficiales", () => {
   
-  // SOLUCIÓN: Usamos 'as any' para burlar la validación estricta del string literal
+  // Las actividades usan tipos válidos del proyecto para evitar casts inseguros
   const actividadesMockfalsas: Actividad[] = [
     {
       id: "act-1",
       descripcion: "Joaquín creó la tarea 'Configurar Firebase'",
       hora: "14:32",
-      tipo: "creacion" as any
+      tipo: "tarea_creada"
     },
     {
       id: "act-2",
       descripcion: "La barra de progreso llegó al 100%",
       hora: "14:40",
-      tipo: "progreso" as any
+      tipo: "tarea_completada"
     }
   ];
 

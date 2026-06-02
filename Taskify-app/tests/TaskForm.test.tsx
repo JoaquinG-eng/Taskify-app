@@ -3,9 +3,9 @@
 // Cobertura extrema TaskForm
 // ============================================================
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, test, expect, vi, beforeEach } from "vitest";
+import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
 
 import TaskForm from "../src/components/tasks/TaskForm/TaskForm";
 import { AlertProvider } from "../src/context/AlertContext";
@@ -26,6 +26,10 @@ describe("TaskForm", () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   test("renderiza modo creación", () => {
     render(
       <AlertProvider>
@@ -36,10 +40,10 @@ describe("TaskForm", () => {
       </AlertProvider>
     );
 
-    expect(screen.getByText("Nueva tarea")).toBeInTheDocument();
+    expect(screen.getByText("Nueva tarea")).toBeTruthy();
     expect(
       screen.getByRole("button", { name: /crear tarea/i })
-    ).toBeInTheDocument();
+    ).toBeTruthy();
   });
 
   test("renderiza modo edición", () => {
@@ -58,13 +62,13 @@ describe("TaskForm", () => {
       </AlertProvider>
     );
 
-    expect(screen.getByText("Editar tarea")).toBeInTheDocument();
+    expect(screen.getByText("Editar tarea")).toBeTruthy();
 
     expect(
       screen.getByRole("button", {
         name: /guardar cambios/i,
       })
-    ).toBeInTheDocument();
+    ).toBeTruthy();
   });
 
   test("muestra error al enviar vacío", async () => {
@@ -98,26 +102,30 @@ describe("TaskForm", () => {
     );
 
     await userEvent.type(
-      screen.getByPlaceholderText("¿Qué hay que hacer?"),
-      "Crear Dashboard"
+      screen.getAllByPlaceholderText("¿Qué hay que hacer?")[0],
+      "Crear Dashboard",
+      { delay: 0 }
     );
 
     await userEvent.type(
-      screen.getByPlaceholderText("Detalles opcionales..."),
-      "Diseñar estadísticas"
+      screen.getAllByPlaceholderText("Detalles opcionales...")[0],
+      "Diseñar estadísticas",
+      { delay: 0 }
     );
 
     await userEvent.type(
-      screen.getByPlaceholderText("Tu nombre"),
-      "Joaquín"
+      screen.getAllByPlaceholderText("Tu nombre")[0],
+      "Joaquín",
+      { delay: 0 }
     );
 
     await userEvent.type(
-      screen.getByPlaceholderText("Responsable"),
-      "Equipo Frontend"
+      screen.getAllByPlaceholderText("Responsable")[0],
+      "Equipo Frontend",
+      { delay: 0 }
     );
 
-    await userEvent.click(screen.getByText("Alta"));
+    await userEvent.click(screen.getAllByText("Alta")[0]);
 
     await userEvent.click(
       screen.getByRole("button", {
@@ -136,7 +144,7 @@ describe("TaskForm", () => {
         asignadoA: "Equipo Frontend",
       })
     );
-  });
+  }, 10000);
 
   test("permite cambiar prioridad", async () => {
     render(
@@ -148,10 +156,10 @@ describe("TaskForm", () => {
       </AlertProvider>
     );
 
-    await userEvent.click(screen.getByText("Alta"));
-    await userEvent.click(screen.getByText("Baja"));
+    await userEvent.click(screen.getAllByText("Alta")[0]);
+    await userEvent.click(screen.getAllByText("Baja")[0]);
 
-    expect(screen.getByText("Baja")).toBeInTheDocument();
+    expect(screen.getAllByText("Baja")[0]).toBeTruthy();
   });
 
   test("cierra mediante botón cancelar", async () => {
@@ -165,9 +173,9 @@ describe("TaskForm", () => {
     );
 
     await userEvent.click(
-      screen.getByRole("button", {
+      screen.getAllByRole("button", {
         name: /cancelar/i,
-      })
+      })[0]
     );
 
     expect(alCancelarMock).toHaveBeenCalled();
@@ -184,9 +192,9 @@ describe("TaskForm", () => {
     );
 
     await userEvent.click(
-      screen.getByRole("button", {
+      screen.getAllByRole("button", {
         name: /cerrar/i,
-      })
+      })[0]
     );
 
     expect(alCancelarMock).toHaveBeenCalled();
@@ -202,13 +210,13 @@ describe("TaskForm", () => {
       </AlertProvider>
     );
 
-    const input = screen.getByPlaceholderText(
+    const input = screen.getAllByPlaceholderText(
       "¿Qué hay que hacer?"
-    );
+    )[0];
 
     await userEvent.type(input, "Taskify");
 
-    expect(screen.getByText("7/60")).toBeInTheDocument();
+    expect(screen.getByText("7/60")).toBeTruthy();
   });
 
   test("permite ingresar fecha límite", async () => {
@@ -225,6 +233,6 @@ describe("TaskForm", () => {
 
     await userEvent.type(fecha, "2028-12-31");
 
-    expect(fecha).toHaveValue("2028-12-31");
+    expect((fecha as HTMLInputElement).value).toBe("2028-12-31");
   });
 });

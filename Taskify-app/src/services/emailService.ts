@@ -1,9 +1,3 @@
-// ============================================================
-// ARCHIVO: src/services/emailService.ts
-// Llama a la función serverless /api/sendEmail.
-// Las credenciales AWS NUNCA están acá — solo en el servidor.
-// ============================================================
-
 import type { Tarea } from "../types/task";
 
 interface ResultadoEnvio {
@@ -17,7 +11,6 @@ export async function enviarResumenDeTareas(
   nombreUsuario: string,
   tareas: Tarea[]
 ): Promise<ResultadoEnvio> {
-  // Solo mandamos las tareas activas (no las que están en papelera)
   const tareasActivas = tareas.filter((t) => !t.estaEnPapelera);
 
   const payload = {
