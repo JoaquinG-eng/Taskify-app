@@ -199,8 +199,8 @@ export default async function handler(
           Data: `Taskify — Resumen de Tareas de ${nombreUsuario}`,
         },
       },
-      // NOTA: Debe ser un mail verificado en tu consola de AWS SES
-      Source: "no-reply@mitake.com", 
+
+      Source: "joamengancho@gmail.com", 
     });
 
     await clienteSES.send(comandoEmail);
