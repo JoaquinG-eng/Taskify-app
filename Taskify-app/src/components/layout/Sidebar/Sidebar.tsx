@@ -91,49 +91,56 @@ function Sidebar({
 
         {/* Sistema */}
         <div className="sidebar__sistema">
-          <p className="sidebar__seccion-label">Sistema</p>
+  <p className="sidebar__seccion-label">Sistema</p>
 
-          <button
-            className={`sidebar__item ${seccionActiva === "papelera" ? "sidebar__item--activo" : ""}`}
-            onClick={() => manejarClick("papelera")}
-          >
-            <span className="sidebar__item-icono">🗑</span>
-            <span className="sidebar__item-texto">Papelera</span>
-            {cantidadEnPapelera > 0 && (
-              <span className="sidebar__badge">{cantidadEnPapelera}</span>
-            )}
-          </button>
+  <button
+    className={`sidebar__item ${seccionActiva === "papelera" ? "sidebar__item--activo" : ""}`}
+    onClick={() => manejarClick("papelera")}
+  >
+    <span className="sidebar__item-icono">🗑</span>
+    <span className="sidebar__item-texto">Papelera</span>
+    {cantidadEnPapelera > 0 && (
+      <span className="sidebar__badge">{cantidadEnPapelera}</span>
+    )}
+  </button>
 
-          <button
-            className={`sidebar__item ${seccionActiva === "about" ? "sidebar__item--activo" : ""}`}
-            onClick={() => manejarClick("about")}
-          >
-            <span className="sidebar__item-icono">◎</span>
-            <span className="sidebar__item-texto">Sobre Taskify</span>
-          </button>
-        </div>
+  <button
+    className={`sidebar__item ${seccionActiva === "about" ? "sidebar__item--activo" : ""}`}
+    onClick={() => manejarClick("about")}
+  >
+    <span className="sidebar__item-icono">◎</span>
+    <span className="sidebar__item-texto">Sobre Taskify</span>
+  </button>
+
+  {alLogout && (
+    <button
+      className="sidebar__item sidebar__item--logout"
+      onClick={alLogout}
+    >
+      <span className="sidebar__item-icono">↪</span>
+      <span className="sidebar__item-texto">Cerrar sesión</span>
+    </button>
+  )}
+</div>
 
         {/* Usuario + Logout */}
-        <div className="sidebar__pie">
-          <div className="sidebar__usuario">
-            <div className="sidebar__usuario-avatar">{iniciales || "U"}</div>
-            <div className="sidebar__usuario-info">
-              <span className="sidebar__usuario-nombre">{nombreUsuario}</span>
-              <span className="sidebar__usuario-rol">Desarrollador</span>
-            </div>
-            {alLogout && (
-              <button
-                className="sidebar__boton-logout"
-                onClick={alLogout}
-                title="Cerrar sesión"
-                aria-label="Cerrar sesión"
-              >
-                ⎋
-              </button>
-            )}
-          </div>
-        </div>
+       <div className="sidebar__pie">
+  <div className="sidebar__usuario">
+    <div className="sidebar__usuario-avatar">
+      {iniciales || "U"}
+    </div>
 
+    <div className="sidebar__usuario-info">
+      <span className="sidebar__usuario-nombre">
+        {nombreUsuario}
+      </span>
+
+      <span className="sidebar__usuario-rol">
+        Desarrollador
+      </span>
+    </div>
+  </div>
+</div>
       </aside>
     </>
   );

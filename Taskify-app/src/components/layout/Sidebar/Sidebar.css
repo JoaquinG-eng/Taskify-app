@@ -194,28 +194,11 @@
   font-size: 11px;
 }
 
-/* ---- BOTÓN LOGOUT — rojo sutil, claro ---- */
-.sidebar__boton-logout {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: rgba(239,68,68,.08);
-  border: 1px solid rgba(239,68,68,.2);
-  color: #f09595;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all .15s ease;
-  font-family: inherit;
+.sidebar__item--logout {
+  margin-top: 4px;
 }
 
-.sidebar__boton-logout:hover {
-  background: rgba(239,68,68,.18);
-  border-color: rgba(239,68,68,.4);
-  color: #ef4444;
-  transform: scale(1.05);
-}
-
+.sidebar__item--logout:hover {
+  background: rgba(169, 185, 22, 0.12);
+  color: #570303;
+ }
