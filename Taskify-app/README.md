@@ -800,19 +800,38 @@ npm run build
 
 En esta última iteración del proyecto Taskify, se realizaron mejoras en la experiencia de usuario, interfaz y validaciones del sistema:
 
-### 1. Mejora del Dashboard (UX más humana y personalizada)
+### 1.Personalización del Dashboard (Saludo dinámico)
 Se implementó un sistema de saludo dinámico según la hora del día:
 Buenos días ☀️
 Buenas tardes 🌤️
 Buenas noches 🌙
 
+Sistema de saludo según la hora
 
-El título del dashboard ahora es personalizado por usuario:
-Hola nuevamente, {nombreUsuario} 👋
-Se agregó un subtítulo más cálido y motivador:
-Qué bueno tenerte nuevamente por aquí. Tienes X tarea(s) pendiente(s) para continuar avanzando. 
+El sistema detecta la hora del usuario y muestra un saludo diferente automáticamente:
+ 
+```typescript
+ function obtenerSaludo(): string {
+  const hora = new Date().getHours();
 
-👉 Esto mejora la experiencia emocional del usuario dentro de la app.
+  if (hora < 12) return "Buenos días";
+  if (hora < 19) return "Buenas tardes";
+  return "Buenas noches";
+}
+```
+
+El título principal ahora incluye el nombre del usuario y un saludo dinámico:
+
+```typescript
+titulo: `${obtenerSaludo()}, ${nombreUsuario} 👋`
+```
+### Ejemplo final en pantalla
+
+**Buenos días, Juan 👋**
+
+**Qué bueno tenerte nuevamente por aquí.**
+**Tienes 3 tareas pendientes para continuar avanzando.**
+
 
 ### 2. Mejoras en la interfaz del Sidebar
 Se integró correctamente el botón de cierre de sesión.

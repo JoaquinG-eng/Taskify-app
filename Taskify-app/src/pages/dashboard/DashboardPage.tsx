@@ -50,7 +50,7 @@ export default function DashboardPage() {
 
   // ---- Logout ----
   async function manejarLogout() {
-    const ok = await swalConfirmar("¿Cerrar sesión?", "Vas a salir de tu cuenta de Mitake.", "Sí, salir");
+    const ok = await swalConfirmar("¿Cerrar sesión?", "Vas a salir de tu cuenta de Taskify", "Sí, salir");
     if (!ok) return;
     await cerrarSesion();
   }
@@ -183,7 +183,7 @@ const configTopbar: Record<SeccionActiva, { titulo: string; subtitulo: string }>
   },
 
   about: {
-    titulo: "Sobre Mitake",
+    titulo: "Sobre Taskify",
     subtitulo: "Información del proyecto"
   },
 };
