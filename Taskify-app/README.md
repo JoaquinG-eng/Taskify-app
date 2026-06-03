@@ -860,10 +860,7 @@ coverage
 Se corrigió el seguimiento de archivos innecesarios en Git.
 
 ### 6. UX general
-Se refinó el lenguaje de la aplicación para hacerlo más:
-Cercano
-Humano
-Motivador
+Se refinó el lenguaje de la aplicación para hacerlo  como más Cercano
 
 Ejemplo:
 
