@@ -185,26 +185,32 @@ export default async function handler(
 
     const htmlContenido = generarHtmlEmail(nombreUsuario, tareas);
 
-    const comandoEmail = new SendEmailCommand({
-      Destination: {
-        ToAddresses: [destinatario],
-      },
-      Message: {
-        Body: {
-          Html: {
-            Charset: "UTF-8",
-            Data: htmlContenido,
-          },
-        },
-        Subject: {
-          Charset: "UTF-8",
-          Data: `Taskify — Resumen de Tareas de ${nombreUsuario}`,
-        },
-      },
+   const sourceEmail = process.env.AWS_SES_FROM_EMAIL ?? "";
 
-      Source: "joamengancho@gmail.com", 
-    });
+if (!sourceEmail) {
+  return res.status(500).json({
+    error: "AWS_SES_FROM_EMAIL no configurado en variables de entorno",
+  });
+}
 
+const comandoEmail = new SendEmailCommand({
+  Destination: {
+    ToAddresses: [destinatario],
+  },
+  Message: {
+    Body: {
+      Html: {
+        Charset: "UTF-8",
+        Data: htmlContenido,
+      },
+    },
+    Subject: {
+      Charset: "UTF-8",
+      Data: `Taskify — Resumen de Tareas de ${nombreUsuario}`,
+    },
+  },
+  Source: sourceEmail,
+});
     const clienteSES = crearClienteSES();
     await clienteSES.send(comandoEmail);
 

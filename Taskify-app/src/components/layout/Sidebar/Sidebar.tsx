@@ -1,6 +1,6 @@
 // ============================================================
 // ARCHIVO: src/components/layout/Sidebar/Sidebar.tsx
-// CAMBIO: recibe nombreUsuario y alLogout desde DashboardPage
+// CAMBIO: recibe nombreUsuario, fotoUsuario y alLogout desde DashboardPage
 // ============================================================
 
 import "./Sidebar.css";
@@ -21,6 +21,7 @@ interface PropiedadesDeSidebar {
   estaAbierto: boolean;
   alCerrar: () => void;
   nombreUsuario?: string;
+  fotoUsuario?: string | null; // 🚀 NUEVA PROP: Para la foto de perfil de Firebase
   alLogout?: () => void;
 }
 
@@ -37,6 +38,7 @@ function Sidebar({
   estaAbierto,
   alCerrar,
   nombreUsuario = "Usuario",
+  fotoUsuario = null, 
   alLogout,
 }: PropiedadesDeSidebar) {
 
@@ -45,7 +47,7 @@ function Sidebar({
     alCerrar();
   }
 
-  // Iniciales para el avatar (máx 2 letras)
+
   const iniciales = nombreUsuario
     .split(" ")
     .slice(0, 2)
@@ -62,8 +64,7 @@ function Sidebar({
 
         {/* Logo */}
         <div className="sidebar__logo">
-          {/* SE REEMPLAZÓ LA LETRA 'T' POR LA IMAGEN DEL LOGOTIPO */}
-          <div className="sidebar__logo-icono">
+           <div className="sidebar__logo-icono">
             <img 
               src={logoTaskify} 
               alt="Taskify Logo" 
@@ -91,56 +92,64 @@ function Sidebar({
 
         {/* Sistema */}
         <div className="sidebar__sistema">
-  <p className="sidebar__seccion-label">Sistema</p>
+          <p className="sidebar__seccion-label">Sistema</p>
 
-  <button
-    className={`sidebar__item ${seccionActiva === "papelera" ? "sidebar__item--activo" : ""}`}
-    onClick={() => manejarClick("papelera")}
-  >
-    <span className="sidebar__item-icono">🗑</span>
-    <span className="sidebar__item-texto">Papelera</span>
-    {cantidadEnPapelera > 0 && (
-      <span className="sidebar__badge">{cantidadEnPapelera}</span>
-    )}
-  </button>
+          <button
+            className={`sidebar__item ${seccionActiva === "papelera" ? "sidebar__item--activo" : ""}`}
+            onClick={() => manejarClick("papelera")}
+          >
+            <span className="sidebar__item-icono">🗑</span>
+            <span className="sidebar__item-texto">Papelera</span>
+            {cantidadEnPapelera > 0 && (
+              <span className="sidebar__badge">{cantidadEnPapelera}</span>
+            )}
+          </button>
 
-  <button
-    className={`sidebar__item ${seccionActiva === "about" ? "sidebar__item--activo" : ""}`}
-    onClick={() => manejarClick("about")}
-  >
-    <span className="sidebar__item-icono">◎</span>
-    <span className="sidebar__item-texto">Sobre Taskify</span>
-  </button>
+          <button
+            className={`sidebar__item ${seccionActiva === "about" ? "sidebar__item--activo" : ""}`}
+            onClick={() => manejarClick("about")}
+          >
+            <span className="sidebar__item-icono">◎</span>
+            <span className="sidebar__item-texto">Sobre Taskify</span>
+          </button>
 
-  {alLogout && (
-    <button
-      className="sidebar__item sidebar__item--logout"
-      onClick={alLogout}
-    >
-      <span className="sidebar__item-icono">↪</span>
-      <span className="sidebar__item-texto">Cerrar sesión</span>
-    </button>
-  )}
-</div>
+          {alLogout && (
+            <button
+              className="sidebar__item sidebar__item--logout"
+              onClick={alLogout}
+            >
+              <span className="sidebar__item-icono">↪</span>
+              <span className="sidebar__item-texto">Cerrar sesión</span>
+            </button>
+          )}
+        </div>
 
-        {/* Usuario + Logout */}
-       <div className="sidebar__pie">
-  <div className="sidebar__usuario">
-    <div className="sidebar__usuario-avatar">
-      {iniciales || "U"}
-    </div>
+        <div className="sidebar__pie">
+          <div className="sidebar__usuario">
+            <div className="sidebar__usuario-avatar" style={{ overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              {fotoUsuario ? (
+                <img 
+                  src={fotoUsuario} 
+                  alt={nombreUsuario} 
+                  referrerPolicy="no-referrer" 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                iniciales || "U"
+              )}
+            </div>
 
-    <div className="sidebar__usuario-info">
-      <span className="sidebar__usuario-nombre">
-        {nombreUsuario}
-      </span>
+            <div className="sidebar__usuario-info">
+              <span className="sidebar__usuario-nombre">
+                {nombreUsuario}
+              </span>
 
-      <span className="sidebar__usuario-rol">
-        Desarrollador
-      </span>
-    </div>
-  </div>
-</div>
+              <span className="sidebar__usuario-rol">
+                Desarrollador
+              </span>
+            </div>
+          </div>
+        </div>
       </aside>
     </>
   );

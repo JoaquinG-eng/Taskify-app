@@ -13,6 +13,7 @@ interface PropiedadesDeTopbar {
   tituloSeccion: string;
   subtituloSeccion: string;
   nombreDelUsuario?: string;
+  fotoDelUsuario?: string | null;
   alAbrirSidebar?: () => void;
   botonPrimario?: ConfiguracionDeBoton;
   botonSecundario?: ConfiguracionDeBoton;
@@ -24,6 +25,7 @@ function Topbar({
   tituloSeccion,
   subtituloSeccion,
   nombreDelUsuario = "",
+  fotoDelUsuario = null,
   alAbrirSidebar,
   botonPrimario,
   botonSecundario,
@@ -89,8 +91,21 @@ function Topbar({
           </button>
         )}
 
-        <div className="topbar__avatar" title={nombreDelUsuario || "Usuario"}>
-          <span>{inicialDelUsuario}</span>
+        <div 
+          className="topbar__avatar" 
+          title={nombreDelUsuario || "Usuario"}
+          style={{ overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center" }}
+        >
+          {fotoDelUsuario ? (
+            <img 
+              src={fotoDelUsuario} 
+              alt={nombreDelUsuario || "Avatar"} 
+              referrerPolicy="no-referrer" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <span>{inicialDelUsuario}</span>
+          )}
         </div>
 
       </div>
