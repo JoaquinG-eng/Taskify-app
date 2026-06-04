@@ -2,7 +2,7 @@ import type { User } from "firebase/auth";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import LoginPage from "../src/pages/login and register/LoginPage";
+import LoginPage from "../src/pages/auth/LoginPage";
 import * as authService from "../src/services/authService";
 import * as sweetAlerts from "../src/utils/sweetAlerts";
 

@@ -3,8 +3,8 @@ import { AlertProvider } from "./context/AlertContext";
 import { useAuth }       from "./hooks/useAuth";
 import ProtectedRoute    from "./routes/ProtectedRoute";
 
-import LoginPage     from "./pages/login and register/LoginPage";
-import RegisterPage  from "./pages/login and register/RegisterPage";
+import LoginPage     from "./pages/auth/LoginPage";
+import RegisterPage  from "./pages/auth/RegisterPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 
 type VistaAuth = "login" | "registro";
