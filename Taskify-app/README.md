@@ -6,8 +6,13 @@ Taskify es una aplicación web moderna para la gestión de tareas desarrollada c
 
 ## ⚡ IMPORTANTE - Antes de comenzar
 
+Si o si es desde la raiz de Taskify porque si se instalan las dependencias desde otro lugar no funciona nada
+
 ```bash
-cd Taskify-app
+cd ProyectoM4-JoaquinGonzalezFT73/Taskify-app 
+
+
+link proyecto: https://proyecto-m4-joaquingonzalez-ft-73.vercel.app/
 ```
 
 **Todos los comandos deben ejecutarse desde esta carpeta.** Si no ejecutas `cd Taskify-app`, los comandos `npm`, `npm run`, etc. fallarán.
