@@ -36,6 +36,12 @@ let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 describe("api/sendEmail.ts", () => {
   beforeEach(async () => {
   vi.resetModules();
+
+  vi.stubEnv("AWS_REGION", "us-east-1");
+  vi.stubEnv("AWS_ACCESS_KEY_ID", "test-access-key");
+  vi.stubEnv("AWS_SECRET_ACCESS_KEY", "test-secret-key");
+  vi.stubEnv("AWS_SES_FROM_EMAIL", "noreply@taskify.test");
+
   consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
   const module = await import("../api/sendEmail");
@@ -46,9 +52,12 @@ describe("api/sendEmail.ts", () => {
   SendEmailCommand = aws.SendEmailCommand as unknown as MockedFunction;
   SESClient = aws.SESClient as unknown as MockedFunction;
 });
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
-  });
+
+afterEach(() => {
+  consoleErrorSpy.mockRestore();
+  vi.unstubAllEnvs();
+  vi.clearAllMocks();
+});
 
   test("debe devolver 405 si el método no es POST", async () => {
     const json = vi.fn();
