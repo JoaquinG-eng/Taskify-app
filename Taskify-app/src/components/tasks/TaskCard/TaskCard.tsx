@@ -17,9 +17,9 @@ type TaskCardProps = {
 
 function obtenerEtiquetaDeEstado(estado: EstadoTarea): string {
   const etiquetas: Record<EstadoTarea, string> = {
-    pendiente:   "Pendiente",
+    pendiente:     "Pendiente",
     "en-progreso": "En progreso",
-    completada:  "Completada",
+    completada:    "Completada",
   };
   return etiquetas[estado] ?? estado;
 }
@@ -37,28 +37,21 @@ function TaskCard({
   // EFECTO: CONTADOR AUTOMÁTICO DE PROGRESO DE 10 EN 10
   // =========================================================
   useEffect(() => {
-    // 1. Validamos que el estado sea exactamente "en-progreso" y no haya llegado a 100%
     if (datosDeLaTarea.estado === "en-progreso" && datosDeLaTarea.progreso < 100) {
-      
       const intervalo = setInterval(() => {
         const siguienteProgreso = datosDeLaTarea.progreso + 10;
-        
         if (siguienteProgreso >= 100) {
           clearInterval(intervalo);
           alActualizarProgreso(datosDeLaTarea.id, 100);
-          // Opcional: Si quieres que al llegar a 100 pase automáticamente a Completada
           alCambiarEstado(datosDeLaTarea.id, "completada");
         } else {
-          // Despachamos el aumento del 10% hacia el servicio/estado global (Firebase)
           alActualizarProgreso(datosDeLaTarea.id, siguienteProgreso);
         }
-      }, 2000); // <-- Modifica este número (5000ms = 5 segundos) para controlar el tiempo del aumento
+      }, 2000);
 
-      // 2. FUNCIÓN DE LIMPIEZA: Destruye el timer si la tarea se mueve, se edita o se destruye
       return () => clearInterval(intervalo);
     }
-  }, [datosDeLaTarea.estado, datosDeLaTarea.progreso, datosDeLaTarea.id]); 
-  // Escucha id, estado y progreso para recalcular el siguiente paso de manera segura
+  }, [datosDeLaTarea.estado, datosDeLaTarea.progreso, datosDeLaTarea.id]);
 
   function manejarGuardarEdicion(datosEditados: TareaNueva) {
     alEditarTarea(datosDeLaTarea.id, datosEditados);
@@ -119,7 +112,7 @@ function TaskCard({
           </div>
           <div className="task-card__progress-pista">
             <div
-              className={`task-card__progress-relleno ${barraEstaCompleta ? "task-card__progress-relleno--completo" : ""}`}
+              className={`task-card__progress-relleno${barraEstaCompleta ? " task-card__progress-relleno--completo" : ""}`}
               style={{ width: `${progresoLimitado}%` }}
             />
           </div>
@@ -138,13 +131,6 @@ function TaskCard({
               disabled={estaCompletada}
               title="Marcar como completada"
             >✓</button>
-
-            <button
-              className="task-card__btn task-card__btn--progreso"
-              onClick={() => alActualizarProgreso(datosDeLaTarea.id, datosDeLaTarea.progreso + 10)}
-              disabled={estaCompletada || barraEstaCompleta}
-              title="+10% de progreso"
-            >Avance</button>
 
             <button
               className="task-card__btn task-card__btn--editar"

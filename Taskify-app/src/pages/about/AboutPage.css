@@ -330,3 +330,14 @@
 .about__proxima-texto {
   line-height: 1.5;
 }
+
+/* Agregar al final de AboutPage.css */
+
+.about__proxima-item--hecha .about__proxima-icono {
+  color: #6e9f18;
+}
+
+.about__proxima-item--hecha .about__proxima-texto {
+  text-decoration: line-through;
+  opacity: 0.45;
+}

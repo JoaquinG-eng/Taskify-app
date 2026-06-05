@@ -33,36 +33,27 @@
 }
 
 /* ---- COLUMNA ---- */
- .kanban__column {
+.kanban__column {
   background: rgba(15, 15, 25, 0.40);
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-
   border: 1px solid rgba(255,255,255,.07);
-
   border-radius: var(--radius-md);
-
   padding: 16px;
-
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   min-height: 260px;
-
   transition:
     background var(--transition-normal),
     border-color var(--transition-normal),
     box-shadow var(--transition-normal);
 }
- .kanban__column:hover {
+
+.kanban__column:hover {
   background: rgba(15,15,25,.50);
-
   border-color: rgba(255,255,255,.12);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 
 /* ---- CABECERA DE COLUMNA ---- */
@@ -133,7 +124,6 @@
 
 /* =========================================================
    RESPONSIVE — Tablet (≤ 1024px)
-   Las columnas se achican pero mantienen grid de 3.
    ========================================================= */
 @media (max-width: 1024px) {
   .kanban__grid {
@@ -148,41 +138,30 @@
 
 /* =========================================================
    RESPONSIVE — Mobile (≤ 768px)
-   Scroll horizontal: las 3 columnas se ven de a una y media,
-   es más natural que apilarlas verticalmente.
    ========================================================= */
 @media (max-width: 768px) {
-  /* El wrapper necesita salir del padding del padre */
   .kanban__grid {
-    display: flex;                     /* cambiamos a flex para scroll */
+    display: flex;
     flex-direction: row;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;    /* snap al deslizar */
+    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     gap: 12px;
-    padding-bottom: 12px;             /* espacio para la scrollbar */
-
-    /* Margen negativo para que llegue al borde en mobile */
+    padding-bottom: 12px;
     margin-left: -16px;
     margin-right: -16px;
     padding-left: 16px;
     padding-right: 16px;
   }
 
-  /* Ocultar scrollbar visualmente (sigue funcionando) */
-  .kanban__grid::-webkit-scrollbar {
-    height: 4px;
-  }
-  .kanban__grid::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  .kanban__grid::-webkit-scrollbar { height: 4px; }
+  .kanban__grid::-webkit-scrollbar-track { background: transparent; }
   .kanban__grid::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 99px;
   }
 
   .kanban__column {
-    /* Cada columna ocupa ~85% del viewport → se ve la siguiente */
     min-width: 85vw;
     max-width: 85vw;
     flex-shrink: 0;
@@ -193,11 +172,83 @@
 
 /* =========================================================
    RESPONSIVE — Mobile pequeño (≤ 480px)
-   Columna más ancha para aprovechar el espacio.
    ========================================================= */
 @media (max-width: 480px) {
   .kanban__column {
     min-width: 90vw;
     max-width: 90vw;
   }
+}
+
+/* =========================================================
+   DRAG & DROP
+   ========================================================= */
+
+/* Wrapper arrastrable — el cursor lo maneja useDragAndDrop
+   inyectando un <style> en el <head> durante el drag       */
+.kanban__card-wrapper {
+  cursor: grab;
+  border-radius: inherit;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  will-change: transform, opacity;
+}
+
+/* Tarjeta siendo arrastrada: efecto fantasma */
+.kanban__card-wrapper--ghost {
+  opacity: 0.35;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+/* Hover con elevación solo cuando no hay drag activo */
+.kanban__grid:not(.kanban__grid--arrastrando) .kanban__card-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Columna que es destino del drop */
+.kanban__column--drop-target {
+  background: rgba(99, 102, 241, 0.07) !important;
+  box-shadow:
+    0 0 0 2px rgba(99, 102, 241, 0.5),
+    0 4px 24px rgba(99, 102, 241, 0.12) !important;
+  transform: scale(1.005);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* Indicador "Soltar aquí" */
+.kanban__drop-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1.5px dashed rgba(99, 102, 241, 0.6);
+  background: rgba(99, 102, 241, 0.06);
+  color: rgba(99, 102, 241, 0.85);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  animation: dropIndicatorAppear 0.15s ease forwards;
+  pointer-events: none;
+  user-select: none;
+}
+
+.kanban__drop-indicator::before {
+  content: "↓";
+  font-size: 0.9rem;
+}
+
+@keyframes dropIndicatorAppear {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }

@@ -1,13 +1,21 @@
- import TaskCard from "../../tasks/TaskCard/TaskCard";
- import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
- import "./KanbanBoard.css";
+// ============================================================
+// ARCHIVO: src/components/kanban/KanbanBoard/KanbanBoard.tsx
+// Tablero Kanban con drag & drop nativo via useDragAndDrop.
+// Solo se modifican el componente y el CSS — los tipos y hooks
+// de tareas quedan intactos.
+// ============================================================
+
+import { useDragAndDrop } from "../../../hooks/useDragAndDrop";
+import TaskCard from "../../tasks/TaskCard/TaskCard";
+import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
+import "./KanbanBoard.css";
 
 type KanbanBoardProps = {
   tareas: Tarea[];
   alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
   alActualizarProgreso: (id: string, nuevoProgreso: number) => void;
   alMoverAPapelera: (id: string) => void;
-  alEditarTarea: (id: string, datosEditados: TareaNueva) => void; 
+  alEditarTarea: (id: string, datosEditados: TareaNueva) => void;
 };
 
 const configuracionDeColumnas: {
@@ -29,56 +37,97 @@ function KanbanBoard({
   alMoverAPapelera,
   alEditarTarea,
 }: KanbanBoardProps) {
+  const {
+    estaArrastrando,
+    columnaEsDestino,
+    tareaEstaArrastrandose,
+    onDragStart,
+    onDragEnd,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+  } = useDragAndDrop({ alCambiarEstado });
+
   return (
     <section className="kanban">
-
       <div className="kanban__encabezado">
         <div>
           <h2 className="kanban__titulo">Tablero de tareas</h2>
           <p className="kanban__subtitulo">
-            Vista organizada por estado — {tareas.length} tarea{tareas.length !== 1 ? "s" : ""} en total
+            Vista organizada por estado —{" "}
+            {tareas.length} tarea{tareas.length !== 1 ? "s" : ""} en total
           </p>
         </div>
       </div>
-        
-        
-        
-      <div className="kanban__grid"> 
+
+      <div className={`kanban__grid${estaArrastrando ? " kanban__grid--arrastrando" : ""}`}>
         {configuracionDeColumnas.map((columna) => {
-            const tareasDeEstaColumna = tareas
-            .filter((tarea) => tarea.estado === columna.estado)
+          const tareasDeEstaColumna = tareas
+            .filter((t) => t.estado === columna.estado)
             .sort((a, b) => ordenDePrioridad[a.prioridad] - ordenDePrioridad[b.prioridad]);
 
-          return (
-            <div key={columna.estado} className="kanban__column">
+          const esDestino = columnaEsDestino(columna.estado);
 
+          return (
+            <div
+              key={columna.estado}
+              className={[
+                "kanban__column",
+                esDestino ? "kanban__column--drop-target" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onDragOver={onDragOver(columna.estado)}
+              onDragLeave={onDragLeave(columna.estado)}
+              onDrop={onDrop(columna.estado)}
+            >
               <h3>
                 {columna.titulo}
                 <span>{tareasDeEstaColumna.length}</span>
               </h3>
 
+              {/* Indicador visual de zona de drop */}
+              {esDestino && (
+                <div className="kanban__drop-indicator">
+                  Soltar aquí
+                </div>
+              )}
+
               <div className="kanban__tasks">
-                {tareasDeEstaColumna.length === 0 ? (
+                {tareasDeEstaColumna.length === 0 && !esDestino ? (
                   <div className="kanban__columna-vacia">{columna.mensajeVacio}</div>
                 ) : (
                   tareasDeEstaColumna.map((tarea) => (
-                    <TaskCard
+                    // Envolvemos TaskCard en un div con los handlers de drag
+                    <div
                       key={tarea.id}
-                      datosDeLaTarea={tarea}
-                      alCambiarEstado={alCambiarEstado}
-                      alActualizarProgreso={alActualizarProgreso}
-                      alMoverAPapelera={alMoverAPapelera}
-                      alEditarTarea={alEditarTarea}
-                    />
+                      className={[
+                        "kanban__card-wrapper",
+                        tareaEstaArrastrandose(tarea.id)
+                          ? "kanban__card-wrapper--ghost"
+                          : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      draggable
+                      onDragStart={onDragStart(tarea.id, tarea.estado)}
+                      onDragEnd={onDragEnd}
+                    >
+                      <TaskCard
+                        datosDeLaTarea={tarea}
+                        alCambiarEstado={alCambiarEstado}
+                        alActualizarProgreso={alActualizarProgreso}
+                        alMoverAPapelera={alMoverAPapelera}
+                        alEditarTarea={alEditarTarea}
+                      />
+                    </div>
                   ))
                 )}
               </div>
-
             </div>
           );
         })}
       </div>
-
     </section>
   );
 }
