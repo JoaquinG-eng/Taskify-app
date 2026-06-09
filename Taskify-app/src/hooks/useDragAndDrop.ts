@@ -1,7 +1,3 @@
-// ============================================================
-// ARCHIVO: src/hooks/useDragAndDrop.ts
-// ============================================================
-
 import { useState, useCallback, useRef } from "react";
 import type { EstadoTarea } from "../types/task";
 
@@ -15,9 +11,6 @@ interface UseDragAndDropProps {
   alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
 }
 
-// Inyecta un <style> en el <head> para forzar grabbing globalmente.
-// Es la única forma de overridear el cursor del sistema en Chrome
-// cuando el ghost nativo del drag está activo.
 let styleTagCursor: HTMLStyleElement | null = null;
 
 function activarCursorGrabbing() {
@@ -41,8 +34,14 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
   });
 
   const yaSeMovio = useRef(false);
+  
+  // Referencias para touch
+  const touchStartX = useRef<number>(0);
+  const touchCurrentX = useRef<number>(0);
+  const touchStartTime = useRef<number>(0);
+  const isScrolling = useRef<boolean>(false);
 
-  // ── Handlers para la tarjeta ─────────────────────────────────
+  // ── Handlers para la tarjeta (Mouse) ─────────────────────────────────
   const onDragStart = useCallback(
     (tareaId: string, estadoOrigen: EstadoTarea) =>
       (e: React.DragEvent<HTMLDivElement>) => {
@@ -50,9 +49,12 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("tareaId", tareaId);
         e.dataTransfer.setData("estadoOrigen", estadoOrigen);
+        
+        const target = e.target as HTMLElement;
+        if(target) {
+            e.dataTransfer.setDragImage(target, 20, 20);
+        }
 
-        // Ghost nativo de Chrome intacto (efecto transparencia)
-        // Solo forzamos el cursor via <style> inyectado
         activarCursorGrabbing();
 
         setTimeout(() => {
@@ -76,7 +78,77 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     yaSeMovio.current = false;
   }, []);
 
-  // ── Handlers para la columna ─────────────────────────────────
+  // ── Handlers Touch (Para Móviles - CORREGIDO) ────────────────────────
+  const onTouchStart = useCallback(
+    (tareaId: string, estadoOrigen: EstadoTarea) => (e: React.TouchEvent<HTMLDivElement>) => {
+      // Resetear estados
+      isScrolling.current = false;
+      touchStartX.current = e.touches[0].clientX;
+      touchCurrentX.current = touchStartX.current;
+      touchStartTime.current = Date.now();
+      
+      setDragState({
+        tareaArrastradaId: tareaId,
+        columnaOrigen: estadoOrigen,
+        columnaDestino: estadoOrigen,
+      });
+    },
+    []
+  );
+
+  const onTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragState.tareaArrastradaId) return;
+
+    const currentX = e.touches[0].clientX;
+    const diffX = currentX - touchStartX.current;
+    const diffY = Math.abs(e.touches[0].clientY - (e.target as HTMLElement).getBoundingClientRect().top); // Simplificado
+
+    // Si el movimiento vertical es mayor que el horizontal, asumimos scroll y no swipe
+    // Nota: Esta es una detección básica, lo importante es el CSS touch-action
+    touchCurrentX.current = currentX;
+  }, [dragState.tareaArrastradaId]);
+
+  const onTouchEnd = useCallback(
+    (estadoActual: EstadoTarea) => () => {
+      if (!dragState.tareaArrastradaId) return;
+
+      const diff = touchCurrentX.current - touchStartX.current;
+      const timeDiff = Date.now() - touchStartTime.current;
+      
+      // UMBRALES AJUSTADOS PARA MAYOR SENSIBILIDAD
+      const threshold = 30; // Pixeles mínimos (reducido de 50 a 30)
+      const timeThreshold = 600; // ms máximos (aumentado de 300 a 600)
+
+      let nuevoEstado: EstadoTarea | null = null;
+
+      // Solo actuar si el deslizamiento fue suficientemente largo y rápido
+      if (Math.abs(diff) > threshold && timeDiff < timeThreshold) {
+        if (diff > 0) {
+          // Swipe a la DERECHA (Ir a columna anterior / Izquierda visual)
+          if (estadoActual === 'en-progreso') nuevoEstado = 'pendiente';
+          else if (estadoActual === 'completada') nuevoEstado = 'en-progreso';
+        } else {
+          // Swipe a la IZQUIERDA (Ir a columna siguiente / Derecha visual)
+          if (estadoActual === 'pendiente') nuevoEstado = 'en-progreso';
+          else if (estadoActual === 'en-progreso') nuevoEstado = 'completada';
+        }
+      }
+
+      if (nuevoEstado && nuevoEstado !== estadoActual) {
+        alCambiarEstado(dragState.tareaArrastradaId!, nuevoEstado);
+      }
+
+      // Limpiar estado siempre al soltar
+      setDragState({
+        tareaArrastradaId: null,
+        columnaOrigen: null,
+        columnaDestino: null,
+      });
+    },
+    [alCambiarEstado, dragState.tareaArrastradaId]
+  );
+
+  // ── Handlers para la columna (Mouse) ─────────────────────────────────
   const onDragOver = useCallback(
     (estadoColumna: EstadoTarea) =>
       (e: React.DragEvent<HTMLDivElement>) => {
@@ -129,7 +201,6 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     [alCambiarEstado]
   );
 
-  // ── Helpers de estado para clases CSS ────────────────────────
   const estaArrastrando = dragState.tareaArrastradaId !== null;
 
   const columnaEsDestino = useCallback(
@@ -155,5 +226,8 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     onDragOver,
     onDragLeave,
     onDrop,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
   };
 }

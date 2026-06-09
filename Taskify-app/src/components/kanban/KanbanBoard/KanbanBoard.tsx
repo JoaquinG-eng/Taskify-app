@@ -1,8 +1,5 @@
 // ============================================================
 // ARCHIVO: src/components/kanban/KanbanBoard/KanbanBoard.tsx
-// Tablero Kanban con drag & drop nativo via useDragAndDrop.
-// Solo se modifican el componente y el CSS — los tipos y hooks
-// de tareas quedan intactos.
 // ============================================================
 
 import { useDragAndDrop } from "../../../hooks/useDragAndDrop";
@@ -46,6 +43,9 @@ function KanbanBoard({
     onDragOver,
     onDragLeave,
     onDrop,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
   } = useDragAndDrop({ alCambiarEstado });
 
   return (
@@ -98,7 +98,6 @@ function KanbanBoard({
                   <div className="kanban__columna-vacia">{columna.mensajeVacio}</div>
                 ) : (
                   tareasDeEstaColumna.map((tarea) => (
-                    // Envolvemos TaskCard en un div con los handlers de drag
                     <div
                       key={tarea.id}
                       className={[
@@ -112,6 +111,10 @@ function KanbanBoard({
                       draggable
                       onDragStart={onDragStart(tarea.id, tarea.estado)}
                       onDragEnd={onDragEnd}
+                      // Handlers Táctiles
+                      onTouchStart={onTouchStart(tarea.id, tarea.estado)}
+                      onTouchMove={onTouchMove}
+                      onTouchEnd={onTouchEnd(tarea.estado)}
                     >
                       <TaskCard
                         datosDeLaTarea={tarea}
