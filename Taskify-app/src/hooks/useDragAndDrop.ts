@@ -1,3 +1,7 @@
+// ============================================================
+// ARCHIVO: src/hooks/useDragAndDrop.ts
+// ============================================================
+
 import { useState, useCallback, useRef } from "react";
 import type { EstadoTarea } from "../types/task";
 
@@ -35,13 +39,13 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
 
   const yaSeMovio = useRef(false);
   
-  // Referencias para touch
+  // Referencias para Touch
   const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
   const touchCurrentX = useRef<number>(0);
-  const touchStartTime = useRef<number>(0);
-  const isScrolling = useRef<boolean>(false);
+  const isScrolling = useRef<boolean>(false); // Para detectar si el usuario quiso hacer scroll
 
-  // ── Handlers para la tarjeta (Mouse) ─────────────────────────────────
+  // ── Handlers Mouse (Desktop) ───────────────────────────────
   const onDragStart = useCallback(
     (tareaId: string, estadoOrigen: EstadoTarea) =>
       (e: React.DragEvent<HTMLDivElement>) => {
@@ -51,9 +55,7 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
         e.dataTransfer.setData("estadoOrigen", estadoOrigen);
         
         const target = e.target as HTMLElement;
-        if(target) {
-            e.dataTransfer.setDragImage(target, 20, 20);
-        }
+        if(target) e.dataTransfer.setDragImage(target, 20, 20);
 
         activarCursorGrabbing();
 
@@ -78,14 +80,14 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     yaSeMovio.current = false;
   }, []);
 
-  // ── Handlers Touch (Para Móviles - CORREGIDO) ────────────────────────
+  // ── Handlers Touch (Móvil) ─────────────────────────────────
   const onTouchStart = useCallback(
     (tareaId: string, estadoOrigen: EstadoTarea) => (e: React.TouchEvent<HTMLDivElement>) => {
       // Resetear estados
       isScrolling.current = false;
       touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
       touchCurrentX.current = touchStartX.current;
-      touchStartTime.current = Date.now();
       
       setDragState({
         tareaArrastradaId: tareaId,
@@ -100,35 +102,53 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     if (!dragState.tareaArrastradaId) return;
 
     const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    
     const diffX = currentX - touchStartX.current;
-    const diffY = Math.abs(e.touches[0].clientY - (e.target as HTMLElement).getBoundingClientRect().top); // Simplificado
+    const diffY = Math.abs(currentY - touchStartY.current);
 
-    // Si el movimiento vertical es mayor que el horizontal, asumimos scroll y no swipe
-    // Nota: Esta es una detección básica, lo importante es el CSS touch-action
-    touchCurrentX.current = currentX;
+    // Si el movimiento vertical es mayor que el horizontal, asumimos que es SCROLL
+    // y dejamos que el navegador lo maneje (no hacemos nada especial aquí)
+    if (diffY > 10 && diffY > Math.abs(diffX)) {
+      isScrolling.current = true;
+      // Opcional: cancelar el arrastre si definitivamente es scroll
+      // setDragState(prev => ({ ...prev, tareaArrastradaId: null }));
+      return;
+    }
+
+    // Si es movimiento horizontal, prevenimos el scroll lateral del navegador
+    // para que la tarjeta se sienta "pegada" al dedo
+    if (Math.abs(diffX) > 5) {
+       // Nota: preventDefault() en touchmove a veces bloquea scroll padre,
+       // pero como tenemos touch-action: none en CSS, debería estar bien.
+       // e.preventDefault(); // Descomentar si el scroll lateral molesta
+       touchCurrentX.current = currentX;
+    }
   }, [dragState.tareaArrastradaId]);
 
   const onTouchEnd = useCallback(
     (estadoActual: EstadoTarea) => () => {
-      if (!dragState.tareaArrastradaId) return;
+      if (isScrolling.current || !dragState.tareaArrastradaId) {
+        setDragState({
+            tareaArrastradaId: null,
+            columnaOrigen: null,
+            columnaDestino: null,
+        });
+        return;
+      }
 
       const diff = touchCurrentX.current - touchStartX.current;
-      const timeDiff = Date.now() - touchStartTime.current;
-      
-      // UMBRALES AJUSTADOS PARA MAYOR SENSIBILIDAD
-      const threshold = 30; // Pixeles mínimos (reducido de 50 a 30)
-      const timeThreshold = 600; // ms máximos (aumentado de 300 a 600)
-
+      const threshold = 40; // Umbral más bajo para facilitar el movimiento
       let nuevoEstado: EstadoTarea | null = null;
 
-      // Solo actuar si el deslizamiento fue suficientemente largo y rápido
-      if (Math.abs(diff) > threshold && timeDiff < timeThreshold) {
+      // Lógica de movimiento izquierda/derecha
+      if (Math.abs(diff) > threshold) {
         if (diff > 0) {
-          // Swipe a la DERECHA (Ir a columna anterior / Izquierda visual)
+          // Swipe DERECHA (Anterior columna)
           if (estadoActual === 'en-progreso') nuevoEstado = 'pendiente';
           else if (estadoActual === 'completada') nuevoEstado = 'en-progreso';
         } else {
-          // Swipe a la IZQUIERDA (Ir a columna siguiente / Derecha visual)
+          // Swipe IZQUIERDA (Siguiente columna)
           if (estadoActual === 'pendiente') nuevoEstado = 'en-progreso';
           else if (estadoActual === 'en-progreso') nuevoEstado = 'completada';
         }
@@ -138,7 +158,7 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
         alCambiarEstado(dragState.tareaArrastradaId!, nuevoEstado);
       }
 
-      // Limpiar estado siempre al soltar
+      // Limpiar
       setDragState({
         tareaArrastradaId: null,
         columnaOrigen: null,
@@ -148,7 +168,7 @@ export function useDragAndDrop({ alCambiarEstado }: UseDragAndDropProps) {
     [alCambiarEstado, dragState.tareaArrastradaId]
   );
 
-  // ── Handlers para la columna (Mouse) ─────────────────────────────────
+  // ── Handlers Columna (Mouse) ───────────────────────────────
   const onDragOver = useCallback(
     (estadoColumna: EstadoTarea) =>
       (e: React.DragEvent<HTMLDivElement>) => {
