@@ -1,183 +1,200 @@
 /* ============================================================
-   ARCHIVO: src/components/kanban/KanbanBoard/KanbanBoard.css
+   KanbanBoard.css
+   Tablero Kanban con Drag & Drop para escritorio y móvil
    ============================================================ */
 
 .kanban {
-  padding: 1.5rem;
   width: 100%;
-  height: 100%; /* Asegura que ocupe la altura disponible */
+  height: 100%;
+  padding: 1.5rem;
   box-sizing: border-box;
-  /* Si quieres que el fondo sea del contenedor principal y no del body */
-  background: transparent; 
-  min-height: 100vh;
+  background: transparent;
 }
 
 .kanban__encabezado {
-  margin-bottom: 2rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 2rem;
 }
 
 .kanban__titulo {
+  margin: 0 0 0.5rem;
+  color: #ffffff;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #ffffff; /* Texto blanco para contraste */
-  margin: 0 0 0.5rem 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .kanban__subtitulo {
-  color: #e0e0e0;
   margin: 0;
+  color: #e0e0e0;
   font-size: 0.95rem;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Grid responsivo */
 .kanban__grid {
   display: grid;
-  /* Ajuste automático de columnas */
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem; /* Espacio claro entre columnas */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(280px, 1fr)
+  );
   align-items: start;
-  position: relative;
-  z-index: 1;
+  gap: 1.5rem;
+  width: 100%;
 }
 
-/* Columnas con efecto vidrio */
 .kanban__column {
-  /* Color oscuro semi-transparente para que se vea la imagen de fondo */
-  background-color: rgba(20, 20, 30, 0.75); 
-  backdrop-filter: blur(10px); /* Desenfoque para legibilidad */
-  -webkit-backdrop-filter: blur(10px);
-  
-  border-radius: 12px;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  min-height: 500px; /* Altura mínima consistente */
-  
-  /* Borde sutil y sombra */
+  min-height: 500px;
+  padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  
-  transition: all 0.2s ease;
-  position: relative;
+  border-radius: 12px;
+  background-color: rgba(30, 30, 30, 0.65);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.kanban__column:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(40, 40, 40, 0.7);
+}
+
+.kanban__column--over {
+  border-color: var(--primary-color, #3b82f6);
+  background-color: rgba(59, 130, 246, 0.16);
+  box-shadow:
+    0 0 0 2px rgba(59, 130, 246, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .kanban__column h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .kanban__column h3 span {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 0.75rem;
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
+  background-color: var(--primary-color, #3b82f6);
+  color: #ffffff;
+  font-size: 0.75rem;
   font-weight: 700;
-}
-
-/* Estado Drop Target (solo mouse) */
-.kanban__column--drop-target {
-  border-color: rgba(255, 255, 255, 0.6);
-  background-color: rgba(20, 20, 30, 0.85);
-  transform: scale(1.02);
-}
-
-.kanban__drop-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  pointer-events: none;
-  z-index: 10;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
-  100% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); }
 }
 
 .kanban__tasks {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 0.75rem;
-  flex-grow: 1;
-  min-height: 100px; /* Para que se pueda soltar aunque esté vacía */
+  min-height: 120px;
 }
 
 .kanban__columna-vacia {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
+  display: grid;
+  flex: 1;
+  min-height: 120px;
+  place-items: center;
   padding: 2rem 1rem;
-  font-style: italic;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-/* Wrapper de la tarjeta */
+.kanban__column--over .kanban__columna-vacia {
+  border-color: rgba(59, 130, 246, 0.65);
+  background-color: rgba(59, 130, 246, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .kanban__card-wrapper {
-  /* CRUCIAL PARA MÓVIL: 
-     'none' bloquea el scroll nativo del navegador sobre la tarjeta,
-     permitiendo que nuestro JS capture el evento touch sin interferencias.
-  */
-  touch-action: none; 
+  position: relative;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  cursor: grab;
+  -webkit-touch-callout: none;
+  overscroll-behavior: contain;
+  will-change: transform;
 }
 
 .kanban__card-wrapper:active {
   cursor: grabbing;
 }
 
-.kanban__card-wrapper--ghost {
-  opacity: 0.3;
-  transform: scale(0.95);
+.kanban__card-wrapper--dragging {
+  z-index: 20;
 }
 
-/* Responsive adjustments */
+.kanban__overlay {
+  width: min(360px, calc(100vw - 2rem));
+  pointer-events: none;
+  cursor: grabbing;
+  opacity: 0.98;
+  will-change: transform;
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.4));
+}
+
+/*
+ * Evita que botones, enlaces o imágenes internas capturen eventos
+ * mientras la copia visual está siguiendo el puntero.
+ */
+.kanban__overlay * {
+  pointer-events: none !important;
+}
+
+body:has(.kanban__card-wrapper--dragging) {
+  cursor: grabbing;
+}
+
 @media (max-width: 768px) {
   .kanban {
     padding: 1rem;
-    /* Asegurar que el contenedor permita scroll si hay muchas columnas o tareas */
-    overflow-x: auto; 
   }
 
   .kanban__grid {
-    /* En móviles, forzamos que las columnas tengan un ancho mínimo grande
-       para que se pueda hacer scroll horizontal si es necesario, 
-       o usamos 1fr si preferimos apiladas. 
-       Aquí usamos minmax para mantener la estructura pero permitir scroll */
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .kanban__column {
-    min-height: 400px;
+    min-height: 350px;
+  }
+
+  .kanban__titulo {
+    font-size: 1.5rem;
+  }
+
+  .kanban__overlay {
+    width: calc(100vw - 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kanban__column,
+  .kanban__columna-vacia {
+    transition: none;
   }
 }
