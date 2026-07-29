@@ -12,7 +12,7 @@ Si o si es desde la raiz de Taskify porque si se instalan las dependencias desde
 cd ProyectoM4-JoaquinGonzalezFT73/Taskify-app 
 
 
-link proyecto: https://proyecto-m4-joaquingonzalez-ft-73.vercel.app/
+link proyecto: https://takify-app-2026.vercel.app/
 ```
 
 **Todos los comandos deben ejecutarse desde esta carpeta.** Si no ejecutas `cd Taskify-app`, los comandos `npm`, `npm run`, etc. fallarán.
