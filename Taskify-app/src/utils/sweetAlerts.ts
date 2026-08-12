@@ -95,9 +95,10 @@ export function alertaRecuperacionEnviada(email: string) {
 
 export function alertaRegistroExitoso(nombre: string) {
   return SwalTaskify.fire({
-    icon: "success", title: "¡Cuenta creada!",
-    text: `Bienvenido/a, ${nombre}. Ya podés usar Taskify.`,
-    timer: 2200, timerProgressBar: true, showConfirmButton: false,
+    icon: "success",
+    title: "¡Cuenta creada!",
+    text: `Bienvenido/a, ${nombre}. Te enviamos un correo de verificación. Confirmalo antes de iniciar sesión.`,
+    confirmButtonText: "Entendido",
   });
 }
 

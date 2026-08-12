@@ -1,7 +1,8 @@
 // ============================================================
 // ARCHIVO: tests/authService.test.ts (Constructor Fix)
 // ============================================================
-import { describe, test, expect, vi } from "vitest";
+import { beforeEach, describe, test, expect, vi } from "vitest";
+import { sendEmailVerification, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { 
   registrarUsuario, 
   iniciarSesionConEmail, 
@@ -16,13 +17,20 @@ vi.mock("firebase/auth", () => {
   return {
     getAuth: vi.fn(),
     createUserWithEmailAndPassword: vi.fn().mockResolvedValue({
-      user: { uid: "user-123", email: "test@taskify.com", displayName: "" }
+      user: {
+        uid: "user-123", email: "test@taskify.com", displayName: "",
+        emailVerified: false, providerData: [{ providerId: "password" }]
+      }
     }),
     signInWithEmailAndPassword: vi.fn().mockResolvedValue({
-      user: { uid: "user-123", email: "test@taskify.com", displayName: "Joaquín" }
+      user: {
+        uid: "user-123", email: "test@taskify.com", displayName: "Joaquín",
+        emailVerified: true, providerData: [{ providerId: "password" }]
+      }
     }),
     updateProfile: vi.fn().mockResolvedValue(true),
     sendPasswordResetEmail: vi.fn().mockResolvedValue(true),
+    sendEmailVerification: vi.fn().mockResolvedValue(true),
     signOut: vi.fn().mockResolvedValue(true),
     // CORRECCIÓN CRÍTICA: Definimos el mock usando la sintaxis de clase constructible estándar
     GoogleAuthProvider: class {
@@ -39,16 +47,39 @@ vi.mock("../src/firebase/firebase", () => ({
 }));
 
 describe("Pruebas de Integración y Lógica Completa en authService.ts", () => {
-  
-  test("Debe registrar un usuario de forma asíncrona y actualizar su perfil", async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test("Debe registrar, enviar verificación y cerrar la sesión provisional", async () => {
     const usuario = await registrarUsuario("Joaquín", "test@taskify.com", "123456");
     expect(usuario).toBeDefined();
     expect(usuario.email).toBe("test@taskify.com");
+    expect(sendEmailVerification).toHaveBeenCalledWith(usuario);
+    expect(signOut).toHaveBeenCalled();
   });
 
   test("Debe iniciar sesión de forma exitosa usando Email y Contraseña", async () => {
     const usuario = await iniciarSesionConEmail("test@taskify.com", "123456");
     expect(usuario.displayName).toBe("Joaquín");
+  });
+
+  test("Debe bloquear una cuenta email/password que todavía no verificó el correo", async () => {
+    vi.mocked(signInWithEmailAndPassword).mockResolvedValueOnce({
+      user: {
+        uid: "unverified-123",
+        email: "sinverificar@taskify.com",
+        displayName: "Sin verificar",
+        emailVerified: false,
+        providerData: [{ providerId: "password" }]
+      }
+    } as never);
+
+    await expect(
+      iniciarSesionConEmail("sinverificar@taskify.com", "123456")
+    ).rejects.toMatchObject({ code: "auth/email-not-verified" });
+
+    expect(signOut).toHaveBeenCalled();
   });
 
   test("Debe procesar el login de Google forzando el selector de cuentas", async () => {

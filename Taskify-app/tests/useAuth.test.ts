@@ -10,7 +10,12 @@ vi.mock("firebase/auth", () => {
   return {
     onAuthStateChanged: vi.fn((authInstance, callback) => {
       // Simulamos que Firebase verifica la sesión y devuelve un usuario conectado ficticio
-      callback({ uid: "user-ok-123", email: "auth@taskify.com" });
+      callback({
+        uid: "user-ok-123",
+        email: "auth@taskify.com",
+        emailVerified: true,
+        providerData: [{ providerId: "password" }]
+      });
       // Retornamos una función espía de desuscripción limpia
       return vi.fn();
     })

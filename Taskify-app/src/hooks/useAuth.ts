@@ -20,7 +20,22 @@ export function useAuth(): EstadoDeAuth {
 
   useEffect(() => {
       const cancelarSuscripcion = onAuthStateChanged(auth, (usuarioActual) => {
-      setUsuario(usuarioActual);
+      if (usuarioActual) {
+        const tieneGoogle = usuarioActual.providerData.some(
+          (proveedor) => proveedor.providerId === "google.com"
+        );
+        const tienePassword = usuarioActual.providerData.some(
+          (proveedor) => proveedor.providerId === "password"
+        );
+
+        const requiereVerificacion =
+          tienePassword && !tieneGoogle && !usuarioActual.emailVerified;
+
+        setUsuario(requiereVerificacion ? null : usuarioActual);
+      } else {
+        setUsuario(null);
+      }
+
       setCargando(false);
     });
 

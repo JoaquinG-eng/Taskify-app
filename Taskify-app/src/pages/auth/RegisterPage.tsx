@@ -58,6 +58,7 @@ function RegisterPage({ alRegistrarse, alIrALogin }: PropiedadesDeRegisterPage) 
       await registrarUsuario(nombre, email, password);
       await alertaRegistroExitoso(nombre);
       alRegistrarse();
+      alIrALogin();
     } catch (error: unknown) {
       await alertaErrorDeAutenticacion((error as Error).message);
     } finally {
