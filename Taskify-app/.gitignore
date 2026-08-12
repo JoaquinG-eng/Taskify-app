@@ -1,7 +1,10 @@
-node_modules
-dist
-.env
+node_modules/
+dist/
+coverage/
+.vercel/
+.vercel.backup-link/
+.taskify-backups/
 
-.vercel
-.env.local
-coverage
+.env
+.env.*
+!.env.example

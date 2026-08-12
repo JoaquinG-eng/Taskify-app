@@ -4,6 +4,7 @@ import {
   iniciarSesionConGoogle,
   enviarEmailDeRecuperacion,
   obtenerMensajeDeError,
+  vincularGoogleConCuentaPasswordExistente,
 } from "../../services/authService";
 import { swalExito, swalError } from "../../utils/sweetAlerts";
 import Swal from "sweetalert2";
@@ -33,12 +34,10 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
       await swalError("Campo requerido", "El email es obligatorio.");
       return;
     }
-
     if (!/\S+@\S+\.\S+/.test(email)) {
       await swalError("Email inválido", "Ingresá un email con formato válido.");
       return;
     }
-
     if (!password.trim()) {
       await swalError("Campo requerido", "La contraseña es obligatoria.");
       return;
@@ -58,6 +57,51 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
     }
   }
 
+  async function resolverCuentaGoogleExistente(errorGoogle: unknown) {
+    const customData = (errorGoogle as { customData?: { email?: unknown } })
+      .customData;
+    const correo =
+      typeof customData?.email === "string" ? customData.email : "este correo";
+
+    const { value: passwordExistente } = await Swal.fire({
+      title: "Cuenta existente",
+      text:
+        `Ya existe una cuenta Taskify para ${correo}. ` +
+        "Ingresá su contraseña para vincular Google a la misma cuenta.",
+      input: "password",
+      inputPlaceholder: "Contraseña de Taskify",
+      showCancelButton: true,
+      confirmButtonText: "Vincular y continuar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#7c5af6",
+      background: "#0d0f1a",
+      color: "#ffffff",
+      inputAttributes: { autocomplete: "current-password" },
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage("La contraseña es obligatoria");
+          return false;
+        }
+        return value;
+      },
+    });
+
+    if (!passwordExistente) return false;
+
+    await vincularGoogleConCuentaPasswordExistente(
+      errorGoogle,
+      passwordExistente
+    );
+
+    await swalExito(
+      "Cuenta vinculada",
+      "Google y tu contraseña ahora acceden a la misma cuenta de Taskify."
+    );
+
+    alIniciarSesion();
+    return true;
+  }
+
   async function manejarGoogle() {
     setCargandoGoogle(true);
 
@@ -66,8 +110,37 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
       await swalExito("¡Bienvenido!", "Ingresaste con tu cuenta de Google.");
       alIniciarSesion();
     } catch (error: unknown) {
+      console.error("GOOGLE AUTH ERROR COMPLETO:", error);
+
       const codigo = (error as { code?: string }).code ?? "";
-      await swalError("Error con Google", obtenerMensajeDeError(codigo));
+
+      if (codigo === "auth/account-exists-with-different-credential") {
+        try {
+          await resolverCuentaGoogleExistente(error);
+          return;
+        } catch (errorVinculacion: unknown) {
+          const codigoVinculacion =
+            (errorVinculacion as { code?: string }).code ?? "";
+          const detalle =
+            (errorVinculacion as { message?: string }).message ?? "";
+
+          await swalError(
+            "No se pudo vincular la cuenta",
+            codigoVinculacion
+              ? obtenerMensajeDeError(codigoVinculacion)
+              : detalle || "Intentá nuevamente."
+          );
+          return;
+        }
+      }
+
+      const mensaje = (error as { message?: string }).message ?? "";
+      await swalError(
+        "Error con Google",
+        codigo
+          ? obtenerMensajeDeError(codigo)
+          : mensaje || "Ocurrió un error inesperado."
+      );
     } finally {
       setCargandoGoogle(false);
     }
@@ -76,7 +149,8 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
   async function manejarRecuperacionContrasena() {
     const { value: correoIngresado } = await Swal.fire({
       title: "Recuperar contraseña",
-      text: "Ingresá tu correo electrónico y te enviaremos un enlace de restablecimiento.",
+      text:
+        "Ingresá tu correo electrónico y te enviaremos un enlace de restablecimiento.",
       input: "email",
       inputPlaceholder: "tu@email.com",
       inputValue: email,
@@ -94,7 +168,6 @@ function LoginPage({ alIniciarSesion, alIrARegistro }: PropiedadesDeLoginPage) {
         if (!value) {
           Swal.showValidationMessage("El correo es obligatorio");
         }
-
         return value;
       },
     });

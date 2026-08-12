@@ -1,40 +1,79 @@
-import type { Tarea } from "../types/task";
+// ============================================================
+// ARCHIVO: src/services/emailService.ts
+// ============================================================
 
-interface ResultadoEnvio {
-  ok: boolean;
-  mensaje?: string;
-  error?: string;
+import { auth } from "../firebase/firebase";
+
+export interface TareaResumenEmail {
+  titulo: string;
+  estado: string;
+  prioridad: string;
+  progreso: number;
 }
 
+interface RespuestaEmail {
+  mensaje?: string;
+  error?: string;
+  detalles?: string;
+}
+
+/**
+ * Conserva la firma pública existente para no obligar a modificar
+ * DashboardPage. El destinatario se valida en cliente, pero el servidor
+ * obtiene el email definitivo de la identidad Firebase autenticada.
+ */
 export async function enviarResumenDeTareas(
   destinatario: string,
   nombreUsuario: string,
-  tareas: Tarea[]
-): Promise<ResultadoEnvio> {
-  const tareasActivas = tareas.filter((t) => !t.estaEnPapelera);
+  tareas: TareaResumenEmail[]
+): Promise<void> {
+  const usuario = auth.currentUser;
 
-  const payload = {
-    destinatario,
-    nombreUsuario,
-    tareas: tareasActivas.map((t) => ({
-      titulo:    t.titulo,
-      estado:    t.estado,
-      prioridad: t.prioridad,
-      progreso:  t.progreso,
-    })),
-  };
-
-  const respuesta = await fetch("/api/sendEmail", {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify(payload),
-  });
-
-  const datos = await respuesta.json();
-
-  if (!respuesta.ok) {
-    throw new Error(datos.error ?? "Error al enviar el email");
+  if (!usuario) {
+    throw new Error("No hay una sesión autenticada.");
+  }
+  if (!usuario.email) {
+    throw new Error("La cuenta autenticada no tiene email asociado.");
   }
 
-  return datos as ResultadoEnvio;
+  if (
+    destinatario &&
+    destinatario.toLowerCase() !== usuario.email.toLowerCase()
+  ) {
+    throw new Error("El destinatario no coincide con la cuenta autenticada.");
+  }
+
+  const idToken = await usuario.getIdToken();
+
+  const respuesta = await fetch("/api/sendEmail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify({
+      nombreUsuario,
+      tareas: tareas.map((tarea) => ({
+        titulo: tarea.titulo,
+        estado: tarea.estado,
+        prioridad: tarea.prioridad,
+        progreso: tarea.progreso,
+      })),
+    }),
+  });
+
+  let datos: RespuestaEmail = {};
+  try {
+    datos = (await respuesta.json()) as RespuestaEmail;
+  } catch {
+    datos = {};
+  }
+
+  if (!respuesta.ok) {
+    throw new Error(
+      datos.detalles ||
+        datos.error ||
+        `No se pudo enviar el email (${respuesta.status}).`
+    );
+  }
 }

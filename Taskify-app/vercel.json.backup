@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "devCommand": "vite --port $PORT",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
