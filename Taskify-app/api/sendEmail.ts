@@ -223,6 +223,12 @@ function generarHtmlEmail(
 </head>
 <body style="margin:0;padding:0;background:#0a0a12;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <div style="max-width:640px;margin:0 auto;padding:32px 16px;">
+    <img
+      src="https://takify-app-2026.vercel.app/email/taskify-hero.jpg"
+      alt="Taskify"
+      width="640"
+      style="display:block;width:100%;height:auto;border:0;outline:none;text-decoration:none;border-radius:14px;margin:0 0 28px;"
+    />
     <div style="text-align:center;margin-bottom:32px;">
       <h1 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 8px;">Resumen de tareas</h1>
       <p style="color:#888;font-size:14px;margin:0;">
@@ -260,7 +266,7 @@ function generarHtmlEmail(
 
     <div style="text-align:center;color:#666;font-size:12px;border-top:1px solid #2a2a3a;padding-top:20px;">
       <p style="margin:0 0 4px;">Este email fue enviado desde <strong style="color:#7c5af6;">Taskify</strong></p>
-      <p style="margin:0;">Gestor de tareas — Proyecto Integrador 4</p>
+      <p style="margin:0;">Taskify 2026: Organiza tu dia</p>
     </div>
   </div>
 </body>
