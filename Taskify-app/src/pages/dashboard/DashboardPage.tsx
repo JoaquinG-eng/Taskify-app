@@ -93,7 +93,6 @@ export default function DashboardPage() {
     emailUsuario,
     nombreUsuario,
     tareasActivas,
-    tareasEnPapelera,
     setEnviandoEmail,
   });
  const {

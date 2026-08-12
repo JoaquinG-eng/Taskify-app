@@ -7,7 +7,6 @@ type ParametrosUseDashboardSessionActions = {
   emailUsuario: string;
   nombreUsuario: string;
   tareasActivas: Tarea[];
-  tareasEnPapelera: Tarea[];
   setEnviandoEmail: (valor: boolean) => void;
 };
 
@@ -15,7 +14,6 @@ export function useDashboardSessionActions({
   emailUsuario,
   nombreUsuario,
   tareasActivas,
-  tareasEnPapelera,
   setEnviandoEmail,
 }: ParametrosUseDashboardSessionActions) {
   async function manejarLogout() {
@@ -50,7 +48,7 @@ export function useDashboardSessionActions({
       await enviarResumenDeTareas(
         emailUsuario,
         nombreUsuario,
-        [...tareasActivas, ...tareasEnPapelera]
+        tareasActivas
       );
 
       await swalExito("¡Email enviado!", `Revisá tu bandeja en ${emailUsuario}`);

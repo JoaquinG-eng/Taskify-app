@@ -6,8 +6,8 @@
 // ============================================================
 
 import { useContext } from "react";
-import { AlertContext } from "../context/AlertContext";
-import type { TipoDeAlerta } from "../context/AlertContext";
+import { AlertContext } from "../context/alertContextDefinition";
+import type { TipoDeAlerta } from "../context/alertContextDefinition";
 
 // ------------------------------------------------------------
 // HOOK: useAlert

@@ -3,7 +3,7 @@
 // Cobertura extrema para TaskCard
 // ============================================================
 
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi } from "vitest";
 
@@ -92,31 +92,34 @@ describe("Suite extrema en <TaskCard />", () => {
     );
   });
 
-  test("4. Botón avance incrementa progreso", async () => {
+  test("4. Timer automático incrementa progreso", () => {
+    vi.useFakeTimers();
     const actualizar = vi.fn();
 
-    render(
-      <AlertProvider>
-        <TaskCard
-          datosDeLaTarea={tareaMock}
-          alCambiarEstado={vi.fn()}
-          alActualizarProgreso={actualizar}
-          alMoverAPapelera={vi.fn()}
-          alEditarTarea={vi.fn()}
-        />
-      </AlertProvider>
-    );
+    try {
+      render(
+        <AlertProvider>
+          <TaskCard
+            datosDeLaTarea={tareaMock}
+            alCambiarEstado={vi.fn()}
+            alActualizarProgreso={actualizar}
+            alMoverAPapelera={vi.fn()}
+            alEditarTarea={vi.fn()}
+          />
+        </AlertProvider>
+      );
 
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: /avance/i,
-      })
-    );
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
 
-    expect(actualizar).toHaveBeenCalledWith(
-      "task-abc-123",
-      40
-    );
+      expect(actualizar).toHaveBeenCalledWith(
+        "task-abc-123",
+        40
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   test("5. Botón eliminar dispara callback", async () => {
@@ -143,7 +146,7 @@ describe("Suite extrema en <TaskCard />", () => {
     );
   });
 
-  test("6. Estado completada deshabilita acciones", () => {
+  test("6. Estado completada deshabilita completar y conserva 100%", () => {
     render(
       <AlertProvider>
         <TaskCard
@@ -164,11 +167,8 @@ describe("Suite extrema en <TaskCard />", () => {
       screen.getByRole("button", { name: "✓" })
     ).toBeDisabled();
 
-    expect(
-      screen.getByRole("button", {
-        name: /avance/i,
-      })
-    ).toBeDisabled();
+    expect(screen.getByText("100%")).toBeInTheDocument();
+    expect(screen.getByText("Completada")).toBeInTheDocument();
   });
 
   test("7. Apertura del modal de edición", async () => {

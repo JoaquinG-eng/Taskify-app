@@ -19,7 +19,7 @@ const stackTecnologico: TecnologiaItem[] = [
   { nombre: "TypeScript",  descripcion: "Tipado estricto para mayor robustez",                icono: "📘", color: "#3178c6" },
   { nombre: "Firebase",    descripcion: "Auth, Firestore y sincronización en tiempo real",    icono: "🔥", color: "#ffa000" },
   { nombre: "Vite",        descripcion: "Herramienta de desarrollo rápida y moderna",         icono: "⚡", color: "#646cff" },
-  { nombre: "AWS SES",     descripcion: "Envío de correos electrónicos en producción",        icono: "📧", color: "#ff9900" },
+  { nombre: "Vercel + Gmail", descripcion: "Functions y Nodemailer para resúmenes por email", icono: "📧", color: "#ffffff" },
   { nombre: "Vitest",      descripcion: "Testing rápido con cobertura y jest-dom",            icono: "✓",  color: "#6e9f18" },
 ];
 
@@ -43,7 +43,6 @@ const proximasFuncionalidades: ProximaFuncionalidad[] = [
   { texto: "Etiquetas y categorías personalizadas",             hecha: false },
   { texto: "Tableros colaborativos entre usuarios",             hecha: false },
   { texto: "Asignación de tareas a múltiples miembros",         hecha: false },
-  { texto: "Carga y visualización de archivos adjuntos con AWS S3", hecha: false },
   { texto: "Notificaciones y recordatorios automáticos",        hecha: false },
   { texto: "Exportación de tareas a PDF y Excel",               hecha: false },
   { texto: "Integración con Google Calendar",                   hecha: false },
@@ -63,7 +62,7 @@ function AboutPage() {
         <div className="about__hero-texto">
           <h1 className="about__hero-titulo">Taskify</h1>
           <p className="about__hero-version">
-            Versión 1.0 — React • TypeScript • Firebase • AWS
+            Versión 1.0 — React • TypeScript • Firebase • Vercel
           </p>
           <p className="about__hero-descripcion">
             Aplicación moderna de gestión de tareas basada en un tablero
@@ -101,8 +100,8 @@ function AboutPage() {
                 El proyecto comenzó siguiendo una estrategia Frontend First
                 para validar la experiencia de usuario, la navegación y los
                 flujos de trabajo. Actualmente integra Firebase
-                Authentication, Firestore en tiempo real, AWS SES para envío
-                de correos electrónicos y una arquitectura preparada para AWS S3.
+                Authentication, Firestore en tiempo real y Vercel Functions con
+                Nodemailer para el envío autenticado de resúmenes por email.
               </p>
             </div>
             <div className="about__metodologia-item">

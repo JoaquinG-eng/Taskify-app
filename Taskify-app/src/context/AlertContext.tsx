@@ -1,86 +1,11 @@
-// ============================================================
-// ¿Para qué sirve? Define el contexto global de alertas.
-// Cualquier componente de la app puede disparar una alerta
-// sin necesidad de pasar props hacia arriba o abajo.
-// ============================================================
-
-import { createContext, useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import type { ReactNode } from "react";
+import {
+  AlertContext,
+  type DatosDeAlerta,
+  type TipoDeAlerta,
+} from "./alertContextDefinition";
 
-// ------------------------------------------------------------
-// TIPOS
-// ------------------------------------------------------------
-export type TipoDeAlerta =
-  | "exito"
-  | "error"
-  | "advertencia"
-  | "info";
-
-// ------------------------------------------------------------
-// INTERFAZ: DatosDeAlerta
-// ------------------------------------------------------------
-export interface DatosDeAlerta {
-  identificadorUnico: string;
-  tipo: TipoDeAlerta;
-  titulo?: string;
-  mensaje: string;
-  duracionEnMs: number;
-}
-
-// ------------------------------------------------------------
-// INTERFAZ: ValorDelContexto
-// ------------------------------------------------------------
-interface ValorDelContexto {
-  listaDeAlertas: DatosDeAlerta[];
-
-  mostrarAlerta: (
-    tipo: TipoDeAlerta,
-    mensaje: string,
-    titulo?: string,
-    duracionEnMs?: number
-  ) => void;
-
-  cerrarAlerta: (
-    identificadorUnico: string
-  ) => void;
-
-  alertaExito: (
-    mensaje: string,
-    titulo?: string
-  ) => void;
-
-  alertaError: (
-    mensaje: string,
-    titulo?: string
-  ) => void;
-
-  alertaAdvertencia: (
-    mensaje: string,
-    titulo?: string
-  ) => void;
-
-  alertaInfo: (
-    mensaje: string,
-    titulo?: string
-  ) => void;
-
-  alertaConfirmar: (
-    mensaje: string,
-    titulo?: string
-  ) => void;
-}
-
-// ------------------------------------------------------------
-// CONTEXTO
-// ------------------------------------------------------------
-export const AlertContext =
-  createContext<ValorDelContexto | undefined>(
-    undefined
-  );
-
-// ------------------------------------------------------------
-// PROVIDER
-// ------------------------------------------------------------
 export function AlertProvider({
   children,
 }: {

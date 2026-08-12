@@ -1,7 +1,7 @@
 // ============================================================
 // ARCHIVO: tests/useAuth.test.ts (Suscripción al 100% de useAuth)
 // ============================================================
-import { renderHook, act } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { useAuth } from "../src/hooks/useAuth";
 

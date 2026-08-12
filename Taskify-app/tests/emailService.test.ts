@@ -1,54 +1,140 @@
-import { describe, test, expect, vi, beforeEach } from "vitest";
-import type { Tarea } from "../src/types/task";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+const authMock = vi.hoisted(() => ({
+  currentUser: {
+    email: "test@taskify.com",
+    getIdToken: vi.fn(),
+  },
+}));
+
+vi.mock("../src/firebase/firebase", () => ({
+  auth: authMock,
+}));
+
 import { enviarResumenDeTareas } from "../src/services/emailService";
 
 describe("emailService.ts", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    authMock.currentUser.getIdToken.mockReset();
+    authMock.currentUser.getIdToken.mockResolvedValue("firebase-token");
   });
 
-  test("debe enviar el payload correcto a /api/sendEmail filtrando la papelera", async () => {
+  test("envía el resumen autenticado con Firebase ID token", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({ ok: true, mensaje: "Email enviado" }),
+      status: 200,
+      json: vi.fn().mockResolvedValue({
+        mensaje: "Email enviado con éxito",
+      }),
     });
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const tareas: Tarea[] = [
-      { id: "1", titulo: "Tarea activa", descripcion: "Descripción", estado: "pendiente", prioridad: "alta", progreso: 0, estaEnPapelera: false, fechaCreacion: "2026-06-02", fechaLimite: undefined },
-      { id: "2", titulo: "Tarea papelera", descripcion: "Descripción", estado: "pendiente", prioridad: "baja", progreso: 0, estaEnPapelera: true, fechaCreacion: "2026-06-02", fechaLimite: undefined },
-    ];
+    await enviarResumenDeTareas(
+      "test@taskify.com",
+      "Usuario Test",
+      [
+        {
+          titulo: "Tarea activa",
+          estado: "pendiente",
+          prioridad: "alta",
+          progreso: 0,
+        },
+      ]
+    );
 
-    const resultado = await enviarResumenDeTareas("test@taskify.com", "Usuario Test", tareas);
-
-    expect(resultado).toEqual({ ok: true, mensaje: "Email enviado" });
+    expect(authMock.currentUser.getIdToken).toHaveBeenCalledWith();
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith("/api/sendEmail", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer firebase-token",
+      },
       body: JSON.stringify({
-        destinatario: "test@taskify.com",
         nombreUsuario: "Usuario Test",
         tareas: [
-          { titulo: "Tarea activa", estado: "pendiente", prioridad: "alta", progreso: 0 },
+          {
+            titulo: "Tarea activa",
+            estado: "pendiente",
+            prioridad: "alta",
+            progreso: 0,
+          },
         ],
       }),
     });
   });
 
-  test("debe lanzar error cuando la API responde con estado no OK", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: false,
-      json: vi.fn().mockResolvedValue({ error: "Fallo en el envío" }),
-    }));
+  test("renueva el token y reintenta una sola vez ante 401", async () => {
+    authMock.currentUser.getIdToken
+      .mockResolvedValueOnce("token-viejo")
+      .mockResolvedValueOnce("token-nuevo");
 
-    const tareas: Tarea[] = [
-      { id: "1", titulo: "Tarea", descripcion: "Descripción", estado: "pendiente", prioridad: "media", progreso: 0, estaEnPapelera: false, fechaCreacion: "2026-06-02", fechaLimite: undefined },
-    ];
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        json: vi.fn().mockResolvedValue({
+          error: "No autorizado",
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue({
+          mensaje: "Email enviado con éxito",
+        }),
+      });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await enviarResumenDeTareas(
+      "test@taskify.com",
+      "Usuario Test",
+      []
+    );
+
+    expect(authMock.currentUser.getIdToken).toHaveBeenNthCalledWith(1);
+    expect(authMock.currentUser.getIdToken).toHaveBeenNthCalledWith(
+      2,
+      true
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  test("no permite enviar a una identidad distinta de la autenticada", async () => {
+    await expect(
+      enviarResumenDeTareas(
+        "otro@taskify.com",
+        "Usuario Test",
+        []
+      )
+    ).rejects.toThrow(
+      "El destinatario no coincide con la cuenta autenticada."
+    );
+  });
+
+  test("propaga el error de la API", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: vi.fn().mockResolvedValue({
+          error: "No se pudo enviar el email",
+          detalles: "SMTP no disponible",
+        }),
+      })
+    );
 
     await expect(
-      enviarResumenDeTareas("test@taskify.com", "Usuario Test", tareas)
-    ).rejects.toThrow("Fallo en el envío");
+      enviarResumenDeTareas(
+        "test@taskify.com",
+        "Usuario Test",
+        []
+      )
+    ).rejects.toThrow("SMTP no disponible");
   });
 });

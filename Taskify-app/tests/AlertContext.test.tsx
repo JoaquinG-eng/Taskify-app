@@ -7,7 +7,7 @@ import { AlertProvider } from "../src/context/AlertContext";
 import { useAlert } from "../src/hooks/useAlert";
 
 describe("AlertContext", () => {
-  const wrapper = ({ children }: PropsWithChildren<{}>) => (
+  const wrapper = ({ children }: PropsWithChildren) => (
     <AlertProvider>{children}</AlertProvider>
   );
 

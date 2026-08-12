@@ -1,279 +1,1061 @@
-# 🚀 Taskify
+# Taskify
 
-Taskify es una aplicación web moderna para la gestión de tareas desarrollada con **React, TypeScript y Firebase**, diseñada para ofrecer una experiencia visual intuitiva mediante un tablero Kanban, seguimiento de progreso, historial de actividades y almacenamiento en la nube.
+Taskify es una aplicación web de gestión de tareas construida con **React 19,
+TypeScript, Firebase y Vercel**. El proyecto implementa autenticación,
+persistencia en tiempo real, tablero Kanban, seguimiento de progreso, papelera,
+actividad local y envío autenticado de resúmenes por email.
+## importante:
+La contraseña se mantiene fuera de Git y GitHub para no publicar una
+credencial reutilizable. Debe solicitarse al propietario del proyecto.
 
----
-
-## ⚡ IMPORTANTE - Antes de comenzar
-
-Si o si es desde la raiz de Taskify porque si se instalan las dependencias desde otro lugar no funciona nada
-
-```bash
-cd ProyectoM4-JoaquinGonzalezFT73/Taskify-app 
-
-
-link proyecto: https://takify-app-2026.vercel.app/
-```
-
-**Todos los comandos deben ejecutarse desde esta carpeta.** Si no ejecutas `cd Taskify-app`, los comandos `npm`, `npm run`, etc. fallarán.
+**Aplicación en producción:**
+https://takify-app-2026.vercel.app
 
 ---
 
-## 📌 Descripción
+## Estado actual
 
-La aplicación permite a los usuarios organizar su trabajo mediante tareas clasificadas por estado y prioridad, manteniendo sincronización en tiempo real gracias a Firestore.
+La aplicación se encuentra funcional y desplegada.
 
-### Funcionalidades principales
-
-- ✅ Crear tareas
-- ✏️ Editar tareas
-- 🗑️ Enviar tareas a papelera
-- ♻️ Restaurar tareas eliminadas
-- 📊 Visualización Kanban
-- 🔄 Cambio de estados
-- ⭐ Prioridades Alta / Media / Baja
-- 📈 Seguimiento de progreso
-- 📝 Historial de actividades
-- 📧 Envío de resumen por email
-- 🔐 Autenticación con Firebase
-- 👤 Login con Google
-- ☁️ Firestore en tiempo real
-- 📎 Integración preparada para AWS S3
-
-### ⚙️ Organización dinámica de tareas
-
-**Taskify organiza automáticamente tus tareas en tiempo real:**
-
-- **Por estado**: Las tareas se distribuyen automáticamente en 3 columnas Kanban
-  - Pendiente (sin comenzar)
-  - En Progreso (trabajando)
-  - Completada (terminada)
-
-- **Por prioridad**: Dentro de cada estado, se ordenan por importancia
-  - 🔴 Alta (críticas, hacer primero)
-  - 🟡 Media (importantes)
-  - 🟢 Baja (pueden esperar)
-
-- **Por progreso**: El avance porcentual (0-100%) se sincroniza al instante
-  - 0% = Pendiente automáticamente
-  - 1-99% = En Progreso automáticamente
-  - 100% = Completada automáticamente
-
-- **Por fecha**: Tareas con fechas límite próximas se destacan
-  - Cálculo automático de días restantes
-  - Alertas visuales para vencimientos
-
-- **Papelera inteligente**: Las tareas eliminadas se guardan automáticamente
-  - No se pierden datos (soft delete)
-  - Recuperables en cualquier momento
-  - Se limpian permanentemente cuando lo desees
-
-- **Sincronización en vivo con Firestore**:
-  - Los cambios aparecen al instante en todos los dispositivos
-  - Si editas desde otro navegador, se actualiza aquí automáticamente
-  - Sin necesidad de refrescar la página
-
-### 🔍 Búsqueda y filtrado
-
-El sistema permite encontrar tareas rápidamente:
-
-- Buscar por texto en título o descripción
-- Filtrar por estado específico (o todas)
-- Filtrar por nivel de prioridad (o todas)
-- Filtrar por rango de fechas
-- Mostrar solo tareas activas o en papelera
-- Limpiar todos los filtros con un clic
-
----
-
-## 🛠️ Tecnologías
-
-### Frontend
-
-- React
-- TypeScript
-- Vite
-- React Router DOM
-- CSS3
-
-### Backend & Cloud
-
-- Firebase Authentication
-- Cloud Firestore
-- AWS S3
-- AWS SES
-- Vercel Functions
-
-### Testing
-
-- Vitest
-- React Testing Library
-- Coverage V8
-
-### Herramientas
-
-- ESLint
-- SweetAlert2
-- dotenv
-
----
-
-## 🏗️ Arquitectura
+Validaciones confirmadas durante la preparación del proyecto:
 
 ```text
-Usuario
-   │
-   ▼
-React + TypeScript
-   │
-   ├── Hooks personalizados
-   ├── Context API
-   ├── Componentes reutilizables
-   │
-   ▼
-Firebase Auth
-Firestore
-   │
-   ▼
-Sincronización en tiempo real
-
-AWS SES
-   │
-   ▼
-Envío de correos
-
-AWS S3
-   │
-   ▼
-Archivos adjuntos
+ESLint          PASS
+Vitest          15/15 archivos PASS
+Tests           75/75 PASS
+Vite build      PASS
+Email productivo POST /api/sendEmail -> HTTP 200
 ```
 
----
-
-## 📋 Estados de las tareas
-
-Las tareas pueden encontrarse en tres estados:
-
-- Pendiente
-- En progreso
-- Completada
-
-El tablero Kanban organiza automáticamente las tareas según su estado y prioridad.
+El build genera actualmente una advertencia de tamaño de bundle superior a
+500 kB. No impide el funcionamiento ni el deployment y queda como mejora de
+performance futura.
 
 ---
 
-## ⭐ Prioridades
+## Cuenta demo
 
-| Prioridad | Color       |
-| --------- | ----------- |
-| Alta      | 🔴 Rojo     |
-| Media     | 🟡 Amarillo |
-| Baja      | 🟢 Verde    |
-
----
-
-## 📂 Estructura del proyecto
+Para revisar la aplicación puede utilizarse la siguiente identidad de prueba:
 
 ```text
-src/
-├── components/
-├── context/
-├── firebase/
-├── hooks/
-├── pages/
-├── routes/
-├── services/
-├── styles/
-├── types/
-├── utils/
-└── ASSETS/
+Email: taskify.demo@gmail.com
+Contraseña: credencial de demo no versionada
 ```
 
----
 
-## 🪝 Hooks personalizados
 
-### useAuth
-
-Gestiona la autenticación mediante Firebase.
-
-### useTasks
-
-Gestiona:
-
-- CRUD de tareas
-- Actividades
-- Papelera
-- Sincronización Firestore
-
-### useAlert
-
-Sistema global de alertas.
-
-### useFormValidation
-
-Validación reutilizable de formularios.
 
 ---
 
-## 🔧 Servicios
+# Funcionalidades
 
-### authService
+## Autenticación
 
-Operaciones de autenticación:
+- Registro con email y contraseña.
+- Inicio de sesión con email y contraseña.
+- Inicio de sesión con Google.
+- Recuperación de contraseña por email.
+- Cierre de sesión.
+- Vinculación de Google con una cuenta existente.
+- Configuración de contraseña para usuarios autenticados originalmente con
+  Google.
+- Conservación del mismo UID de Firebase cuando se vinculan proveedores.
 
-- Registro
-- Login
-- Google Sign In
-- Recuperación de contraseña
-- Logout
+## Gestión de tareas
 
-### taskService
+- Crear tareas.
+- Editar tareas.
+- Cambiar estado.
+- Actualizar progreso.
+- Mover tareas entre columnas mediante drag & drop.
+- Prioridades Alta, Media y Baja.
+- Papelera.
+- Restauración desde papelera.
+- Eliminación definitiva.
+- Vaciado de papelera.
+- Persistencia en Cloud Firestore.
+- Sincronización en tiempo real.
 
-CRUD completo sobre Firestore.
+## Dashboard
 
-### emailService
+- Tablero Kanban.
+- Búsqueda.
+- Filtros.
+- Estadísticas.
+- Feed de actividad.
+- Navegación lateral.
+- Topbar con acciones de sesión.
+- Envío de resumen por email.
 
-Envío de resumen de tareas mediante AWS SES.
+## Email
 
-### awsService
-
-Gestión de archivos mediante AWS S3.
+- Resumen de tareas activas.
+- El destinatario no es confiado al navegador.
+- Autenticación del request mediante Firebase ID Token.
+- Backend ejecutado como Vercel Function.
+- Transporte SMTP mediante Nodemailer y Gmail.
+- Renovación automática del Firebase ID Token ante un `401`.
+- Reintento único para evitar duplicación de correos.
 
 ---
 
-## 💾 Base de datos
+# Arquitectura general
 
-Firestore almacena las tareas de cada usuario.
-
-### Colección
+Taskify separa la aplicación en cinco responsabilidades principales:
 
 ```text
-tasks
+┌──────────────────────────────────────────────────────────────┐
+│                         Navegador                            │
+│                                                              │
+│  React + TypeScript                                          │
+│  ├── pages                                                   │
+│  ├── components                                              │
+│  ├── hooks                                                   │
+│  └── services cliente                                       │
+└───────────────┬───────────────────────────┬──────────────────┘
+                │                           │
+                │ Firebase SDK              │ HTTPS
+                │                           │
+                ▼                           ▼
+┌──────────────────────────┐      ┌────────────────────────────┐
+│        Firebase          │      │       Vercel Function      │
+│                          │      │                            │
+│ Authentication           │      │ /api/sendEmail             │
+│ Cloud Firestore          │      │                            │
+└──────────────────────────┘      └──────────────┬─────────────┘
+                                                │
+                                                │ SMTP
+                                                ▼
+                                      ┌──────────────────────┐
+                                      │   Gmail / Nodemailer │
+                                      └──────────────────────┘
 ```
 
-### Documento
+Además, algunos datos no críticos se mantienen únicamente en el navegador:
 
-```typescript
+```text
+localStorage
+├── orden visual/manual de tareas
+└── últimas actividades del usuario
+```
+
+Firestore sigue siendo la autoridad de las tareas.
+
+---
+
+# Responsabilidad de cada capa
+
+## `src/main.tsx`
+
+Es el punto de entrada del frontend.
+
+Responsabilidades:
+
+- Monta React en el elemento `#root`.
+- Carga `App`.
+- Inicia el árbol principal de componentes.
+
+No contiene lógica de negocio.
+
+---
+
+## `src/App.tsx`
+
+Es la autoridad principal de navegación según el estado de autenticación.
+
+Responsabilidades:
+
+- Consulta el estado de Firebase mediante `useAuth`.
+- Decide si debe mostrar login, registro, configuración de contraseña o
+  dashboard.
+- Evita que el dashboard se renderice sin una sesión autenticada.
+- Mantiene el flujo especial de usuarios Google que todavía no tienen
+  proveedor password vinculado.
+- Envuelve la aplicación con el sistema global de alertas.
+
+### Flujo simplificado
+
+```text
+App
+ |
+ +-- cargando sesión --> espera
+ |
+ +-- usuario NO autenticado
+ |     |
+ |     +-- LoginPage
+ |     └-- RegisterPage
+ |
+ +-- usuario autenticado
+       |
+       +-- Google sin password --> SetPasswordPage
+       |
+       └-- DashboardPage
+```
+
+La autenticación no depende de una ruta visual para proteger la aplicación:
+la decisión se realiza directamente desde el estado real de Firebase Auth.
+
+---
+
+# Firebase
+
+## `src/firebase/firebase.ts`
+
+Centraliza la inicialización del SDK de Firebase.
+
+Expone principalmente:
+
+```text
+auth -> Firebase Authentication
+db   -> Cloud Firestore
+```
+
+La configuración web se obtiene desde variables `VITE_FIREBASE_*`.
+
+Estas variables son configuración del cliente Firebase. Las credenciales
+privadas de Gmail nunca utilizan `VITE_`.
+
+---
+
+# Autenticación
+
+## `src/hooks/useAuth.ts`
+
+Es el hook que observa la sesión.
+
+Utiliza:
+
+```text
+onAuthStateChanged()
+```
+
+Responsabilidades:
+
+- Mantener el usuario autenticado actual.
+- Informar si Firebase todavía está resolviendo la sesión.
+- Desuscribirse correctamente al desmontar el componente.
+
+Devuelve conceptualmente:
+
+```ts
 {
-  id: string
-  userId: string
-  titulo: string
-  descripcion: string
-  estado: string
-  prioridad: string
-  progreso: number
-  fechaCreacion: string
-  fechaLimite?: string
-  estaEnPapelera: boolean
+  usuario,
+  cargando
 }
 ```
 
 ---
 
-## 🔐 Variables de entorno
+## `src/services/authService.ts`
 
-### Firebase
+Contiene las operaciones de autenticación y evita que las páginas llamen
+directamente a Firebase para cada operación.
+
+Responsabilidades:
+
+- `registrarUsuario`
+- `iniciarSesionConEmail`
+- `iniciarSesionConGoogle`
+- `enviarEmailDeRecuperacion`
+- `cerrarSesion`
+- traducir errores Firebase a mensajes entendibles
+- comprobar si el usuario tiene proveedor `password`
+- agregar contraseña a una cuenta creada con Google
+- vincular Google a una cuenta preexistente con email/password
+
+### Registro
+
+```text
+RegisterPage
+   |
+   ▼
+authService.registrarUsuario()
+   |
+   ├── createUserWithEmailAndPassword()
+   └── updateProfile(displayName)
+```
+
+### Login Google
+
+```text
+LoginPage
+   |
+   ▼
+authService.iniciarSesionConGoogle()
+   |
+   ▼
+GoogleAuthProvider
+   |
+   ▼
+signInWithPopup()
+```
+
+El provider utiliza selector de cuenta para evitar reutilizar silenciosamente
+una sesión de Google incorrecta.
+
+### Vinculación de proveedores
+
+El objetivo es que una misma persona conserve **un único Firebase UID**.
+
+Caso Google primero:
+
+```text
+Google login
+   |
+   ▼
+usuario sin provider password
+   |
+   ▼
+SetPasswordPage
+   |
+   ▼
+EmailAuthProvider.credential()
+   |
+   ▼
+linkWithCredential()
+   |
+   ▼
+MISMO UID
+```
+
+Caso email/password primero:
+
+```text
+Cuenta password existente
+   |
+   +-- intenta Google con mismo email
+           |
+           ▼
+auth/account-exists-with-different-credential
+           |
+           ▼
+login de cuenta existente
+           |
+           ▼
+linkWithCredential(Google)
+           |
+           ▼
+MISMO UID
+```
+
+Esto es importante porque las tareas están asociadas al UID. Crear una segunda
+identidad rompería la continuidad de los datos del usuario.
+
+---
+
+# Páginas de autenticación
+
+## `src/pages/auth/LoginPage.tsx`
+
+Responsabilidades:
+
+- Formulario de login.
+- Login email/password.
+- Login Google.
+- Navegación hacia registro.
+- Manejo de errores de autenticación.
+
+## `src/pages/auth/RegisterPage.tsx`
+
+Responsabilidades:
+
+- Capturar nombre, email y contraseña.
+- Validar campos.
+- Mostrar fuerza de contraseña.
+- Confirmar registro.
+- Crear usuario Firebase.
+
+La longitud mínima validada actualmente es de 6 caracteres.
+
+## `src/pages/auth/SetPasswordPage.tsx`
+
+Se utiliza para una cuenta autenticada mediante Google que todavía no posee
+proveedor password.
+
+No crea un usuario nuevo: vincula una credencial adicional al usuario actual.
+
+---
+
+# Componentes de autenticación
+
+## `src/components/auth/`
+
+Contiene componentes reutilizables del flujo de acceso, evitando duplicar
+markup entre login, registro y configuración de contraseña.
+
+Entre sus responsabilidades están:
+
+- layout visual de autenticación;
+- inputs;
+- input de contraseña;
+- botón de submit;
+- indicador de fuerza de contraseña;
+- elementos compartidos del formulario.
+
+## `src/components/GoogleButton/`
+
+Componente específico para la acción visual de Google Sign-In.
+
+---
+
+# Tareas y Firestore
+
+## `src/services/taskService.ts`
+
+Es la capa de acceso a datos de tareas.
+
+La colección utilizada es:
+
+```text
+tasks
+```
+
+Cada tarea pertenece a un usuario mediante:
+
+```text
+userId = Firebase UID
+```
+
+Responsabilidades:
+
+- suscripción en tiempo real;
+- creación;
+- edición;
+- cambio de estado;
+- actualización de progreso;
+- mover a papelera;
+- restaurar;
+- eliminar definitivamente.
+
+### Lectura en tiempo real
+
+Conceptualmente:
+
+```text
+Firebase UID
+   |
+   ▼
+query(tasks)
+   |
+   └── where("userId", "==", uid)
+          |
+          ▼
+      onSnapshot()
+          |
+          ▼
+     interfaz React
+```
+
+No existe polling periódico: Firestore notifica los cambios.
+
+### Creación de una tarea
+
+```text
+Dashboard / TaskForm
+      |
+      ▼
+useTasks
+      |
+      ▼
+taskService.crearTareaEnFirestore()
+      |
+      ▼
+addDoc(tasks)
+      |
+      ▼
+Firestore
+```
+
+La tarea almacena el UID del usuario propietario.
+
+---
+
+# Modelo de tarea
+
+El tipo central se encuentra en:
+
+```text
+src/types/task.ts
+```
+
+Conceptualmente una tarea maneja:
+
+```ts
+{
+  id: string
+  userId?: string
+  titulo: string
+  descripcion: string
+  estado: "pendiente" | "en-progreso" | "completada"
+  prioridad: "alta" | "media" | "baja"
+  progreso: number
+  fechaLimite?: string
+  fechaCreacion?: string
+  creadoPor?: string
+  asignadoA?: string
+  estaEnPapelera: boolean
+}
+```
+
+Algunos campos pueden generarse o normalizarse en la capa de servicio.
+
+---
+
+# `src/hooks/useTasks.ts`
+
+Es el principal coordinador del dominio de tareas.
+
+No reemplaza `taskService`: los dos cumplen roles distintos.
+
+```text
+useTasks
+  |
+  +-- estado React
+  +-- orden visual
+  +-- actividad
+  +-- actualización optimista
+  +-- lógica de progreso/estado
+  |
+  └── taskService
+        |
+        └── Firestore
+```
+
+Responsabilidades principales:
+
+- mantener la lista de tareas en React;
+- iniciar y cerrar la suscripción Firestore;
+- separar tareas activas y tareas de papelera;
+- mantener el orden de IDs;
+- combinar tareas nuevas con el orden existente;
+- ordenar inicialmente por prioridad;
+- manejar creación/edición/cambio de estado;
+- actualizar progreso;
+- actualización optimista de UI;
+- restauración y eliminación;
+- vaciado de papelera;
+- registrar actividad;
+- manejar errores.
+
+---
+
+# Orden local de tareas
+
+Firestore contiene los datos de las tareas, pero el orden manual del tablero se
+conserva localmente.
+
+Clave utilizada conceptualmente:
+
+```text
+taskify-orden-tareas-<uid>
+```
+
+El orden se persiste en:
+
+```text
+localStorage
+```
+
+Cuando Firestore entrega una nueva lista:
+
+1. Se eliminan IDs que ya no existen.
+2. Se conservan los IDs conocidos en su orden actual.
+3. Las tareas nuevas se insertan según prioridad.
+4. Se guarda nuevamente el orden local.
+
+Esto separa:
+
+```text
+Firestore    -> datos persistentes de negocio
+localStorage -> preferencia visual/local de orden
+```
+
+---
+
+# Historial de actividad
+
+`useTasks` registra las últimas acciones del usuario.
+
+Se conserva un máximo aproximado de 30 actividades por usuario.
+
+Clave:
+
+```text
+taskify-actividades-<uid>
+```
+
+Se almacena en:
+
+```text
+localStorage
+```
+
+Ejemplos:
+
+- tarea creada;
+- tarea editada;
+- tarea completada;
+- tarea en progreso;
+- tarea movida a papelera;
+- tarea restaurada;
+- eliminación definitiva;
+- vaciado de papelera.
+
+El historial de actividad actual no es una auditoría centralizada en Firestore:
+es información de experiencia de usuario almacenada localmente.
+
+---
+
+# Dashboard
+
+## `src/pages/dashboard/DashboardPage.tsx`
+
+Es el orquestador principal de la interfaz autenticada.
+
+Su función no es implementar cada detalle de negocio, sino conectar:
+
+- sesión;
+- tareas;
+- filtros;
+- estadísticas;
+- navegación;
+- topbar;
+- Kanban;
+- papelera;
+- actividad;
+- email.
+
+La lógica se distribuye en hooks especializados para evitar convertir
+`DashboardPage` en un componente monolítico.
+
+---
+
+# Hooks del Dashboard
+
+El proyecto posee hooks con responsabilidades acotadas. fileciteturn25file0L2-L2
+
+## `useDashboardFilters.ts`
+
+Gestiona el estado de los filtros del dashboard.
+
+Responsabilidades típicas:
+
+- texto de búsqueda;
+- estado;
+- prioridad;
+- fechas;
+- obtención de la lista filtrada;
+- limpieza de filtros.
+
+## `useDashboardStats.ts`
+
+Calcula información derivada para tarjetas y estadísticas.
+
+No persiste datos: deriva valores a partir de las tareas actuales.
+
+## `useDashboardTaskActions.ts`
+
+Agrupa acciones de interfaz relacionadas con las tareas, confirmaciones y
+operaciones que terminan delegando en `useTasks`.
+
+## `useDashboardSessionActions.ts`
+
+Gestiona acciones ligadas a la sesión y al usuario.
+
+Entre ellas se encuentra el envío del resumen por email.
+
+El resumen utiliza **tareas activas**, no tareas que ya están en papelera.
+
+## `useDashboardTopbar.ts`
+
+Centraliza estado y acciones utilizadas por la barra superior.
+
+## `useDragAndDrop.ts`
+
+Configura los sensores de `dnd-kit` utilizados por el tablero Kanban.
+
+## `useFormValidation.ts`
+
+Concentra validaciones reutilizables de formularios.
+
+## `useAlert.ts`
+
+Expone una API cómoda para utilizar el sistema global de alertas.
+
+---
+
+# Kanban
+
+## `src/components/kanban/`
+
+Contiene la representación visual del tablero.
+
+La implementación utiliza `dnd-kit`.
+
+Responsabilidades:
+
+- representar columnas;
+- representar tareas movibles;
+- detectar inicio/cancelación/fin de drag;
+- determinar columna o posición destino;
+- actualizar el estado correspondiente;
+- reordenar elementos.
+
+---
+
+## `KanbanBoard`
+
+Coordina el drag & drop del tablero.
+
+Flujo:
+
+```text
+usuario arrastra tarjeta
+       |
+       ▼
+DndContext
+       |
+       ▼
+handleDragEnd
+       |
+       +-- misma columna --> reordenar
+       |
+       └-- otra columna --> cambiar estado
+                              |
+                              ▼
+                           useTasks
+                              |
+                              ▼
+                           Firestore
+```
+
+---
+
+# TaskCard
+
+## `src/components/tasks/TaskCard/TaskCard.tsx`
+
+Representa una tarea individual.
+
+Responsabilidades:
+
+- título;
+- descripción;
+- prioridad;
+- fecha límite;
+- personas asociadas si existen;
+- progreso;
+- estado;
+- editar;
+- completar;
+- mover a papelera.
+
+### Progreso automático
+
+Cuando una tarea se encuentra en:
+
+```text
+estado = en-progreso
+```
+
+y su progreso es menor al 100 %, el componente incrementa el progreso
+automáticamente cada intervalo configurado.
+
+Al llegar a 100 %:
+
+```text
+progreso = 100
+estado   = completada
+```
+
+Este comportamiento está cubierto por tests automatizados.
+
+---
+
+# Formularios de tarea
+
+## `src/components/tasks/`
+
+Incluye los componentes de creación y edición de tareas.
+
+`TaskForm` se encarga de:
+
+- capturar datos;
+- validar;
+- modo creación;
+- modo edición;
+- devolver una estructura `TareaNueva` a la capa superior.
+
+La persistencia no se realiza directamente desde el formulario.
+
+---
+
+# Papelera
+
+## `src/pages/papelera/`
+
+La papelera utiliza las mismas tareas de Firestore diferenciadas por el campo:
+
+```text
+estaEnPapelera
+```
+
+Mover una tarea a papelera es un soft delete.
+
+Flujos:
+
+```text
+activa
+  |
+  +-- mover a papelera
+  ▼
+estaEnPapelera = true
+```
+
+```text
+papelera
+  |
+  +-- restaurar
+  ▼
+estaEnPapelera = false
+```
+
+```text
+papelera
+  |
+  +-- eliminar definitivamente
+  ▼
+deleteDoc()
+```
+
+---
+
+# Alertas
+
+## `src/context/AlertContext.tsx`
+
+Contiene el Provider que mantiene el estado global de alertas.
+
+## `src/context/alertContextDefinition.ts`
+
+Define los tipos y el contexto separado del Provider.
+
+Esta separación mejora la compatibilidad con Fast Refresh.
+
+## `src/hooks/useAlert.ts`
+
+Es la API utilizada por los componentes.
+
+Expone operaciones como:
+
+```text
+alertaExito
+alertaError
+alertaAdvertencia
+alertaInfo
+alertaConfirmar
+```
+
+## `src/components/ui/Alert/`
+
+Renderiza visualmente las alertas.
+
+---
+
+# Layout
+
+## `src/components/layout/`
+
+Contiene la estructura visual persistente del área autenticada.
+
+Ejemplos de responsabilidad:
+
+- Sidebar.
+- Topbar.
+- Navegación.
+- Contenedores generales.
+
+El layout no debe contener operaciones directas contra Firestore.
+
+---
+
+# Página "Acerca de"
+
+## `src/pages/about/AboutPage.tsx`
+
+Presenta información del proyecto:
+
+- stack;
+- arquitectura;
+- funcionalidades;
+- contexto técnico.
+
+Debe mantenerse alineada con la arquitectura productiva real:
+
+```text
+Firebase + Vercel Functions + Nodemailer/Gmail
+```
+
+No debe conservar referencias al flujo AWS SES/S3 retirado.
+
+---
+
+# Envío de email
+
+El sistema de email tiene dos partes independientes:
+
+```text
+Frontend
+src/services/emailService.ts
+```
+
+y:
+
+```text
+Backend
+api/sendEmail.ts
+```
+
+---
+
+## Frontend: `src/services/emailService.ts`
+
+Responsabilidades:
+
+1. Obtener `auth.currentUser`.
+2. Confirmar que existe usuario autenticado.
+3. Verificar que el email solicitado coincide con la cuenta autenticada.
+4. Obtener Firebase ID Token.
+5. Enviar `POST /api/sendEmail`.
+6. Incluir:
+
+```http
+Authorization: Bearer <firebase-id-token>
+Content-Type: application/json
+```
+
+7. Si recibe `401`, forzar:
+
+```ts
+usuario.getIdToken(true)
+```
+
+8. Reintentar una sola vez.
+
+No se reintentan automáticamente errores SMTP/500 porque podría producir
+correos duplicados.
+
+---
+
+# Backend: `api/sendEmail.ts`
+
+Es una Vercel Function server-side.
+
+Responsabilidades:
+
+- aceptar únicamente `POST`;
+- leer `Authorization: Bearer ...`;
+- validar el Firebase ID Token;
+- obtener la identidad Firebase real;
+- normalizar y limitar el payload de tareas;
+- escapar contenido HTML;
+- cargar credenciales Gmail desde variables server-side;
+- crear el transporter Nodemailer;
+- enviar el resumen;
+- devolver el código HTTP correspondiente.
+
+---
+
+# Validación de identidad del email
+
+El backend no utiliza un destinatario arbitrario proveniente del navegador.
+
+El flujo es:
+
+```text
+Browser
+  |
+  | Firebase ID Token
+  ▼
+/api/sendEmail
+  |
+  ▼
+validación Firebase
+  |
+  ▼
+usuario Firebase
+  |
+  ├── localId / UID
+  ├── email
+  └── displayName
+  |
+  ▼
+destinatario = usuarioFirebase.email
+```
+
+Esta decisión evita un endpoint abierto capaz de enviar correos a direcciones
+arbitrarias.
+
+---
+
+# Payload del resumen
+
+El cliente envía únicamente los datos necesarios:
+
+```json
+{
+  "nombreUsuario": "Nombre",
+  "tareas": [
+    {
+      "titulo": "Ejemplo",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "progreso": 0
+    }
+  ]
+}
+```
+
+El email destinatario no necesita formar parte del payload confiable del
+backend.
+
+La Function limita y normaliza los datos antes de construir el HTML.
+
+---
+
+# Gmail SMTP
+
+El transporter utiliza:
+
+```text
+Nodemailer
+service: gmail
+```
+
+Credenciales necesarias:
+
+```env
+GMAIL_USER=
+GMAIL_APP_PASSWORD=
+```
+
+`GMAIL_APP_PASSWORD` debe ser una **App Password de Google**, no la contraseña
+normal de la cuenta.
+
+Estas variables se configuran en Vercel y nunca deben estar en código,
+`.env.example` con valores reales ni archivos versionados.
+
+---
+
+# Variables de entorno
+
+Archivo de referencia:
+
+```text
+Taskify-app/.env.example
+```
+
+## Frontend / Firebase
 
 ```env
 VITE_FIREBASE_API_KEY=
@@ -284,622 +1066,633 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-### AWS
+## Backend
 
 ```env
-VITE_AWS_REGION=
-VITE_AWS_ACCESS_KEY_ID=
-VITE_AWS_SECRET_ACCESS_KEY=
-VITE_AWS_BUCKET_NAME=
+FIREBASE_API_KEY=
+GMAIL_USER=
+GMAIL_APP_PASSWORD=
 ```
 
-### Backend (Vercel)
-
-```env
-AWS_REGION=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-```
+`FIREBASE_API_KEY` puede utilizarse como alias server-side para la validación
+del token. La implementación también puede reutilizar la API key web de
+Firebase cuando corresponde.
 
 ---
 
-## 🚀 Instalación
+# Qué debe estar en Git y qué no
 
-### ⚠️ Paso previo: Navegar a la raíz del proyecto
-
-Antes de hacer cualquier cosa, **debes estar en la carpeta raíz `Taskify-app`**:
-
-```bash
-# Desde la terminal, navega hasta la carpeta del proyecto
-
-cd Taskify-app
-
-# Verifica que estés en el lugar correcto
-ls
-# Deberías ver: src/, tests/, package.json, README.md, etc.
-```
-
-Si ejecutas los comandos desde otra carpeta, obtendrás errores como:
-
-```
-error: package.json not found
-error: vite config not found
-```
-
-### 1. Clonar repositorio
-
-```bash
-git clone <https://github.com/JoaquinG-eng/ProyectoM4_JoaquingonzalezFT73.git>
-
-# Luego navega a la raíz
-cd ProyectoM4_JoaquingonzalezFT73/Taskify-app
-```
-
-### 2. Instalar dependencias
-
-```bash
-# Asegúrate de estar en Taskify-app/
-npm install
-# o
-yarn install
-```
-
-### 3. Configurar variables de entorno
-
-Crea un archivo `.env.local` en la raíz (`Taskify-app/.env.local`):
-
-```bash
-# Desde la raíz del proyecto
-touch .env.local
-
-# Luego abre el archivo y agrega:
-VITE_FIREBASE_API_KEY=tu_clave_aqui
-VITE_FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=tu_proyecto_id
-VITE_FIREBASE_STORAGE_BUCKET=tu_bucket.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=tu_id
-VITE_FIREBASE_APP_ID=tu_app_id
-```
-
-### 4. Iniciar la aplicación en desarrollo
-
-```bash
-# Asegúrate de estar en Taskify-app/
-npm run dev
-```
-
-Abrir en el navegador:
+## Versionado
 
 ```text
-http://localhost:5173
+src/
+api/
+tests/
+package.json
+package-lock.json
+vite.config.ts
+vercel.json
+.env.example
+README.md
+.github/workflows/
+```
 
-O en producción:
-https://proyecto-m4-joaquingonzalez-ft-73.vercel.app/
+## Nunca versionar
+
+```text
+.env
+.env.local
+.env.production
+GMAIL_APP_PASSWORD real
+credenciales personales
+.vercel/
+node_modules/
+dist/
+coverage/
+backups locales
 ```
 
 ---
 
-## 🧪 Scripts disponibles
+# Vercel
 
-**Importante**: Ejecuta todos estos comandos desde la raíz del proyecto (`Taskify-app/`)
+## `vercel.json`
 
-```bash
-# Desarrollo
-npm run dev              # Inicia servidor Vite en puerto 5173
+Configura el comportamiento de la SPA en Vercel.
 
-# Build
-npm run build            # Compila para producción
+La aplicación utiliza un fallback hacia `index.html` para las rutas del
+frontend.
 
-# Preview
-npm run preview          # Previsualiza el build localmente
+Los archivos y las Functions reales de `/api/*` son resueltos antes del
+fallback de la SPA.
 
-# Linting
-npm run lint             # Verifica errores de código
+---
+
+# Flujo de deployment
+
+```text
+main
+ |
+ ▼
+GitHub
+ |
+ ▼
+Vercel
+ |
+ +-- instala dependencias
+ +-- ejecuta build
+ +-- publica frontend
+ +-- construye api/sendEmail.ts como Function
+ |
+ ▼
+Production
+```
+
+Variables como `GMAIL_USER` y `GMAIL_APP_PASSWORD` pertenecen a la
+configuración del proyecto en Vercel.
+
+Cuando una variable de entorno cambia, se debe realizar un nuevo deployment
+para que la Function utilice el nuevo valor.
+
+---
+
+# Estructura del proyecto
+
+La estructura objetivo, después de retirar artefactos legacy, es:
+
+```text
+Taskify-app/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+│
+├── README.md
+├── .gitignore
+│
+└── Taskify-app/
+    ├── api/
+    │   └── sendEmail.ts
+    │
+    ├── public/
+    │
+    ├── src/
+    │   ├── ASSETS/
+    │   │
+    │   ├── components/
+    │   │   ├── GoogleButton/
+    │   │   ├── auth/
+    │   │   ├── dashboard/
+    │   │   ├── kanban/
+    │   │   ├── layout/
+    │   │   ├── tasks/
+    │   │   └── ui/
+    │   │
+    │   ├── context/
+    │   │   ├── AlertContext.tsx
+    │   │   └── alertContextDefinition.ts
+    │   │
+    │   ├── firebase/
+    │   │   └── firebase.ts
+    │   │
+    │   ├── hooks/
+    │   │   ├── useAlert.ts
+    │   │   ├── useAuth.ts
+    │   │   ├── useDashboardFilters.ts
+    │   │   ├── useDashboardSessionActions.ts
+    │   │   ├── useDashboardStats.ts
+    │   │   ├── useDashboardTaskActions.ts
+    │   │   ├── useDashboardTopbar.ts
+    │   │   ├── useDragAndDrop.ts
+    │   │   ├── useFormValidation.ts
+    │   │   └── useTasks.ts
+    │   │
+    │   ├── pages/
+    │   │   ├── about/
+    │   │   ├── auth/
+    │   │   ├── dashboard/
+    │   │   └── papelera/
+    │   │
+    │   ├── services/
+    │   │   ├── authService.ts
+    │   │   ├── emailService.ts
+    │   │   └── taskService.ts
+    │   │
+    │   ├── styles/
+    │   ├── types/
+    │   ├── utils/
+    │   ├── App.tsx
+    │   ├── index.css
+    │   ├── main.tsx
+    │   └── setupTests.ts
+    │
+    ├── tests/
+    │
+    ├── .env.example
+    ├── .gitignore
+    ├── eslint.config.js
+    ├── index.html
+    ├── package.json
+    ├── package-lock.json
+    ├── tsconfig.app.json
+    ├── tsconfig.json
+    ├── tsconfig.node.json
+    ├── vercel.json
+    └── vite.config.ts
+```
+
+La copia interna duplicada de README, servicios AWS legacy, capturas de debug,
+backups de Vercel y stubs vacíos no forman parte de la estructura objetivo.
+
+---
+
+# Mapa rápido de responsabilidades
+
+| Área | Autoridad / archivo principal | Responsabilidad |
+|---|---|---|
+| Inicio app | `main.tsx` | Montaje de React |
+| Sesión/UI auth | `App.tsx` | Decide qué pantalla renderizar |
+| Estado Firebase Auth | `useAuth.ts` | Observa usuario y carga |
+| Operaciones auth | `authService.ts` | Registro, login, Google, recovery, linking |
+| Firebase | `firebase.ts` | Inicializa `auth` y `db` |
+| Datos de tareas | `taskService.ts` | CRUD y `onSnapshot` |
+| Dominio de tareas | `useTasks.ts` | Estado, orden, progreso, actividad, acciones |
+| Dashboard | `DashboardPage.tsx` | Orquesta UI autenticada |
+| Filtros | `useDashboardFilters.ts` | Filtrado de tareas |
+| Estadísticas | `useDashboardStats.ts` | Valores derivados |
+| Acciones tarea | `useDashboardTaskActions.ts` | Acciones/confirmaciones UI |
+| Acciones sesión | `useDashboardSessionActions.ts` | Logout y email |
+| Topbar | `useDashboardTopbar.ts` | Estado/interacciones de barra superior |
+| Kanban | `components/kanban` | Drag & drop |
+| Tarjetas | `TaskCard` | UI y progreso de tarea |
+| Formularios | `components/tasks` | Crear/editar |
+| Papelera | `pages/papelera` | Soft delete/restauración/eliminación |
+| Alertas | `AlertContext` + `useAlert` | Mensajería global |
+| Cliente email | `emailService.ts` | Token + request + retry 401 |
+| Backend email | `api/sendEmail.ts` | Auth, sanitización, SMTP |
+| Deployment | `vercel.json` | SPA + Functions |
+| Tests | `tests/` | Regresión automatizada |
+
+---
+
+# Flujos end-to-end
+
+## Login y carga de tareas
+
+```text
+Usuario
+  |
+  ▼
+LoginPage
+  |
+  ▼
+authService
+  |
+  ▼
+Firebase Authentication
+  |
+  ▼
+onAuthStateChanged
+  |
+  ▼
+useAuth
+  |
+  ▼
+App
+  |
+  ▼
+DashboardPage
+  |
+  ▼
+useTasks(uid)
+  |
+  ▼
+taskService.suscribirTareas(uid)
+  |
+  ▼
+Cloud Firestore
+```
+
+---
+
+## Crear tarea
+
+```text
+TaskForm
+  |
+  ▼
+Dashboard action
+  |
+  ▼
+useTasks.crearTarea()
+  |
+  ▼
+taskService.crearTareaEnFirestore()
+  |
+  ▼
+Firestore
+  |
+  ▼
+onSnapshot
+  |
+  ▼
+useTasks
+  |
+  ▼
+Kanban actualizado
+```
+
+---
+
+## Mover tarea
+
+```text
+Drag & Drop
+  |
+  ▼
+KanbanBoard
+  |
+  ▼
+cambiarEstadoTarea / reordenarTareas
+  |
+  ├── React: actualización inmediata
+  ├── localStorage: orden
+  └── Firestore: estado/progreso
+```
+
+---
+
+## Papelera
+
+```text
+TaskCard
+  |
+  ▼
+moverAPapelera
+  |
+  ▼
+Firestore: estaEnPapelera = true
+  |
+  ▼
+tareasActivas / tareasEnPapelera
+```
+
+---
+
+## Enviar resumen
+
+```text
+Topbar
+  |
+  ▼
+useDashboardSessionActions
+  |
+  ▼
+emailService
+  |
+  ├── auth.currentUser
+  ├── getIdToken()
+  └── POST /api/sendEmail
+          |
+          ▼
+     Vercel Function
+          |
+          ├── valida Bearer token
+          ├── resuelve usuario Firebase
+          ├── usa email autenticado
+          ├── normaliza tareas
+          └── Nodemailer
+                 |
+                 ▼
+                Gmail
+```
+
+---
 
 # Testing
-npm run test             # Ejecuta tests en modo watch
-npm run test:coverage    # Ejecuta tests + reporte de cobertura
+
+El proyecto utiliza:
+
+- Vitest.
+- React Testing Library.
+- jsdom.
+- `@testing-library/jest-dom`.
+
+El setup central se encuentra en:
+
+```text
+src/setupTests.ts
 ```
+
+Cobertura funcional actual de las suites:
+
+- autenticación;
+- `useAuth`;
+- `authService`;
+- tareas;
+- `taskService`;
+- `useTasks`;
+- TaskForm;
+- TaskCard;
+- alertas;
+- ActivityFeed;
+- estadísticas;
+- validaciones;
+- frontend de email;
+- backend `/api/sendEmail`.
+
+Estado validado:
+
+```text
+15 archivos de test PASS
+75 tests PASS
+```
+
+Los mensajes de error SMTP/token que aparecen dentro de algunos tests son
+escenarios negativos simulados y forman parte de las verificaciones esperadas.
 
 ---
 
-## 📈 Funcionalidades implementadas
+# Scripts
 
-- Sistema Kanban
-- Gestión de tareas
-- Papelera de reciclaje
-- Historial de actividades en tiempo real
-- Seguimiento de progreso con porcentaje
-- Prioridades y estados configurables
-- Autenticación con Firebase
-- Sincronización bidireccional con Firestore
-- Notificaciones vía SweetAlert2
-- Integración con AWS SES para emails
-
----
-
-## 📖 Guía de uso
-
-### Comprender el tablero Kanban
-
-El tablero muestra 3 columnas que se actualizan automáticamente:
-
-| Pendiente               | En Progreso             | Completada          |
-| ----------------------- | ----------------------- | ------------------- |
-| Tareas sin iniciar      | Trabajando en ellas     | Terminadas          |
-| 0% progreso             | 1-99% progreso          | 100% progreso       |
-| Ordenadas por prioridad | Ordenadas por prioridad | Ordenadas por fecha |
-
-**Las tareas se mueven automáticamente** entre columnas según el progreso que indiques.
-
-### Crear una tarea
-
-1. Haz clic en el botón **"Nueva tarea"** o usa el atajo
-2. Completa el formulario con:
-   - **Título** (requerido) - máx 100 caracteres
-   - **Descripción** (requerido) - máx 500 caracteres
-   - **Prioridad** (Alta / Media / Baja) - por defecto "Media"
-   - **Fecha límite** (opcional) - para tareas con deadline
-3. Haz clic en **"Crear"**
-4. La tarea aparece automáticamente en la columna **Pendiente**
-
-**Nota**: El sistema asigna automáticamente:
-
-- Estado: Pendiente
-- Progreso: 0%
-- Fecha de creación (hoy)
-- Propietario: tu usuario
-
-### Actualizar progreso (lo más importante)
-
-La **barra de progreso es dinámica**:
-
-1. Selecciona una tarea
-2. Mueve la barra de progreso (0-100%)
-3. El sistema **automáticamente**:
-   - Recalcula el estado de la tarea
-   - La mueve a otra columna
-   - Registra la actividad
-   - Sincroniza con Firestore
-
-**Ejemplos de cambios automáticos:**
-
-```
-Si pones 0% → La tarea va a "Pendiente"
-Si pones 50% → La tarea va a "En Progreso"
-Si pones 99% → La tarea sigue en "En Progreso"
-Si pones 100% → La tarea va a "Completada" ✅
-```
-
-### Gestionar tareas - Operaciones comunes
-
-| Acción                | Cómo hacerlo                        | Efecto                                     |
-| --------------------- | ----------------------------------- | ------------------------------------------ |
-| Editar                | Haz clic en ✏️                      | Abre modal, puedes cambiar todos los datos |
-| Cambiar estado        | Mueve el slider progreso            | Se actualiza automáticamente               |
-| Eliminar (seguro)     | Haz clic en 🗑️                      | Va a Papelera, recuperable                 |
-| Restaurar             | Ve a Papelera → Restaurar           | Vuelve a tareas activas                    |
-| Eliminar para siempre | Papelera → Eliminar definitivamente | No se puede recuperar                      |
-| Vaciar papelera       | Papelera → Vaciar todo              | Elimina todas las tareas archivadas        |
-
-### Búsqueda y filtrado inteligente
-
-El sistema busca en **tiempo real** mientras escribes:
-
-1. **Búsqueda por texto**: Escribe en la barra, busca en títulos y descripciones
-2. **Filtrar por estado**: Solo Pendiente, o solo En Progreso, etc.
-3. **Filtrar por prioridad**: Solo tareas Altas, o todas
-4. **Filtrar por fecha**: Tareas entre dos fechas
-5. **Ver papelera**: Mostrar/ocultar tareas eliminadas
-
-**Ejemplo**: Si buscas "firebase" + filtras por "Alta", verás solo tareas altas que mencionen firebase.
-
-### Feed de actividades en vivo
-
-El panel **Actividad** registra automáticamente:
-
-- ✅ Cuando creas una tarea
-- ✏️ Cuando editas datos
-- 📈 Cuando cambias el progreso
-- 🔄 Cuando cambias el estado
-- 🗑️ Cuando mueves a papelera
-- ♻️ Cuando restauras
-- 🧹 Cuando vacías la papelera
-
-**Cada actividad muestra**:
-
-- Ícono del tipo de acción
-- Descripción clara en español
-- Hora exacta (HH:MM)
-
-Las actividades se guardan en `localStorage` de tu navegador, así que si cierras la app, los últimos 30 eventos se recuperan.
-
-### Estadísticas en tiempo real
-
-El dashboard muestra automáticamente:
-
-- Total de tareas activas
-- Tareas completadas hoy
-- Promedio de progreso
-- Próximas a vencer
-
----
-
-## 🧪 Testing
-
-### Ejecución de tests
+Desde `Taskify-app/Taskify-app`:
 
 ```bash
-# Ejecutar todos los tests
-npm run test
-
-# Ejecutar tests en modo watch
-npm run test
-
-# Ejecutar tests con cobertura
-npm run test:coverage
-
-```
-
-### Cobertura actual
-
-- **Statements**: 92.28%
-- **Branches**: 80.4%
-- **Functions**: 91.91%
-- **Lines**: 93.88%
-
-### Archivos testeados
-
-- ✅ `src/services/taskService.ts` (100% - 9 tests)
-- ✅ `src/hooks/useTasks.ts` (91.66% - 8 tests)
-- ✅ `src/context/AlertContext.tsx` (69.23% - 4 tests)
-- ✅ `src/pages/login and register/LoginPage.tsx` (80.43% - 5 tests)
-- ✅ `src/components/tasks/TaskForm.tsx` (90.47% - 9 tests)
-- ✅ `src/components/tasks/TaskCard.tsx` (88% - 10 tests)
-- ✅ Todos los hooks y servicios auxiliares
-
-### Ejecutar test específico
-
-```bash
-npm run test -- --run tests/TaskForm.test.tsx
-npx vitest run tests/taskService.test.ts
-```
-
----
-
-## 🚀 Deployment
-
-### En Vercel (Recomendado)
-
-1. Conecta el repositorio a Vercel
-2. Configura variables de entorno en Vercel:
-   - Todas las `VITE_*` para Firebase y AWS
-   - Las `AWS_*` para las serverless functions
-3. Vercel construye automáticamente con `npm run build`
-4. Los endpoints `/api/*` apuntan a `api/sendEmail.ts`
-
-### Variables de entorno en Vercel
-
-```env
-VITE_FIREBASE_API_KEY=tu_clave
-VITE_FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=tu_proyecto
-...
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=tu_clave
-AWS_SECRET_ACCESS_KEY=tu_secreto
-```
-
-### En desarrollo local
-
-```bash
-# Crear .env.local
-cp .env.example .env.local
-
-# Completar con tus credenciales
-# Luego:
 npm run dev
 ```
 
----
-
-## 📂 Estructura detallada
-
-```
-src/
-├── components/
-│   ├── kanban/
-│   │   └── KanbanBoard/      # Tablero principal Kanban
-│   ├── layout/
-│   │   ├── Sidebar/          # Navegación lateral
-│   │   └── Topbar/           # Barra superior
-│   ├── tasks/
-│   │   ├── TaskCard/         # Tarjeta de tarea individual
-│   │   └── TaskForm/         # Formulario crear/editar
-│   └── ui/
-│       ├── ActivityFeed/     # Feed de actividades
-│       ├── Alert/            # Alertas visuales
-│       ├── Modal/            # Diálogos modales
-│       └── StatCard/         # Tarjetas de estadísticas
-├── context/
-│   └── AlertContext.tsx      # Estado global de alertas
-├── hooks/
-│   ├── useAuth.ts            # Autenticación
-│   ├── useAlert.ts           # Alertas
-│   ├── useTasks.ts           # CRUD y estado de tareas
-│   ├── useFormValidation.ts  # Validación de formularios
-│   └── useTickets.ts         # Gestión de tickets (futuro)
-├── pages/
-│   ├── about/                # Página acerca de
-│   ├── dashboard/            # Página principal
-│   ├── login and register/   # Autenticación
-│   └── papelera/             # Gestor de papelera
-├── routes/
-│   └── ProtectedRoute.tsx    # Rutas privadas
-├── services/
-│   ├── authService.ts        # Firebase Auth
-│   ├── taskService.ts        # Firestore operations
-│   ├── emailService.ts       # AWS SES
-│   └── awsService.ts         # AWS S3
-├── styles/
-│   ├── animations.css        # Transiciones
-│   ├── globals.css           # Estilos globales
-│   ├── variables.css         # Paleta de colores
-│   └── sweetalert-taskify.css # Estilos SweetAlert
-├── types/
-│   ├── actividad.ts          # Tipo actividad
-│   ├── task.ts               # Tipo tarea
-│   └── index.ts              # Exportaciones
-├── utils/
-│   ├── formatDate.ts         # Formato de fechas
-│   ├── prioridad.ts          # Helpers prioridad
-│   ├── sweetAlerts.ts        # Wrapper SweetAlert2
-│   └── validaciones.ts       # Validaciones comunes
-├── firebase/
-│   └── firebase.ts           # Config Firebase
-├── ASSETS/
-│   └── taskify_logo.jpg      # Logo principal
-└── main.tsx                  # Punto de entrada
-```
-
----
-
-## 🔑 Variables clave en tipos
-
-### Tipo: Tarea
-
-```typescript
-interface Tarea {
-  id: string; // ID único Firestore
-  userId: string; // Propietario
-  titulo: string; // Nombre tarea
-  descripcion: string; // Detalles
-  estado: "pendiente" | "en-progreso" | "completada";
-  prioridad: "alta" | "media" | "baja";
-  fechaCreacion: string; // ISO 8601
-  fechaLimite?: string; // Opcional
-  progreso: number; // 0-100
-  estaEnPapelera: boolean; // Soft delete flag
-  fechaEliminacion?: string; // Cuándo se movió
-  asignadoA?: string; // Email asignado
-  creadoPor?: string; // Usuario creador
-}
-```
-
-### Tipo: Actividad
-
-```typescript
-interface Actividad {
-  id: string; // ID único
-  tipo: TipoActividad; // Categoría evento
-  descripcion: string; // Qué pasó
-  hora: string; // HH:MM formato local
-}
-
-type TipoActividad =
-  | "tarea_creada"
-  | "tarea_editada"
-  | "tarea_completada"
-  | "tarea_en_progreso"
-  | "tarea_papelera"
-  | "tarea_restaurada"
-  | "tarea_eliminada"
-  | "papelera_vaciada";
-```
-
----
-
-## 🐛 Troubleshooting
-
-### "Error: Firebase no inicializado"
-
-**Solución**: Verifica que `.env.local` tiene todas las variables `VITE_FIREBASE_*`
-
-```bash
-# Revisa que existan:
-echo $VITE_FIREBASE_PROJECT_ID
-```
-
-### "Las tareas no se sincronizan"
-
-1. Abre DevTools → Pestaña Network
-2. Verifica que hay requests a `firestore.googleapis.com`
-3. En Firestore Console, confirma que la colección `tasks` existe
-4. Revisa permisos de lectura/escritura en Firestore Rules
-
-### "Email no se envía"
-
-Pasos:
-
-1. Verifica credenciales AWS en `.env.local` / Vercel
-2. Confirma que el email está verificado en AWS SES (modo sandbox)
-3. Revisa los logs de `/api/sendEmail.ts` en servidor Vercel
-4. Asegúrate que `VITE_BACKEND_URL` apunta correctamente
-
-### "Tests fallan con 'toBeInTheDocument'"
-
-**Solución**: Ya está arreglado en `src/setupTests.ts`, pero si reaparece:
-
-```bash
-npm install @testing-library/jest-dom --save-dev
-npm run test -- --run
-```
-
----
-
-## 📊 Performance
-
-### Optimizaciones implementadas
-
-- ✅ Lazy loading de páginas con React Router
-- ✅ Memoización de componentes con `memo()`
-- ✅ Hooks optimizados con dependencias correctas
-- ✅ CSS modular para evitar conflictos
-- ✅ Compresión automática en Vercel
-
-### Métricas recomendadas
+Servidor de desarrollo.
 
 ```bash
 npm run build
-# Ver tamaño del bundle generado
+```
+
+Build productivo Vite.
+
+```bash
+npm run lint
+```
+
+Análisis ESLint.
+
+```bash
+npm run test -- --run
+```
+
+Suite completa una sola vez.
+
+La estructura profesional agrega además:
+
+```bash
+npm run typecheck
+npm run test:run
+npm run check
+```
+
+`npm run check` debe ejecutar la cadena completa de calidad antes de publicar:
+
+```text
+typecheck -> lint -> tests -> build
 ```
 
 ---
 
-## 🤝 Contribuir
+# Instalación
 
-### Pasos para contribuir
+## Requisitos
 
-1. Fork el repositorio
-2. Crea una rama: `git checkout -b feature/mi-feature`
-3. Haz commits: `git commit -am 'Agregué...'`
-4. Push a rama: `git push origin feature/mi-feature`
-5. Abre un Pull Request
+- Node.js 22.
+- npm.
+- Proyecto Firebase.
+- Cuenta Vercel.
+- Gmail con App Password si se necesita email.
 
-### Estándares de código
+## Clonar
 
-- Usar TypeScript estricto
-- Componentes funcionales con hooks
-- Nombres descriptivos en español (convención del proyecto)
-- Cobertura de tests >90%
-- Linting con ESLint: `npm run lint`
-
----
-
-## 🔮 Próximas funcionalidades
-
-- Drag & Drop entre columnas
-- Sistema de comentarios en tareas
-- Etiquetas y categorías personalizadas
-- Tableros colaborativos
-- Notificaciones push
-- Exportación a PDF/Excel
-- Integración Google Calendar
-- Dashboard con gráficos
-- Modo offline
-- Sistema de tickets
-
-**Última actualización**
-
-## Cambios recientes implementados
-
-En esta última iteración del proyecto Taskify, se realizaron mejoras en la experiencia de usuario, interfaz y validaciones del sistema:
-
-### 1.Personalización del Dashboard (Saludo dinámico)
-Se implementó un sistema de saludo dinámico según la hora del día:
-Buenos días ☀️
-Buenas tardes 🌤️
-Buenas noches 🌙
-
-Sistema de saludo según la hora
-
-El sistema detecta la hora del usuario y muestra un saludo diferente automáticamente:
- 
-```typescript
- function obtenerSaludo(): string {
-  const hora = new Date().getHours();
-
-  if (hora < 12) return "Buenos días";
-  if (hora < 19) return "Buenas tardes";
-  return "Buenas noches";
-}
+```bash
+git clone https://github.com/JoaquinG-eng/Taskify-app.git
+cd Taskify-app/Taskify-app
 ```
 
-El título principal ahora incluye el nombre del usuario y un saludo dinámico:
+## Instalar
 
-```typescript
-titulo: `${obtenerSaludo()}, ${nombreUsuario} 👋`
+```bash
+npm ci
 ```
-### Ejemplo final en pantalla
 
-**Buenos días, Juan 👋**
+## Variables locales
 
-**Qué bueno tenerte nuevamente por aquí.**
-**Tienes 3 tareas pendientes para continuar avanzando.**
+```bash
+cp .env.example .env.local
+```
 
+Completar Firebase.
 
-### 2. Mejoras en la interfaz del Sidebar
-Se integró correctamente el botón de cierre de sesión.
-Se añadió iconografía más clara y moderna para acciones del sistema.
-Se mejoró la organización visual del perfil de usuario.
+## Desarrollo
 
-### 3. Corrección de errores y estabilidad del proyecto
-Se resolvieron errores de TypeScript en:
-Tests de servicios (sendEmail, taskService)
-Validaciones de formulario
-Tipado de requests mock en testing
-Se corrigieron incompatibilidades con vi.mock en Vitest.
-
-### 4. Tests y cobertura
-Se corrigieron fallos en tests de:
-Envío de emails con AWS SES
-Validaciones de título y descripción
-Contextos de alertas
-Se mejoró la estabilidad general del test suite.
-
-### 5. Git y control de versiones
-Se solucionaron problemas con .gitignore:
-node_modules
-coverage
-.env
-Se corrigió el seguimiento de archivos innecesarios en Git.
-
-### 6. UX general
-Se refinó el lenguaje de la aplicación para hacerlo  como más Cercano
-
-Ejemplo:
-
-“Qué bueno tenerte nuevamente por aquí” en lugar de mensajes fríos tipo dashboard genérico.
-
-### Resultado final
-
-Taskify ahora cuenta con:
-
-Interfaz más amigable 
-Mensajes personalizados por usuario 
-Mejor experiencia de navegación 
-Tests más estables 
-Código más limpio y mantenible 
+```bash
+npm run dev
+```
 
 ---
 
-## Mejoras futuras
+# Seguridad
 
-- Drag & Drop real en Kanban
-- Compartir tareas entre usuarios
-- Tableros colaborativos
-- Comentarios en tareas
-- Categorías y etiquetas
-- Notificaciones
-- Exportación PDF y Excel
-- Integración con Google Calendar
-- Modo Offline
-- Dashboard avanzado
+## Identidad
+
+Firebase Authentication es la autoridad de identidad.
+
+## Datos
+
+Las tareas se vinculan al UID Firebase mediante `userId`.
+
+## Email
+
+El servidor determina el destinatario desde la identidad autenticada.
+
+## Secretos
+
+Las credenciales Gmail permanecen en Vercel y no en el cliente.
+
+## App Password
+
+Nunca debe exponerse:
+
+```text
+GMAIL_APP_PASSWORD
+```
+
+## Cuenta demo
+
+La contraseña de la cuenta demo no se publica en Git.
+
+## Configuración Firebase
+
+Las variables web `VITE_FIREBASE_*` son configuración utilizada por el SDK del
+navegador. No deben confundirse con secretos server-side.
 
 ---
 
-## 👨‍💻 Autor
+# CI
 
-Joaquin gonzalez FT73
+La estructura objetivo incorpora:
 
-Proyecto desarrollado como aplicación de gestión de tareas moderna utilizando React, TypeScript, Firebase y AWS.
+```text
+.github/workflows/ci.yml
+```
+
+El pipeline debe ejecutar sobre Node.js 22:
+
+```text
+npm ci
+npm run typecheck
+npm run lint
+npm run test:run
+npm run build
+```
+
+Esto evita que cambios que rompan TypeScript, lint, tests o build lleguen a
+`main` sin detección.
+
+---
+
+# Persistencia: qué se guarda dónde
+
+| Información | Ubicación | Autoridad |
+|---|---|---|
+| Usuario / identidad | Firebase Authentication | Firebase |
+| Tareas | Cloud Firestore | Firestore |
+| Propietario de tarea | `userId` / Firebase UID | Firestore + Auth |
+| Orden visual | localStorage | Navegador |
+| Feed reciente | localStorage | Navegador |
+| Credenciales Gmail | Vercel Environment Variables | Vercel |
+| Código frontend | GitHub | Git |
+| Function email | GitHub + Vercel | Git/Vercel |
+| Tests | GitHub | Git |
+
+---
+
+# Decisiones de diseño importantes
+
+## Firestore es la autoridad de tareas
+
+El orden local y el feed no reemplazan Firestore.
+
+## La UI no es la frontera de seguridad
+
+Filtrar por `userId` en el cliente es necesario para funcionalidad, pero la
+protección real de datos debe acompañarse con reglas Firestore adecuadas en el
+proyecto Firebase.
+
+## El email no acepta destinatario libre
+
+Reduce el riesgo de utilizar Taskify como relay de correo.
+
+## Los proveedores de login conservan UID
+
+Evita separar las tareas de un usuario al incorporar Google o contraseña.
+
+## Reintento de correo limitado
+
+Sólo se reintenta automáticamente cuando el token de Firebase expira y la API
+devuelve `401`. Un error SMTP no se reintenta automáticamente para evitar
+duplicados.
+
+---
+
+# Mejoras futuras no bloqueantes
+
+- Code splitting para reducir el bundle principal.
+- Optimización de imágenes pesadas del frontend.
+- Revisión de dependencias con `npm audit` sin aplicar upgrades forzados.
+- Despliegue/versionado explícito de reglas Firestore.
+- Mayor cobertura E2E de navegador.
+- Observabilidad específica de errores de frontend.
+- Rate limiting adicional para `/api/sendEmail` si aumenta el volumen.
+
+---
+
+# Criterio de calidad antes de un release
+
+Un cambio destinado a producción debe cerrar con:
+
+```text
+git diff --check          PASS
+npm run typecheck        PASS
+npm run lint             PASS
+npm run test:run         PASS
+npm run build            PASS
+```
+
+Para cambios del flujo de correo se agrega una prueba real en Vercel:
+
+```text
+POST /api/sendEmail -> HTTP 200
+```
+
+---
+
+# Resumen
+
+Taskify utiliza una separación clara de responsabilidades:
+
+```text
+Pages       -> composición de pantallas
+Components  -> interfaz reutilizable
+Hooks       -> estado y coordinación de UI
+Services    -> Firebase y llamadas externas
+Firebase    -> autenticación + datos
+Vercel      -> hosting + backend serverless
+Nodemailer  -> transporte de email
+Tests       -> regresión automatizada
+```
+
+El objetivo de esta arquitectura es mantener el frontend desacoplado de la
+persistencia, conservar la identidad del usuario entre proveedores de login y
+mantener las operaciones sensibles —como las credenciales SMTP y la resolución
+del destinatario— fuera del navegador.
+
+
+
+## Autor
+
+Joaquin Gonzalez

@@ -7,7 +7,6 @@ import {
   pointerWithin,
   rectIntersection,
   type CollisionDetection,
-  type DragCancelEvent,
   type DragEndEvent,
   type DragStartEvent,
   useDroppable,
@@ -336,9 +335,7 @@ function KanbanBoard({
     setActiveId(String(event.active.id));
   }
 
-  function handleDragCancel(
-    _event: DragCancelEvent
-  ): void {
+  function handleDragCancel(): void {
     setActiveId(null);
   }
 

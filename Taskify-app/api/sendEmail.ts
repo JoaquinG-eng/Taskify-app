@@ -36,7 +36,7 @@ function escaparHtml(valor: unknown): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/\\"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
 
@@ -138,6 +138,9 @@ function crearTransporter() {
     transporter: nodemailer.createTransport({
       service: "gmail",
       auth: { user: usuario, pass: password },
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     }),
   };
 }

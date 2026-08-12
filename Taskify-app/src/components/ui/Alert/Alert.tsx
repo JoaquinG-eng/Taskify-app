@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { useAlert } from "../../../hooks/useAlert";
-import type { DatosDeAlerta, TipoDeAlerta } from "../../../context/AlertContext";
+import type { DatosDeAlerta, TipoDeAlerta } from "../../../context/alertContextDefinition";
 import "./Alert.css";
 
 // ------------------------------------------------------------

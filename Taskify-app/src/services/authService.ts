@@ -22,7 +22,7 @@ export function obtenerMensajeDeError(code: string): string {
     "auth/email-already-in-use":
       "Ya existe una cuenta con ese email. Si la creaste con Google, ingresá con Google.",
     "auth/invalid-email": "El email ingresado no es válido.",
-    "auth/weak-password": "La contraseña es demasiado débil.",
+    "auth/weak-password": "La contraseña debe tener al menos 6 caracteres.",
     "auth/user-not-found": "No encontramos una cuenta con ese email.",
     "auth/wrong-password": "La contraseña es incorrecta.",
     "auth/invalid-credential": "Credenciales incorrectas. Verificá email y contraseña.",

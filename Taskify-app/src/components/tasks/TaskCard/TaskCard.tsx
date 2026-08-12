@@ -2,7 +2,7 @@
 // ARCHIVO: src/components/tasks/TaskCard/TaskCard.tsx
 // ============================================================
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
 import TaskForm from "../TaskForm/TaskForm";
 import "./TaskCard.css";
@@ -32,6 +32,13 @@ function TaskCard({
   alEditarTarea,
 }: TaskCardProps) {
   const [estaEditando, setEstaEditando] = useState(false);
+  const cambiarEstadoRef = useRef(alCambiarEstado);
+  const actualizarProgresoRef = useRef(alActualizarProgreso);
+
+  useEffect(() => {
+    cambiarEstadoRef.current = alCambiarEstado;
+    actualizarProgresoRef.current = alActualizarProgreso;
+  }, [alCambiarEstado, alActualizarProgreso]);
 
   // =========================================================
   // EFECTO: CONTADOR AUTOMÁTICO DE PROGRESO DE 10 EN 10
@@ -42,10 +49,10 @@ function TaskCard({
         const siguienteProgreso = datosDeLaTarea.progreso + 10;
         if (siguienteProgreso >= 100) {
           clearInterval(intervalo);
-          alActualizarProgreso(datosDeLaTarea.id, 100);
-          alCambiarEstado(datosDeLaTarea.id, "completada");
+          actualizarProgresoRef.current(datosDeLaTarea.id, 100);
+          cambiarEstadoRef.current(datosDeLaTarea.id, "completada");
         } else {
-          alActualizarProgreso(datosDeLaTarea.id, siguienteProgreso);
+          actualizarProgresoRef.current(datosDeLaTarea.id, siguienteProgreso);
         }
       }, 2000);
 

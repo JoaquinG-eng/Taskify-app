@@ -1,131 +1,67 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-type TestRequestBody = {
-  destinatario?: string;
-  nombreUsuario?: string;
-  tareas?: Array<{ titulo: string; estado: string; prioridad: string; progreso: number }>;
-};
+const sendMail = vi.fn();
+const createTransport = vi.fn(() => ({ sendMail }));
 
-type TestHandlerRequest = {
-  method: string;
-  body?: TestRequestBody;
-};
+vi.mock("nodemailer", () => ({ createTransport }));
 
-type TestHandlerResponse = {
-  status: ReturnType<typeof vi.fn>;
-};
-
-type MockedFunction = ReturnType<typeof vi.fn>;
-
-vi.mock("@aws-sdk/client-ses", () => {
-  return {
-    SESClient: vi.fn().mockImplementation(function () {
-      return { send: vi.fn().mockResolvedValue({}) };
-    }),
-    SendEmailCommand: vi.fn().mockImplementation(function (config) {
-      return { config };
-    }),
-  };
-});
-
-let handler: (req: TestHandlerRequest, res: TestHandlerResponse) => Promise<void>;
-let SendEmailCommand: MockedFunction;
-let SESClient: MockedFunction;
-let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+function crearResponse() {
+  const json = vi.fn();
+  return { json, status: vi.fn().mockReturnValue({ json }), setHeader: vi.fn() };
+}
 
 describe("api/sendEmail.ts", () => {
-  beforeEach(async () => {
-  vi.resetModules();
-
-  vi.stubEnv("AWS_REGION", "us-east-1");
-  vi.stubEnv("AWS_ACCESS_KEY_ID", "test-access-key");
-  vi.stubEnv("AWS_SECRET_ACCESS_KEY", "test-secret-key");
-  vi.stubEnv("AWS_SES_FROM_EMAIL", "noreply@taskify.test");
-
-  consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-  const module = await import("../api/sendEmail");
-
-  handler = module.default as unknown as typeof handler;
-
-  const aws = await import("@aws-sdk/client-ses");
-  SendEmailCommand = aws.SendEmailCommand as unknown as MockedFunction;
-  SESClient = aws.SESClient as unknown as MockedFunction;
-});
-
-afterEach(() => {
-  consoleErrorSpy.mockRestore();
-  vi.unstubAllEnvs();
-  vi.clearAllMocks();
-});
-
-  test("debe devolver 405 si el método no es POST", async () => {
-    const json = vi.fn();
-    const res = { status: vi.fn().mockReturnValue({ json }) };
-
-    await handler({ method: "GET" }, res);
-
-    expect(res.status).toHaveBeenCalledWith(405);
-    expect(json).toHaveBeenCalledWith({ error: "Método no permitido" });
+  beforeEach(() => {
+    vi.resetModules();
+    vi.stubEnv("FIREBASE_API_KEY", "firebase-api-key");
+    vi.stubEnv("GMAIL_USER", "taskify.sender@gmail.com");
+    vi.stubEnv("GMAIL_APP_PASSWORD", "abcdefghijklmnop");
+    sendMail.mockReset();
+    sendMail.mockResolvedValue({ messageId: "test-id" });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ users: [{ localId: "uid-123", email: "usuario@taskify.com", displayName: "Usuario Test" }] }),
+    }));
   });
 
-  test("debe devolver 400 si el payload es inválido", async () => {
-    const json = vi.fn();
-    const res = { status: vi.fn().mockReturnValue({ json }) };
-
-    await handler({ method: "POST", body: { destinatario: "" } }, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith({ error: "Estructura de datos incompleta o inválida" });
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
   });
 
-  test("debe enviar el email usando AWS SES y devolver 200", async () => {
-    const json = vi.fn();
-    const res = { status: vi.fn().mockReturnValue({ json }) };
+  test("exige Firebase Bearer token", async () => {
+    const { default: handler } = await import("../api/sendEmail");
+    const res = crearResponse();
+    await handler({ method: "POST", headers: {}, body: { tareas: [] } } as never, res as never);
+    expect(res.status).toHaveBeenCalledWith(401);
+  });
 
-    await handler(
-      {
-        method: "POST",
-        body: {
-          destinatario: "test@taskify.com",
-          nombreUsuario: "Usuario Test",
-          tareas: [
-            { titulo: "Tarea 1", estado: "pendiente", prioridad: "alta", progreso: 0 },
-          ],
-        },
-      },
-      res
-    );
+  test("envía solamente al email de la identidad Firebase", async () => {
+    const { default: handler } = await import("../api/sendEmail");
+    const res = crearResponse();
+    await handler({
+      method: "POST",
+      headers: { authorization: "Bearer firebase-id-token" },
+      body: { nombreUsuario: "Usuario Test", tareas: [] },
+    } as never, res as never);
 
-    expect(SESClient).toHaveBeenCalled();
-    expect(SendEmailCommand).toHaveBeenCalled();
+    expect(sendMail).toHaveBeenCalledWith(expect.objectContaining({
+      to: "usuario@taskify.com",
+      from: '"Taskify" <taskify.sender@gmail.com>',
+    }));
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(json).toHaveBeenCalledWith({ mensaje: "Email enviado con éxito" });
   });
 
-  test("debe devolver 500 si AWS SES falla", async () => {
-    const json = vi.fn();
-    const res = { status: vi.fn().mockReturnValue({ json }) };
-    const sendMock = vi.fn().mockRejectedValue(new Error("SES unavailable"));
-    SESClient.mockImplementation(function () {
-      return { send: sendMock };
-    });
-
-    await handler(
-      {
-        method: "POST",
-        body: {
-          destinatario: "test@taskify.com",
-          nombreUsuario: "Usuario Test",
-          tareas: [
-            { titulo: "Tarea 1", estado: "pendiente", prioridad: "alta", progreso: 0 },
-          ],
-        },
-      },
-      res
-    );
-
+  test("devuelve 500 cuando SMTP falla", async () => {
+    sendMail.mockRejectedValueOnce(new Error("SMTP unavailable"));
+    const { default: handler } = await import("../api/sendEmail");
+    const res = crearResponse();
+    await handler({
+      method: "POST",
+      headers: { authorization: "Bearer firebase-id-token" },
+      body: { nombreUsuario: "Usuario Test", tareas: [] },
+    } as never, res as never);
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ error: "Error interno al procesar", detalles: "SES unavailable" });
   });
 });

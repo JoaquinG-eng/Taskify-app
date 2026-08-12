@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- Este hook sincroniza cambios de identidad con localStorage y una suscripción externa de Firestore. */
 import {
   useCallback,
   useEffect,
