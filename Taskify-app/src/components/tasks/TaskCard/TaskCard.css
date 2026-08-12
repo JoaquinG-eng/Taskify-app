@@ -286,3 +286,59 @@
   .task-card__btn--progreso,
   .task-card__btn--editar { flex: 1; text-align: center; }
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - tarjetas de tareas
+   ============================================================ */
+@media (max-width: 480px) {
+  .task-card {
+    min-width: 0;
+    padding: 14px 12px;
+  }
+
+  .task-card__top,
+  .task-card__progress-label {
+    min-width: 0;
+  }
+
+  .task-card__top h3 {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .task-card__personas,
+  .task-card__bottom,
+  .task-card__actions {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .task-card__progress-label {
+    gap: 8px;
+  }
+
+  .task-card__progress-texto {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .task-card__actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .task-card__btn,
+  .task-card__btn--completar,
+  .task-card__btn--progreso,
+  .task-card__btn--editar,
+  .task-card__btn--eliminar {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 6px 4px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

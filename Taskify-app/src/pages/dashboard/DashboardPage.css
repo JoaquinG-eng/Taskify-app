@@ -281,3 +281,65 @@ aside,
 [class*="seleccionado"] {
   background: rgba(139, 92, 246, 0.2) !important;
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - dashboard y filtros
+   ============================================================ */
+@media (max-width: 768px) {
+  .dashboard-layout,
+  .dashboard-layout__main,
+  .dashboard-layout__contenido,
+  .dashboard-layout__doble-columna,
+  .dashboard-layout__kanban-wrap,
+  .dashboard-layout__feed-wrap {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .dashboard-layout__contenido {
+    padding: 12px;
+    gap: 14px;
+  }
+
+  .dashboard-layout__kanban-wrap,
+  .dashboard-layout__feed-wrap {
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .filtros-barra {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+  }
+
+  .filtros-barra__campo,
+  .filtros-barra__campo--busqueda {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filtros-barra__botones {
+    width: 100%;
+    max-width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .filtros-barra__botones::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filtros-barra__botones button {
+    flex: 0 0 auto;
+    min-height: 40px;
+  }
+
+  .filtros-barra__limpiar-todo {
+    width: 100%;
+    min-height: 40px;
+  }
+}

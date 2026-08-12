@@ -419,3 +419,49 @@
   font-size: inherit;
   font-family: inherit;
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - login y registro
+   ============================================================ */
+@media (max-width: 767px) {
+  .auth-layout {
+    min-height: 100svh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .auth-layout__form-wrap {
+    min-width: 0;
+    min-height: 100svh;
+    align-items: flex-start;
+    padding: max(24px, env(safe-area-inset-top)) 16px
+      max(24px, env(safe-area-inset-bottom));
+  }
+
+  .auth-form {
+    min-width: 0;
+    max-width: 420px;
+    gap: 16px;
+  }
+
+  .auth-form__encabezado,
+  .auth-campo,
+  .auth-campo__label-fila,
+  .auth-campo__input-wrap {
+    min-width: 0;
+  }
+
+  .auth-form__titulo {
+    font-size: 24px;
+  }
+
+  .auth-campo__input-wrap input {
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .auth-campo__label-fila {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}

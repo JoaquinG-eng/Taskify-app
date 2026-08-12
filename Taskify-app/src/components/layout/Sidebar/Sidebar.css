@@ -202,3 +202,25 @@
   background: rgba(169, 185, 22, 0.12);
   color: #570303;
  }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - sidebar
+   ============================================================ */
+@media (max-width: 768px) {
+  .sidebar {
+    width: min(86vw, 280px);
+    max-width: calc(100vw - 24px);
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .sidebar__item {
+    min-height: 44px;
+  }
+
+  .sidebar__boton-cerrar {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+}

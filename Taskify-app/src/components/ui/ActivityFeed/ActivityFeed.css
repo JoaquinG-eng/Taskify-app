@@ -183,3 +183,37 @@
     padding: 16px;
   }
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - actividad reciente
+   ============================================================ */
+@media (max-width: 480px) {
+  .activity-feed {
+    min-width: 0;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .activity-feed__item,
+  .activity-feed__contenido,
+  .activity-feed__fila {
+    min-width: 0;
+  }
+
+  .activity-feed__item {
+    gap: 10px;
+  }
+
+  .activity-feed__fila {
+    flex-wrap: wrap;
+  }
+
+  .activity-feed__hora {
+    margin-left: auto;
+  }
+
+  .activity-feed__descripcion {
+    -webkit-line-clamp: 3;
+    overflow-wrap: anywhere;
+  }
+}

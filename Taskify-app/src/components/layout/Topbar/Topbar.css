@@ -224,3 +224,80 @@
   }
 }
 
+/* ============================================================
+   TASKIFY MOBILE HARDENING - layout superior
+   Solo afecta viewports <= 768px.
+   ============================================================ */
+@media (max-width: 768px) {
+  .topbar {
+    gap: 8px;
+    min-width: 0;
+    padding: 10px 12px;
+  }
+
+  .topbar__boton-menu,
+  .topbar__boton-email,
+  .topbar__boton-primario {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    flex-shrink: 0;
+  }
+
+  .topbar__boton-menu,
+  .topbar__boton-email {
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topbar__titulo {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .topbar__titulo-texto,
+  .topbar__titulo-subtexto {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar__acciones {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .topbar__boton-primario {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .topbar__boton-primario::before {
+    content: "+";
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .topbar__avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar__titulo-subtexto {
+    display: none;
+  }
+
+  .topbar__avatar {
+    display: none !important;
+  }
+
+  .topbar__titulo-texto {
+    font-size: 16px;
+  }
+}

@@ -231,3 +231,25 @@
     max-width: none;
   }
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - alertas
+   ============================================================ */
+@media (max-width: 480px) {
+  .alert-container {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    left: max(12px, env(safe-area-inset-left));
+  }
+
+  .alerta {
+    min-width: 0;
+    max-width: 100%;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .alerta__contenido {
+    min-width: 0;
+  }
+}

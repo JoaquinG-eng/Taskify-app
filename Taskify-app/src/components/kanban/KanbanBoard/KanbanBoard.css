@@ -198,3 +198,51 @@ body:has(.kanban__card-wrapper--dragging) {
     transition: none;
   }
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - Kanban
+   ============================================================ */
+@media (max-width: 768px) {
+  .kanban {
+    min-width: 0;
+    padding: 0;
+  }
+
+  .kanban__encabezado {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .kanban__titulo {
+    font-size: 1.3rem;
+  }
+
+  .kanban__subtitulo {
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .kanban__grid,
+  .kanban__column,
+  .kanban__tasks,
+  .kanban__card-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .kanban__column {
+    min-height: 240px;
+    padding: 12px;
+  }
+
+  .kanban__overlay {
+    width: calc(100vw - 24px);
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 360px) {
+  .kanban__column {
+    padding: 10px;
+  }
+}

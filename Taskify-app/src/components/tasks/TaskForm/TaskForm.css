@@ -343,3 +343,55 @@
   /* En mobile los dos campos de persona van en columna */
   .task-form__fila { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - formulario/bottom sheet
+   ============================================================ */
+@media (max-width: 600px) {
+  .task-form {
+    width: 100%;
+    min-width: 0;
+    max-height: 92dvh;
+    padding: 18px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .campo-grupo,
+  .campo-grupo__etiqueta-fila,
+  .task-form__actions {
+    min-width: 0;
+  }
+
+  .campo-grupo input,
+  .campo-grupo textarea {
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .campo-grupo__etiqueta-fila {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .task-form__toggle-group {
+    gap: 6px;
+  }
+
+  .task-form__toggle {
+    min-width: 0;
+    min-height: 44px;
+    white-space: normal;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 360px) {
+  .task-form__actions {
+    flex-direction: column;
+  }
+
+  .task-form__actions button[type="submit"],
+  .task-form__actions button[type="button"] {
+    width: 100%;
+    flex: none;
+  }
+}

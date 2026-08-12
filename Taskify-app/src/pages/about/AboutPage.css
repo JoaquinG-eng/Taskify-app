@@ -341,3 +341,68 @@
   text-decoration: line-through;
   opacity: 0.45;
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - acerca de
+   Este bloque esta al final para prevalecer sobre auto-fit.
+   ============================================================ */
+@media (max-width: 600px) {
+  .about {
+    width: 100%;
+    min-width: 0;
+    gap: 20px;
+  }
+
+  .about__hero {
+    min-width: 0;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .about__hero-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .about__hero-texto {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .about__hero-titulo {
+    font-size: 26px;
+  }
+
+  .about__grid,
+  .about__funcionalidades-grid,
+  .about__proximas-lista {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-width: 0;
+  }
+
+  .about__seccion,
+  .about__funcionalidad-card,
+  .about__proxima-item,
+  .about__stack-item,
+  .about__stack-info {
+    min-width: 0;
+  }
+
+  .about__seccion {
+    padding: 18px;
+  }
+
+  .about__funcionalidad-card {
+    min-height: 0;
+  }
+
+  .about__stack-nombre,
+  .about__stack-descripcion,
+  .about__funcionalidad-titulo,
+  .about__funcionalidad-descripcion,
+  .about__proxima-texto {
+    overflow-wrap: anywhere;
+  }
+}

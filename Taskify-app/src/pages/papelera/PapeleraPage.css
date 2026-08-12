@@ -185,3 +185,60 @@
 .papelera__boton-eliminar:hover {
   background-color: rgba(240, 149, 149, 0.15);
 }
+
+/* ============================================================
+   TASKIFY MOBILE HARDENING - papelera
+   ============================================================ */
+@media (max-width: 600px) {
+  .papelera {
+    width: 100%;
+    min-width: 0;
+    gap: 16px;
+  }
+
+  .papelera__encabezado {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .papelera__boton-vaciar {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .papelera__vacia {
+    padding: 48px 16px;
+  }
+
+  .papelera__item {
+    min-width: 0;
+    align-items: stretch;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .papelera__item-info {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .papelera__item-titulo,
+  .papelera__item-descripcion {
+    overflow-wrap: anywhere;
+  }
+
+  .papelera__item-acciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    min-width: 0;
+  }
+
+  .papelera__boton-restaurar,
+  .papelera__boton-eliminar {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 7px 8px;
+  }
+}
