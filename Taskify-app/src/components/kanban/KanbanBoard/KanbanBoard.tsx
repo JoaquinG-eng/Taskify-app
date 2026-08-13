@@ -485,6 +485,14 @@ function KanbanBoard({
       <DndContext
         sensors={sensors}
         collisionDetection={detectarColision}
+        autoScroll={{
+          threshold: {
+            x: 0.2,
+            y: 0.32,
+          },
+          acceleration: 16,
+          interval: 5,
+        }}
         onDragStart={handleDragStart}
         onDragCancel={handleDragCancel}
         onDragEnd={handleDragEnd}

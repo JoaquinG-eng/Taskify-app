@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   updateProfile,
   sendPasswordResetEmail,
+  sendEmailVerification,
   EmailAuthProvider,
   linkWithCredential,
   type AuthError,
@@ -34,6 +35,8 @@ export function obtenerMensajeDeError(code: string): string {
     "auth/unauthorized-domain": "Este dominio no está autorizado en Firebase Authentication.",
     "auth/operation-not-allowed": "Este método de inicio de sesión no está habilitado en Firebase.",
     "auth/user-disabled": "Esta cuenta fue deshabilitada.",
+    "auth/email-not-verified":
+      "Verificá tu correo electrónico antes de ingresar. Revisá tu bandeja de entrada y la carpeta de spam.",
     "auth/provider-already-linked": "Este método de acceso ya está vinculado a la cuenta.",
     "auth/credential-already-in-use": "Estas credenciales ya están vinculadas a otra cuenta.",
     "auth/requires-recent-login": "Por seguridad, cerrá sesión y volvé a ingresar antes de configurar la contraseña.",
@@ -51,6 +54,13 @@ export async function registrarUsuario(
 ): Promise<User> {
   const credencial = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(credencial.user, { displayName: nombre });
+
+  try {
+    await sendEmailVerification(credencial.user);
+  } finally {
+    await signOut(auth);
+  }
+
   return credencial.user;
 }
 
@@ -59,7 +69,26 @@ export async function iniciarSesionConEmail(
   password: string
 ): Promise<User> {
   const credencial = await signInWithEmailAndPassword(auth, email, password);
-  return credencial.user;
+  const usuario = credencial.user;
+
+  const tieneGoogle = usuario.providerData.some(
+    (proveedor) => proveedor.providerId === "google.com"
+  );
+  const tienePassword = usuario.providerData.some(
+    (proveedor) => proveedor.providerId === "password"
+  );
+
+  if (tienePassword && !tieneGoogle && !usuario.emailVerified) {
+    await signOut(auth);
+
+    const error = new Error(
+      "El correo electrónico todavía no fue verificado."
+    ) as Error & { code: string };
+    error.code = "auth/email-not-verified";
+    throw error;
+  }
+
+  return usuario;
 }
 
 export const iniciarSesion = iniciarSesionConEmail;
