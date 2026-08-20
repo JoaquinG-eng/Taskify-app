@@ -3,6 +3,7 @@ import type { ComponentProps } from "react";
 import KanbanBoard from "../../kanban/KanbanBoard/KanbanBoard";
 import ActivityFeed from "../../ui/ActivityFeed/ActivityFeed";
 import { DashboardStats } from "../DashboardStats";
+import DashboardTicketSummary from "../DashboardTicketSummary";
 
 type PropiedadesDeKanban = ComponentProps<typeof KanbanBoard>;
 type PropiedadesDeActivityFeed = ComponentProps<typeof ActivityFeed>;
@@ -12,6 +13,12 @@ type PropiedadesDeDashboardHome = {
   tareasPendientes: number;
   tareasEnProgreso: number;
   tareasCompletadas: number;
+  totalTickets: number;
+  ticketsActivos: number;
+  ticketsAltaPrioridadActivos: number;
+  cargandoTickets: boolean;
+  errorTickets: string | null;
+  alAbrirTickets: () => void;
   tareas: PropiedadesDeKanban["tareas"];
   actividades: PropiedadesDeActivityFeed["actividades"];
   alCambiarEstado: PropiedadesDeKanban["alCambiarEstado"];
@@ -25,6 +32,12 @@ function DashboardHome({
   tareasPendientes,
   tareasEnProgreso,
   tareasCompletadas,
+  totalTickets,
+  ticketsActivos,
+  ticketsAltaPrioridadActivos,
+  cargandoTickets,
+  errorTickets,
+  alAbrirTickets,
   tareas,
   actividades,
   alCambiarEstado,
@@ -39,6 +52,15 @@ function DashboardHome({
         tareasPendientes={tareasPendientes}
         tareasEnProgreso={tareasEnProgreso}
         tareasCompletadas={tareasCompletadas}
+      />
+
+      <DashboardTicketSummary
+        totalTickets={totalTickets}
+        ticketsActivos={ticketsActivos}
+        ticketsAltaPrioridadActivos={ticketsAltaPrioridadActivos}
+        cargandoTickets={cargandoTickets}
+        errorTickets={errorTickets}
+        alAbrirTickets={alAbrirTickets}
       />
 
       <div className="dashboard-layout__doble-columna">

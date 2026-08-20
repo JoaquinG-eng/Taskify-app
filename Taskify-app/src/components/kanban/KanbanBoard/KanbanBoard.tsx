@@ -23,7 +23,6 @@ import TaskCard from "../../tasks/TaskCard/TaskCard";
 import type {
   EstadoTarea,
   Tarea,
-  TareaNueva,
 } from "../../../types/task";
 import { useDragAndDropSensors } from "../../../hooks/useDragAndDrop";
 import "./KanbanBoard.css";
@@ -39,10 +38,7 @@ type KanbanBoardProps = {
     nuevoProgreso: number
   ) => void;
   alMoverAPapelera: (id: string) => void;
-  alEditarTarea: (
-    id: string,
-    datosEditados: TareaNueva
-  ) => void;
+  alEditarTarea: (tarea: Tarea) => void;
   alReordenarTareas?: (
     tareasReordenadas: Tarea[]
   ) => void;
@@ -180,10 +176,7 @@ function SortableTaskCard({
     progreso: number
   ) => void;
   alMoverAPapelera: (id: string) => void;
-  alEditarTarea: (
-    id: string,
-    datos: TareaNueva
-  ) => void;
+  alEditarTarea: (tarea: Tarea) => void;
 }) {
   const {
     attributes,
@@ -257,10 +250,7 @@ function KanbanColumn({
     progreso: number
   ) => void;
   alMoverAPapelera: (id: string) => void;
-  alEditarTarea: (
-    id: string,
-    datos: TareaNueva
-  ) => void;
+  alEditarTarea: (tarea: Tarea) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `columna-${columna.estado}`,

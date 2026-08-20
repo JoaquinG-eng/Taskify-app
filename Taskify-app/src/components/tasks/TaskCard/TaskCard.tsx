@@ -2,9 +2,8 @@
 // ARCHIVO: src/components/tasks/TaskCard/TaskCard.tsx
 // ============================================================
 
-import { useEffect, useRef, useState } from "react";
-import type { EstadoTarea, Tarea, TareaNueva } from "../../../types/task";
-import TaskForm from "../TaskForm/TaskForm";
+import { useEffect, useRef } from "react";
+import type { EstadoTarea, Tarea } from "../../../types/task";
 import "./TaskCard.css";
 
 type TaskCardProps = {
@@ -12,7 +11,7 @@ type TaskCardProps = {
   alCambiarEstado: (id: string, nuevoEstado: EstadoTarea) => void;
   alActualizarProgreso: (id: string, progresoNuevo: number) => void;
   alMoverAPapelera: (id: string) => void;
-  alEditarTarea: (id: string, datosEditados: TareaNueva) => void;
+  alEditarTarea: (tarea: Tarea) => void;
 };
 
 function obtenerEtiquetaDeEstado(estado: EstadoTarea): string {
@@ -31,7 +30,6 @@ function TaskCard({
   alMoverAPapelera,
   alEditarTarea,
 }: TaskCardProps) {
-  const [estaEditando, setEstaEditando] = useState(false);
   const cambiarEstadoRef = useRef(alCambiarEstado);
   const actualizarProgresoRef = useRef(alActualizarProgreso);
 
@@ -60,10 +58,6 @@ function TaskCard({
     }
   }, [datosDeLaTarea.estado, datosDeLaTarea.progreso, datosDeLaTarea.id]);
 
-  function manejarGuardarEdicion(datosEditados: TareaNueva) {
-    alEditarTarea(datosDeLaTarea.id, datosEditados);
-    setEstaEditando(false);
-  }
 
   const progresoLimitado  = Math.min(datosDeLaTarea.progreso, 100);
   const barraEstaCompleta = progresoLimitado === 100;
@@ -141,7 +135,7 @@ function TaskCard({
 
             <button
               className="task-card__btn task-card__btn--editar"
-              onClick={() => setEstaEditando(true)}
+              onClick={() => alEditarTarea(datosDeLaTarea)}
               title="Editar tarea"
             >Editar</button>
 
@@ -155,14 +149,6 @@ function TaskCard({
 
       </article>
 
-      {estaEditando && (
-        <TaskForm
-          datosIniciales={datosDeLaTarea}
-          tareaId={datosDeLaTarea.id}
-          alConfirmar={manejarGuardarEdicion}
-          alCancelar={() => setEstaEditando(false)}
-        />
-      )}
     </>
   );
 }

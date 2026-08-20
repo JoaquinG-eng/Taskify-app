@@ -9,6 +9,7 @@ import {
   collection,
   addDoc,
   updateDoc,
+  arrayUnion,
   deleteDoc,
   doc,
   query,
@@ -18,7 +19,12 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import type { Tarea, TareaNueva, EstadoTarea } from "../types/task";
+import type {
+  Tarea,
+  TareaNueva,
+  EstadoTarea,
+  ComentarioTarea,
+} from "../types/task";
 
 // Nombre de la colección en Firestore
 const COLECCION = "tasks";
@@ -65,6 +71,8 @@ export async function crearTareaEnFirestore(
     estado:        datosNuevos.estado,
     prioridad:     datosNuevos.prioridad,
     fechaLimite:   datosNuevos.fechaLimite   ?? null,
+    horaInicio:    datosNuevos.horaInicio    ?? null,
+    horaFin:       datosNuevos.horaFin       ?? null,
     creadoPor:     datosNuevos.creadoPor     ?? null,
     asignadoA:     datosNuevos.asignadoA     ?? null,
     progreso:      datosNuevos.estado === "completada" ? 100 : 0,
@@ -81,7 +89,49 @@ export async function editarTareaEnFirestore(
   datosEditados: Partial<TareaNueva>
 ): Promise<void> {
   const referencia = doc(db, COLECCION, tareaId);
-  await updateDoc(referencia, { ...datosEditados });
+
+  /*
+   * Firestore no admite undefined en updateDoc.
+   *
+   * TaskForm representa los opcionales vacíos como undefined.
+   * Al editar, los opcionales editables se convierten a null para que
+   * puedan limpiarse correctamente en Firestore.
+   */
+  const datosParaActualizar = {
+    ...datosEditados,
+    fechaLimite:
+      "fechaLimite" in datosEditados
+        ? datosEditados.fechaLimite ?? null
+        : undefined,
+    horaInicio:
+      "horaInicio" in datosEditados
+        ? datosEditados.horaInicio ?? null
+        : undefined,
+    horaFin:
+      "horaFin" in datosEditados
+        ? datosEditados.horaFin ?? null
+        : undefined,
+    creadoPor:
+      "creadoPor" in datosEditados
+        ? datosEditados.creadoPor ?? null
+        : undefined,
+    asignadoA:
+      "asignadoA" in datosEditados
+        ? datosEditados.asignadoA ?? null
+        : undefined,
+  };
+
+  /*
+   * Eliminamos cualquier undefined restante antes de updateDoc.
+   * Esto preserva el comportamiento de las actualizaciones parciales.
+   */
+  const datosSinUndefined = Object.fromEntries(
+    Object.entries(datosParaActualizar).filter(
+      ([, valor]) => valor !== undefined
+    )
+  );
+
+  await updateDoc(referencia, datosSinUndefined);
 }
 
 // ============================================================
@@ -109,6 +159,23 @@ export async function actualizarProgresoEnFirestore(
 ): Promise<void> {
   const referencia = doc(db, COLECCION, tareaId);
   await updateDoc(referencia, { progreso, estado });
+}
+
+// ============================================================
+// AGREGAR COMENTARIO
+// Se usa arrayUnion para que agregar un comentario sea una operación
+// atómica sobre el documento de la tarea y no reemplace comentarios
+// escritos por otra actualización.
+// ============================================================
+export async function agregarComentarioEnFirestore(
+  tareaId: string,
+  comentario: ComentarioTarea
+): Promise<void> {
+  const referencia = doc(db, COLECCION, tareaId);
+
+  await updateDoc(referencia, {
+    comentarios: arrayUnion(comentario),
+  });
 }
 
 // ============================================================

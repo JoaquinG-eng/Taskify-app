@@ -6,6 +6,16 @@
 export type EstadoTarea    = "pendiente" | "en-progreso" | "completada";
 export type PrioridadTarea = "alta" | "media" | "baja";
 
+export const MAX_LONGITUD_COMENTARIO_TAREA = 1000;
+
+export interface ComentarioTarea {
+    id: string;
+    texto: string;
+    autorId: string;
+    autorNombre: string;
+    fechaCreacion: string;
+}
+
 // ------------------------------------------------------------
 // INTERFAZ: Tarea
 // ------------------------------------------------------------
@@ -17,11 +27,14 @@ export interface Tarea {
     prioridad: PrioridadTarea;
     fechaCreacion: string;
     fechaLimite?: string;
+    horaInicio?: string;
+    horaFin?: string;
     progreso: number;
     estaEnPapelera: boolean;
     fechaEliminacion?: string;
     asignadoA?: string;   
     creadoPor?: string;
+    comentarios?: ComentarioTarea[];
 }
 
 // ------------------------------------------------------------
@@ -34,6 +47,8 @@ export interface TareaNueva {
     estado: EstadoTarea;
     prioridad: PrioridadTarea;
     fechaLimite?: string;
+    horaInicio?: string;
+    horaFin?: string;
     asignadoA?: string;
   creadoPor?: string;
 }

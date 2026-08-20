@@ -26,9 +26,10 @@ interface PropiedadesDeSidebar {
 }
 
 const elementosDeNavegacion: ElementoDeNavegacion[] = [
-  { id: "dashboard",    etiqueta: "Dashboard",    icono: "▦" },
-  { id: "mis-tareas",   etiqueta: "Mis tareas",   icono: "✓" },
-  { id: "tickets",      etiqueta: "Tickets",      icono: "◈" },
+  { id: "dashboard", etiqueta: "Dashboard", icono: "▦" },
+  { id: "mis-tareas", etiqueta: "Mis tareas", icono: "✓" },
+  { id: "calendario", etiqueta: "Calendario", icono: "▣" },
+  { id: "tickets", etiqueta: "Tickets", icono: "◈" },
 ];
 
 function Sidebar({
@@ -38,7 +39,7 @@ function Sidebar({
   estaAbierto,
   alCerrar,
   nombreUsuario = "Usuario",
-  fotoUsuario = null, 
+  fotoUsuario = null,
   alLogout,
 }: PropiedadesDeSidebar) {
 
@@ -46,7 +47,6 @@ function Sidebar({
     alCambiarSeccion(id);
     alCerrar();
   }
-
 
   const iniciales = nombreUsuario
     .split(" ")
@@ -64,11 +64,11 @@ function Sidebar({
 
         {/* Logo */}
         <div className="sidebar__logo">
-           <div className="sidebar__logo-icono">
-            <img 
-              src={logoTaskify} 
-              alt="Taskify Logo" 
-              style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          <div className="sidebar__logo-icono">
+            <img
+              src={logoTaskify}
+              alt="Taskify Logo"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
           <span className="sidebar__logo-texto">Taskify</span>
@@ -128,10 +128,10 @@ function Sidebar({
           <div className="sidebar__usuario">
             <div className="sidebar__usuario-avatar" style={{ overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center" }}>
               {fotoUsuario ? (
-                <img 
-                  src={fotoUsuario} 
-                  alt={nombreUsuario} 
-                  referrerPolicy="no-referrer" 
+                <img
+                  src={fotoUsuario}
+                  alt={nombreUsuario}
+                  referrerPolicy="no-referrer"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (

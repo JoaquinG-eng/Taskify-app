@@ -171,7 +171,9 @@ describe("Suite extrema en <TaskCard />", () => {
     expect(screen.getByText("Completada")).toBeInTheDocument();
   });
 
-  test("7. Apertura del modal de edición", async () => {
+  test("7. Editar delega la tarea al contenedor", async () => {
+    const editar = vi.fn();
+
     render(
       <AlertProvider>
         <TaskCard
@@ -179,7 +181,7 @@ describe("Suite extrema en <TaskCard />", () => {
           alCambiarEstado={vi.fn()}
           alActualizarProgreso={vi.fn()}
           alMoverAPapelera={vi.fn()}
-          alEditarTarea={vi.fn()}
+          alEditarTarea={editar}
         />
       </AlertProvider>
     );
@@ -190,14 +192,11 @@ describe("Suite extrema en <TaskCard />", () => {
       })
     );
 
-    expect(
-      screen.getByRole("heading", {
-        name: /editar tarea/i,
-      })
-    ).toBeInTheDocument();
+    expect(editar).toHaveBeenCalledTimes(1);
+    expect(editar).toHaveBeenCalledWith(tareaMock);
   });
 
-  test("8. Cancelar edición cierra modal", async () => {
+  test("8. TaskCard no renderiza un modal de edición propio", async () => {
     render(
       <AlertProvider>
         <TaskCard
@@ -213,12 +212,6 @@ describe("Suite extrema en <TaskCard />", () => {
     await userEvent.click(
       screen.getByRole("button", {
         name: /editar/i,
-      })
-    );
-
-    await userEvent.click(
-      screen.getByRole("button", {
-        name: /cancelar/i,
       })
     );
 

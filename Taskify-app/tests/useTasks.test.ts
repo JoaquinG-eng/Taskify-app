@@ -13,6 +13,7 @@ vi.mock("../src/services/taskService", async () => {
     moverAPapelaraEnFirestore: vi.fn().mockResolvedValue(undefined),
     restaurarDePapeleraEnFirestore: vi.fn().mockResolvedValue(undefined),
     eliminarPermanentementeEnFirestore: vi.fn().mockResolvedValue(undefined),
+    agregarComentarioEnFirestore: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -189,6 +190,111 @@ describe("useTasks hook", () => {
     });
     expect(vi.mocked(taskService.eliminarPermanentementeEnFirestore)).toHaveBeenCalledWith("task-5");
     expect(result.current.actividades[0].descripcion).toContain("Eliminaste \"Tarea 5\" definitivamente");
+  });
+
+  test("debe agregar un comentario de forma optimista y persistirlo", async () => {
+    const usuarioId = "test-user-comments";
+
+    vi.mocked(taskService.suscribirTareas).mockImplementation((_userId, onDatos) => {
+      onDatos([
+        {
+          id: "task-comments",
+          titulo: "Tarea con comentarios",
+          descripcion: "Prueba B8.2",
+          estado: "pendiente",
+          prioridad: "media",
+          fechaCreacion: "2026-08-20",
+          progreso: 0,
+          estaEnPapelera: false,
+        },
+      ]);
+      return vi.fn();
+    });
+
+    const { result } = renderHook(() => useTasks(usuarioId));
+
+    await waitFor(() => {
+      expect(result.current.cargando).toBe(false);
+    });
+
+    let comentarioCreado: Awaited<
+      ReturnType<typeof result.current.agregarComentario>
+    > | undefined;
+
+    await act(async () => {
+      comentarioCreado = await result.current.agregarComentario(
+        "task-comments",
+        "  Revisar con el equipo.  ",
+        "Joaquín"
+      );
+    });
+
+    expect(comentarioCreado).toEqual(
+      expect.objectContaining({
+        texto: "Revisar con el equipo.",
+        autorId: usuarioId,
+        autorNombre: "Joaquín",
+      })
+    );
+    expect(comentarioCreado?.id).toEqual(expect.any(String));
+    expect(comentarioCreado?.fechaCreacion).toEqual(expect.any(String));
+
+    expect(
+      result.current.listaDeTareas[0].comentarios
+    ).toEqual([comentarioCreado]);
+
+    expect(
+      vi.mocked(taskService.agregarComentarioEnFirestore)
+    ).toHaveBeenCalledWith("task-comments", comentarioCreado);
+  });
+
+  test("debe revertir sólo el comentario optimista si Firestore falla", async () => {
+    const usuarioId = "test-user-comments-error";
+
+    vi.mocked(taskService.suscribirTareas).mockImplementation((_userId, onDatos) => {
+      onDatos([
+        {
+          id: "task-comments-error",
+          titulo: "Tarea comentario error",
+          descripcion: "Prueba rollback B8.2",
+          estado: "pendiente",
+          prioridad: "media",
+          fechaCreacion: "2026-08-20",
+          progreso: 0,
+          estaEnPapelera: false,
+        },
+      ]);
+      return vi.fn();
+    });
+
+    vi.mocked(taskService.agregarComentarioEnFirestore).mockRejectedValueOnce(
+      new Error("falló comentario")
+    );
+
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const { result } = renderHook(() => useTasks(usuarioId));
+
+    await waitFor(() => {
+      expect(result.current.cargando).toBe(false);
+    });
+
+    await act(async () => {
+      await expect(
+        result.current.agregarComentario(
+          "task-comments-error",
+          "Comentario temporal",
+          "Joaquín"
+        )
+      ).rejects.toThrow("falló comentario");
+    });
+
+    expect(
+      result.current.listaDeTareas[0].comentarios ?? []
+    ).toHaveLength(0);
+    expect(result.current.errorTareas).toBe("falló comentario");
+
+    errorSpy.mockRestore();
   });
 
   test("debe vaciar la papelera y registrar la actividad", async () => {

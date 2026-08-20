@@ -301,3 +301,412 @@
     font-size: 16px;
   }
 }
+
+/* ============================================================
+   B6.2 - BÚSQUEDA SUPERIOR
+   Reutiliza la autoridad filtros.textoDeBusqueda.
+   ============================================================ */
+.topbar__busqueda {
+  position: relative;
+  width: clamp(190px, 23vw, 310px);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 1;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.045);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.topbar__busqueda:focus-within {
+  border-color: rgba(139, 92, 246, 0.55);
+  background: rgba(255, 255, 255, 0.065);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.09);
+}
+
+.topbar__busqueda-icono {
+  width: 16px;
+  height: 16px;
+  margin-left: 11px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.topbar__busqueda input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border: 0;
+  outline: 0;
+  padding: 0 34px 0 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font: inherit;
+  font-size: 12px;
+}
+
+.topbar__busqueda input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.topbar__busqueda input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.topbar__busqueda-limpiar {
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.38);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.topbar__busqueda-limpiar:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+html.tema-claro .topbar__busqueda {
+  border-color: rgba(15, 10, 30, 0.12);
+  background: rgba(15, 10, 30, 0.035);
+}
+
+html.tema-claro .topbar__busqueda:focus-within {
+  border-color: rgba(124, 90, 246, 0.5);
+  background: rgba(124, 90, 246, 0.045);
+}
+
+html.tema-claro .topbar__busqueda-icono {
+  stroke: rgba(15, 10, 30, 0.42);
+}
+
+html.tema-claro .topbar__busqueda input {
+  color: #0f0a1e;
+}
+
+html.tema-claro .topbar__busqueda input::placeholder {
+  color: rgba(15, 10, 30, 0.34);
+}
+
+html.tema-claro .topbar__busqueda-limpiar {
+  color: rgba(15, 10, 30, 0.42);
+}
+
+@media (max-width: 1000px) {
+  .topbar__busqueda {
+    width: 190px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .topbar__busqueda {
+    order: 10;
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .topbar__busqueda input {
+    height: 40px;
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   B6.R2 - TOPBAR RESPONSIVE ESTABLE
+   ============================================================ */
+.topbar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding:
+      calc(10px + env(safe-area-inset-top))
+      12px
+      10px;
+  }
+
+  .topbar__titulo {
+    flex: 1 1 120px;
+  }
+
+  .topbar__acciones {
+    flex: 0 0 auto;
+  }
+
+  .topbar__busqueda {
+    width: 100%;
+    max-width: none;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar {
+    gap: 6px;
+  }
+
+  .topbar__acciones {
+    gap: 4px;
+  }
+
+  .topbar__boton-menu,
+  .topbar__boton-email,
+  .topbar__boton-primario {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    min-height: 38px;
+  }
+
+  .topbar__busqueda input {
+    height: 38px;
+  }
+}
+
+/* ============================================================
+   B6.3 - CENTRO DE NOTIFICACIONES
+   ============================================================ */
+.topbar__notificaciones {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.topbar__notificaciones-boton {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+}
+
+.topbar__notificaciones-boton:hover,
+.topbar__notificaciones-boton[aria-expanded="true"] {
+  border-color: rgba(139, 92, 246, 0.38);
+  background: rgba(139, 92, 246, 0.11);
+  color: #fff;
+}
+
+.topbar__notificaciones-icono {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.topbar__notificaciones-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(15, 15, 25, 0.96);
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.topbar__notificaciones-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(480px, 70dvh);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(13, 14, 24, 0.98);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.topbar__notificaciones-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.topbar__notificaciones-cabecera > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topbar__notificaciones-cabecera strong {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+}
+
+.topbar__notificaciones-cabecera span {
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 11px;
+}
+
+.topbar__notificaciones-cabecera small {
+  min-width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #b8a4ff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.topbar__notificaciones-lista {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+}
+
+.topbar__notificacion {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px 10px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.topbar__notificacion:hover {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.topbar__notificacion-indicador {
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 999px;
+  background: #8b5cf6;
+}
+
+.topbar__notificacion--vencida .topbar__notificacion-indicador {
+  background: #ef4444;
+}
+
+.topbar__notificacion--hoy .topbar__notificacion-indicador {
+  background: #f59e0b;
+}
+
+.topbar__notificacion-contenido {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.topbar__notificacion-contenido strong {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.topbar__notificacion-contenido small {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.topbar__notificaciones-vacio {
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
+}
+
+html.tema-claro .topbar__notificaciones-panel {
+  border-color: rgba(15, 10, 30, 0.1);
+  background: rgba(255, 255, 255, 0.985);
+}
+
+html.tema-claro .topbar__notificaciones-cabecera strong,
+html.tema-claro .topbar__notificacion-contenido strong,
+html.tema-claro .topbar__notificaciones-vacio strong {
+  color: rgba(15, 10, 30, 0.88);
+}
+
+html.tema-claro .topbar__notificaciones-cabecera span,
+html.tema-claro .topbar__notificacion-contenido small,
+html.tema-claro .topbar__notificaciones-vacio span {
+  color: rgba(15, 10, 30, 0.5);
+}
+
+@media (max-width: 768px) {
+  .topbar__notificaciones-boton {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+
+  .topbar__notificaciones-panel {
+    width: min(340px, calc(100vw - 24px));
+    max-height: min(430px, 62dvh);
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar__notificaciones-panel {
+    position: fixed;
+    top: 66px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100dvh - 78px);
+  }
+}

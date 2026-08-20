@@ -29,7 +29,11 @@ const funcionalidades: FuncionalidadItem[] = [
   { titulo: "Papelera ✔",              descripcion: "Recupera tareas eliminadas sin perder información.",              icono: "🗑️" },
   { titulo: "Seguimiento de progreso",  descripcion: "Visualiza el avance de cada tarea con barras y estado.",        icono: "📈" },
   { titulo: "Autenticación",            descripcion: "Acceso seguro con Firebase Auth y Google Sign-In.",              icono: "🔐" },
-  { titulo: "Feed de actividad",        descripcion: "Registra todas las acciones de usuario en tiempo real.",         icono: "🧾" },
+  { titulo: "Feed de actividad",        descripcion: "Registra las acciones recientes del usuario sobre sus tareas.",   icono: "🧾" },
+  { titulo: "Calendario",                descripcion: "Organiza tareas por día, semana y mes, incluyendo horarios.",      icono: "📅" },
+  { titulo: "Notificaciones",            descripcion: "Centraliza recordatorios de tareas y tickets prioritarios.",       icono: "🔔" },
+  { titulo: "Tickets",                   descripcion: "Permite crear, editar y seguir solicitudes de soporte.",           icono: "🎫" },
+  { titulo: "Comentarios",               descripcion: "Mantiene contexto y actualizaciones dentro de cada tarea.",        icono: "💬" },
 ];
 
 interface ProximaFuncionalidad {
@@ -39,16 +43,16 @@ interface ProximaFuncionalidad {
 
 const proximasFuncionalidades: ProximaFuncionalidad[] = [
   { texto: "Drag & Drop para mover tareas entre columnas",      hecha: true  },
-  { texto: "Sistema de comentarios dentro de las tareas",       hecha: false },
+  { texto: "Sistema de comentarios dentro de las tareas",       hecha: true  },
   { texto: "Etiquetas y categorías personalizadas",             hecha: false },
   { texto: "Tableros colaborativos entre usuarios",             hecha: false },
   { texto: "Asignación de tareas a múltiples miembros",         hecha: false },
-  { texto: "Notificaciones y recordatorios automáticos",        hecha: false },
+  { texto: "Notificaciones y recordatorios automáticos",        hecha: true  },
   { texto: "Exportación de tareas a PDF y Excel",               hecha: false },
   { texto: "Integración con Google Calendar",                   hecha: false },
   { texto: "Dashboard avanzado con métricas y gráficos",        hecha: false },
   { texto: "Modo offline con sincronización posterior",         hecha: false },
-  { texto: "Sistema completo de tickets y soporte",             hecha: false },
+  { texto: "Sistema de tickets y soporte",                      hecha: true  },
 ];
 
 function AboutPage() {
@@ -134,7 +138,7 @@ function AboutPage() {
       </section>
 
       <section className="about__seccion about__seccion--proximas">
-        <h2 className="about__seccion-titulo">🔮 Próximas funcionalidades</h2>
+        <h2 className="about__seccion-titulo">🧭 Roadmap funcional</h2>
         <div className="about__proximas-lista">
           {proximasFuncionalidades.map((item) => (
             <div

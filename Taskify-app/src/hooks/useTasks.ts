@@ -6,7 +6,13 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Tarea, TareaNueva, EstadoTarea } from "../types/task";
+import {
+  MAX_LONGITUD_COMENTARIO_TAREA,
+  type ComentarioTarea,
+  type EstadoTarea,
+  type Tarea,
+  type TareaNueva,
+} from "../types/task";
 import type { Actividad, TipoActividad } from "../types/actividad";
 import {
   suscribirTareas,
@@ -17,6 +23,7 @@ import {
   moverAPapelaraEnFirestore,
   restaurarDePapeleraEnFirestore,
   eliminarPermanentementeEnFirestore,
+  agregarComentarioEnFirestore,
 } from "../services/taskService";
 
 const MAX_ACTIVIDADES = 30;
@@ -318,19 +325,58 @@ export function useTasks(userId: string) {
     );
   }
 
-  function editarTarea(
+  async function editarTarea(
     identificador: string,
     datosEditados: TareaNueva
-  ): void {
+  ): Promise<void> {
+    const tareaAnterior = listaDeTareas.find(
+      (elemento) => elemento.id === identificador
+    );
+
     registrarActividad(
       "tarea_editada",
       `Editaste "${datosEditados.titulo}"`
     );
 
-    void editarTareaEnFirestore(
-      identificador,
-      datosEditados
-    ).catch(manejarError);
+    /*
+     * Actualización optimista:
+     * Dashboard, Mis tareas y Calendario reflejan la edición
+     * inmediatamente, sin esperar el próximo snapshot de Firestore.
+     */
+    setListaDeTareas((anteriores) =>
+      anteriores.map((elemento) =>
+        elemento.id === identificador
+          ? {
+              ...elemento,
+              ...datosEditados,
+            }
+          : elemento
+      )
+    );
+
+    try {
+      await editarTareaEnFirestore(
+        identificador,
+        datosEditados
+      );
+    } catch (error) {
+      /*
+       * Si Firestore falla, restauramos el estado anterior.
+       * El error se propaga para que no se muestre un falso éxito.
+       */
+      if (tareaAnterior) {
+        setListaDeTareas((anteriores) =>
+          anteriores.map((elemento) =>
+            elemento.id === identificador
+              ? tareaAnterior
+              : elemento
+          )
+        );
+      }
+
+      manejarError(error);
+      throw error;
+    }
   }
 
   function cambiarEstadoTarea(
@@ -441,6 +487,94 @@ export function useTasks(userId: string) {
     ).catch(manejarError);
   }
 
+  async function agregarComentario(
+    identificador: string,
+    texto: string,
+    autorNombre: string
+  ): Promise<ComentarioTarea> {
+    const contenido = texto.trim();
+
+    if (!userId) {
+      const error = new Error("No hay un usuario autenticado.");
+      setErrorTareas(error.message);
+      throw error;
+    }
+
+    if (!contenido) {
+      const error = new Error("El comentario no puede estar vacío.");
+      setErrorTareas(error.message);
+      throw error;
+    }
+
+    if (contenido.length > MAX_LONGITUD_COMENTARIO_TAREA) {
+      const error = new Error(
+        `El comentario no puede superar ${MAX_LONGITUD_COMENTARIO_TAREA} caracteres.`
+      );
+      setErrorTareas(error.message);
+      throw error;
+    }
+
+    const tarea = listaDeTareas.find(
+      (elemento) => elemento.id === identificador
+    );
+
+    if (!tarea) {
+      const error = new Error("La tarea ya no está disponible.");
+      setErrorTareas(error.message);
+      throw error;
+    }
+
+    const comentario: ComentarioTarea = {
+      id: generarId(),
+      texto: contenido,
+      autorId: userId,
+      autorNombre: autorNombre.trim() || "Usuario",
+      fechaCreacion: new Date().toISOString(),
+    };
+
+    setErrorTareas(null);
+
+    /*
+     * Optimista: B8.3 podrá mostrar el comentario inmediatamente.
+     * Si Firestore rechaza la escritura, se elimina sólo este comentario,
+     * sin restaurar el objeto Tarea completo y sin pisar otros cambios.
+     */
+    setListaDeTareas((anteriores) =>
+      anteriores.map((elemento) =>
+        elemento.id === identificador
+          ? {
+              ...elemento,
+              comentarios: [
+                ...(elemento.comentarios ?? []),
+                comentario,
+              ],
+            }
+          : elemento
+      )
+    );
+
+    try {
+      await agregarComentarioEnFirestore(identificador, comentario);
+      return comentario;
+    } catch (error) {
+      setListaDeTareas((anteriores) =>
+        anteriores.map((elemento) =>
+          elemento.id === identificador
+            ? {
+                ...elemento,
+                comentarios: (elemento.comentarios ?? []).filter(
+                  (actual) => actual.id !== comentario.id
+                ),
+              }
+            : elemento
+        )
+      );
+
+      manejarError(error);
+      throw error;
+    }
+  }
+
   function moverAPapelera(identificador: string): void {
     const tarea = listaDeTareas.find(
       (elemento) => elemento.id === identificador
@@ -531,6 +665,7 @@ export function useTasks(userId: string) {
     editarTarea,
     cambiarEstadoTarea,
     actualizarProgreso,
+    agregarComentario,
     moverAPapelera,
     restaurarDePapelera,
     eliminarPermanentemente,

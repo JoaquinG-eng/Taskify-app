@@ -342,3 +342,21 @@
     text-overflow: ellipsis;
   }
 }
+
+/* ============================================================
+   B6.R2 - TASK CARD MOBILE
+   ============================================================ */
+@media (max-width: 420px) {
+  .task-card__bottom {
+    width: 100%;
+  }
+
+  .task-card__actions {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+  }
+
+  .task-card__btn--completar,
+  .task-card__btn--eliminar {
+    min-width: 40px;
+  }
+}

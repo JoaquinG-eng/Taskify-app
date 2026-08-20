@@ -13,7 +13,8 @@
 
 .sidebar {
   width: 220px;
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   background-color: #0b0e1a;
   border-right: 1px solid rgba(255,255,255,.06);
   display: flex;
@@ -222,5 +223,30 @@
     width: 40px;
     height: 40px;
     padding: 0;
+  }
+}
+
+/* ============================================================
+   B6.R2 - SIDEBAR RESPONSIVE / SAFE AREA
+   ============================================================ */
+.sidebar {
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: min(86vw, 300px);
+    max-width: 100%;
+    padding:
+      calc(20px + env(safe-area-inset-top))
+      12px
+      calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .sidebar__overlay {
+    touch-action: none;
   }
 }

@@ -55,7 +55,35 @@ export function validarTitulo(valor: string): string {
   }
 
 
-  export function validarSeleccion(
+export function validarHorario(
+  fechaLimite: string,
+  horaInicio: string,
+  horaFin: string
+): string {
+  if (!horaInicio && !horaFin) return "";
+
+  if (!fechaLimite) {
+    return "Para definir un horario, primero seleccioná una fecha límite.";
+  }
+
+  if (!horaInicio || !horaFin) {
+    return "Completá la hora de inicio y la hora de fin.";
+  }
+
+  const patronHora = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+  if (!patronHora.test(horaInicio) || !patronHora.test(horaFin)) {
+    return "Ingresá un horario válido.";
+  }
+
+  if (horaFin <= horaInicio) {
+    return "La hora de fin debe ser posterior a la hora de inicio.";
+  }
+
+  return "";
+}
+
+export function validarSeleccion(
     valor: string,
     nombreDelCampo: string
   ): string {

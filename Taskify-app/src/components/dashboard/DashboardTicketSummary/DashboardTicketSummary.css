@@ -1,0 +1,188 @@
+.dashboard-ticket-summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.35fr) minmax(300px, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 18px 20px;
+  background: rgba(10, 12, 22, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+}
+
+.dashboard-ticket-summary__principal {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dashboard-ticket-summary__icono {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  background: rgba(139, 92, 246, 0.14);
+  color: #b9a4ff;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.dashboard-ticket-summary__texto {
+  min-width: 0;
+}
+
+.dashboard-ticket-summary__eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: #a98af9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-ticket-summary__texto h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.dashboard-ticket-summary__descripcion {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.dashboard-ticket-summary__descripcion--error {
+  color: #f09595;
+}
+
+.dashboard-ticket-summary__metricas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.dashboard-ticket-summary__metrica {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.dashboard-ticket-summary__metrica strong,
+.dashboard-ticket-summary__metrica span {
+  display: block;
+}
+
+.dashboard-ticket-summary__metrica strong {
+  color: var(--color-text);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-ticket-summary__metrica span {
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.dashboard-ticket-summary__accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid rgba(167, 139, 250, 0.32);
+  border-radius: var(--radius-sm);
+  background: rgba(139, 92, 246, 0.12);
+  color: #c4b5fd;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.dashboard-ticket-summary__accion:hover {
+  transform: translateY(-1px);
+  border-color: rgba(167, 139, 250, 0.55);
+  background: rgba(139, 92, 246, 0.2);
+}
+
+html.tema-claro .dashboard-ticket-summary {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+}
+
+html.tema-claro .dashboard-ticket-summary__metrica {
+  border-color: rgba(15, 23, 42, 0.07);
+  background: rgba(15, 23, 42, 0.025);
+}
+
+@media (max-width: 1050px) {
+  .dashboard-ticket-summary {
+    grid-template-columns: minmax(220px, 1fr) minmax(300px, 1fr);
+  }
+
+  .dashboard-ticket-summary__accion {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-ticket-summary {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .dashboard-ticket-summary__metricas {
+    width: 100%;
+  }
+
+  .dashboard-ticket-summary__accion {
+    grid-column: auto;
+    width: 100%;
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-ticket-summary__metricas {
+    gap: 7px;
+  }
+
+  .dashboard-ticket-summary__metrica {
+    padding: 9px 8px;
+  }
+
+  .dashboard-ticket-summary__metrica strong {
+    font-size: 18px;
+  }
+
+  .dashboard-ticket-summary__metrica span {
+    font-size: 9px;
+    overflow-wrap: anywhere;
+  }
+}

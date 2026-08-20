@@ -10,6 +10,7 @@ vi.mock("firebase/firestore", () => {
   const updateDoc = vi.fn();
   const deleteDoc = vi.fn();
   const serverTimestamp = vi.fn(() => "TIMESTAMP");
+  const arrayUnion = vi.fn((valor) => ({ __arrayUnion: valor }));
 
   return {
     collection,
@@ -21,6 +22,7 @@ vi.mock("firebase/firestore", () => {
     deleteDoc,
     doc,
     serverTimestamp,
+    arrayUnion,
   };
 });
 
@@ -37,6 +39,7 @@ import {
   moverAPapelaraEnFirestore,
   restaurarDePapeleraEnFirestore,
   eliminarPermanentementeEnFirestore,
+  agregarComentarioEnFirestore,
 } from "../src/services/taskService";
 import {
   collection,
@@ -48,6 +51,7 @@ import {
   deleteDoc,
   doc,
   serverTimestamp,
+  arrayUnion,
 } from "firebase/firestore";
 
 describe("taskService", () => {
@@ -127,6 +131,8 @@ describe("taskService", () => {
       estado: "pendiente",
       prioridad: "baja",
       fechaLimite: undefined,
+      horaInicio: undefined,
+      horaFin: undefined,
       creadoPor: undefined,
       asignadoA: undefined,
     });
@@ -140,12 +146,37 @@ describe("taskService", () => {
         descripcion: "Descripción",
         estado: "pendiente",
         prioridad: "baja",
+        fechaLimite: null,
+        horaInicio: null,
+        horaFin: null,
         progreso: 0,
         estaEnPapelera: false,
         fechaCreacion: "TIMESTAMP",
       })
     );
     expect(serverTimestamp).toHaveBeenCalled();
+  });
+
+
+  test("crearTareaEnFirestore persiste un horario programado", async () => {
+    await crearTareaEnFirestore("usuario-horario", {
+      titulo: "Tarea programada",
+      descripcion: "Descripción de una tarea con horario real.",
+      estado: "pendiente",
+      prioridad: "alta",
+      fechaLimite: "2028-12-31",
+      horaInicio: "09:00",
+      horaFin: "10:30",
+    });
+
+    expect(addDoc).toHaveBeenCalledWith(
+      { db: {}, coleccion: "tasks" },
+      expect.objectContaining({
+        fechaLimite: "2028-12-31",
+        horaInicio: "09:00",
+        horaFin: "10:30",
+      })
+    );
   });
 
   test("editarTareaEnFirestore actualiza el documento correcto", async () => {
@@ -155,6 +186,35 @@ describe("taskService", () => {
     expect(updateDoc).toHaveBeenCalledWith(
       { db: {}, coleccion: "tasks", id: "tarea-1" },
       { titulo: "Editada" }
+    );
+  });
+
+  test("editarTareaEnFirestore convierte opcionales undefined a null", async () => {
+    await editarTareaEnFirestore("tarea-calendario", {
+      titulo: "Editada desde calendario",
+      descripcion: "Descripción actualizada",
+      estado: "pendiente",
+      prioridad: "media",
+      fechaLimite: undefined,
+      horaInicio: undefined,
+      horaFin: undefined,
+      creadoPor: undefined,
+      asignadoA: undefined,
+    });
+
+    expect(updateDoc).toHaveBeenCalledWith(
+      { db: {}, coleccion: "tasks", id: "tarea-calendario" },
+      {
+        titulo: "Editada desde calendario",
+        descripcion: "Descripción actualizada",
+        estado: "pendiente",
+        prioridad: "media",
+        fechaLimite: null,
+        horaInicio: null,
+        horaFin: null,
+        creadoPor: null,
+        asignadoA: null,
+      }
     );
   });
 
@@ -173,6 +233,28 @@ describe("taskService", () => {
     expect(updateDoc).toHaveBeenCalledWith(
       { db: {}, coleccion: "tasks", id: "tarea-3" },
       { progreso: 50, estado: "en-progreso" }
+    );
+  });
+
+  test("agregarComentarioEnFirestore agrega el comentario de forma atómica", async () => {
+    const comentario = {
+      id: "comentario-1",
+      texto: "Necesitamos revisar este punto.",
+      autorId: "usuario-1",
+      autorNombre: "Joaquín",
+      fechaCreacion: "2026-08-20T17:00:00.000Z",
+    };
+
+    await agregarComentarioEnFirestore("tarea-comentada", comentario);
+
+    expect(arrayUnion).toHaveBeenCalledWith(comentario);
+    expect(updateDoc).toHaveBeenCalledWith(
+      { db: {}, coleccion: "tasks", id: "tarea-comentada" },
+      {
+        comentarios: {
+          __arrayUnion: comentario,
+        },
+      }
     );
   });
 

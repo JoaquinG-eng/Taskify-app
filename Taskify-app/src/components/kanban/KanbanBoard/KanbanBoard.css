@@ -246,3 +246,17 @@ body:has(.kanban__card-wrapper--dragging) {
     padding: 10px;
   }
 }
+
+/* ============================================================
+   B6.R2 - KANBAN RESPONSIVE SIN ANCHOS FANTASMA
+   ============================================================ */
+@media (max-width: 768px) {
+  .kanban__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .kanban__column {
+    max-width: 100%;
+  }
+}
