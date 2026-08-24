@@ -51,12 +51,12 @@ describe("Pruebas de Integración y Lógica Completa en authService.ts", () => {
     vi.clearAllMocks();
   });
 
-  test("Debe registrar, enviar verificación y cerrar la sesión provisional", async () => {
+  test("Debe registrar y enviar verificación sin bloquear el acceso", async () => {
     const usuario = await registrarUsuario("Joaquín", "test@taskify.com", "123456");
     expect(usuario).toBeDefined();
     expect(usuario.email).toBe("test@taskify.com");
     expect(sendEmailVerification).toHaveBeenCalledWith(usuario);
-    expect(signOut).toHaveBeenCalled();
+    expect(signOut).not.toHaveBeenCalled();
   });
 
   test("Debe iniciar sesión de forma exitosa usando Email y Contraseña", async () => {
@@ -64,7 +64,7 @@ describe("Pruebas de Integración y Lógica Completa en authService.ts", () => {
     expect(usuario.displayName).toBe("Joaquín");
   });
 
-  test("Debe bloquear una cuenta email/password que todavía no verificó el correo", async () => {
+  test("Debe permitir el login aunque el correo todavía no esté verificado", async () => {
     vi.mocked(signInWithEmailAndPassword).mockResolvedValueOnce({
       user: {
         uid: "unverified-123",
@@ -77,9 +77,9 @@ describe("Pruebas de Integración y Lógica Completa en authService.ts", () => {
 
     await expect(
       iniciarSesionConEmail("sinverificar@taskify.com", "123456")
-    ).rejects.toMatchObject({ code: "auth/email-not-verified" });
+    ).resolves.toMatchObject({ uid: "unverified-123", email: "sinverificar@taskify.com" });
 
-    expect(signOut).toHaveBeenCalled();
+    expect(signOut).not.toHaveBeenCalled();
   });
 
   test("Debe procesar el login de Google forzando el selector de cuentas", async () => {
